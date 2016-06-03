@@ -12,6 +12,7 @@ public class Bicycle_Classes {
 		speed = startSpeed;
 	}
 	
+//Hello 
 	//Method Declaration
 	public void setCadence(int newCadence) {
 		cadence = newCadence;

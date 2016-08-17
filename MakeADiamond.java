@@ -16,20 +16,14 @@ public class MakeADiamond  implements Directions{
 
 	private void drawDiamond() {
 		Robot robot = new Robot(1,5,North,30);
-		int vertCount = 4;
-		
-		for (int i = 0; i <= vertCount; i++) {
-			System.out.println("Drawing Vert:" + i);
-			robot.move();
-			robot.putBeeper();
-			robot.turnLeft();
-		}
-		
-		for (int currentVert = 0; currentVert <= vertCount; currentVert++) {
-			robot.move();
-			robot.pickBeeper();
-			robot.turnLeft();
-		}
+		int beeperCount = 20;
+                int currentBeeper = 0;
+
+                while (currentBeeper < 4) {
+                      robot.putBeeper();
+             
+
+                }
 	} 
 
 	

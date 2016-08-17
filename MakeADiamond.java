@@ -21,7 +21,13 @@ public class MakeADiamond  implements Directions{
 
                 while (currentBeeper < 4) {
                       robot.putBeeper();
-             
+                      robot.move();
+                      robot.turnLeft();
+                      robot.move();
+                      robot.putBeeper();
+                      if (currentBeeper != 4) {
+ 
+                      }
 
                 }
 	} 

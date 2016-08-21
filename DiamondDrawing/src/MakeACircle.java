@@ -10,18 +10,35 @@ public class MakeACircle implements Directions {
 		int circleDiameter = Integer.parseInt(circleDiameterStr);
 		
 		World.setVisible(true);
+		World.setDelay(20);
 		
 		circle.drawCircle(circleDiameter);
 		
 	}
 	
 	private void drawCircle(int diameter) {
-		Robot robot = new Robot(1,5, North, infinity);
+		Robot robot;
+		int circleRadius = diameter / 2;
 		
-		int circleDiameter = diameter / 2;
+		World.setSize(diameter, diameter);
+		robot = new Robot(1,circleRadius, North, infinity);
 		
-		
-		
+		robot.putBeeper();
+		robot.move();
+		turnRight(robot);
+		robot.move();
+		robot.putBeeper();
+		robot.move();
+		robot.turnLeft();
+		robot.move();
+		robot.putBeeper();
+		robot.move();
+		robot.turnLeft();
+		robot.move();
+		robot.putBeeper();
+		robot.move();
+		robot.putBeeper();
+
 		
 	}
 	

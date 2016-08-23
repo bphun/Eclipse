@@ -23,18 +23,16 @@ public class MakeADiamond  implements Directions {
 		robot = new Robot(1, sideLength, North, infinity);
 
 		final int beeperCount = sideLength * 4;
-		System.out.print("Beepers to Draw: " + beeperCount);
+		System.out.print("Total beepers to Draw: " + beeperCount);
 		
 		int sideCount = 0;
 		int currentBeeper;
-		
 		while (sideCount <= 3) {
 			
-			System.out.println("Drawing Side: " + sideCount);
+			System.out.println("Currently drawing Side: " + sideCount);
 
 			currentBeeper = 0;
-			while (currentBeeper < (sideLength - 1)) {
-				
+			while (currentBeeper < (sideLength - 1)) {			
 				int remainingBeepers = beeperCount - currentBeeper;
 				System.out.println("Remaining Beepers: " + remainingBeepers);
 						
@@ -56,70 +54,4 @@ public class MakeADiamond  implements Directions {
 		robot.turnLeft();
 		robot.turnLeft();
 	}
-	
 }			
-		
-//		final int beeperCount = sideLength * 4;
-//		int currentBeeper = 0;
-//		
-//		for (int sideCount = 0; sideCount <= 3; sideCount++) {
-//			
-//			System.out.println("Side Count: " + sideCount);
-//			
-//			switch (sideCount) {
-//				case 0:
-//					while (currentBeeper <= beeperCount / 4 - 1) {
-//						if (currentBeeper == 0) {
-//							robot.putBeeper();
-//						} else if (currentBeeper > 0) {
-//							robot.move();
-//							robot.turnLeft();
-//							robot.move();
-//							robot.putBeeper();
-//							turnRight(robot);	
-//						}
-//						currentBeeper++;					
-//					}
-//			
-//				case 1:
-//					while (currentBeeper <= beeperCount / 4 - 1) {
-//						if (currentBeeper != 4) {
-//							robot.move();        
-//							turnRight(robot);
-//							robot.move();
-//							robot.putBeeper();
-//							robot.turnLeft();
-//						} else {
-//							turnAround(robot);
-//						}
-//						currentBeeper++;  	
-//					}
-//			
-//				case 2:
-//					while (currentBeeper <= beeperCount / 4 - 1) {
-//						if (currentBeeper != 4) {
-//						robot.move();
-//						robot.turnLeft();
-//						robot.move();
-//						robot.putBeeper();
-//						turnRight(robot);	
-//						}
-//						currentBeeper++;	
-//					}
-//
-//				case 3:
-//					while (currentBeeper <= beeperCount / 4 - 1) {
-//						if (currentBeeper != 4) {
-//							robot.move();
-//							turnRight(robot);
-//							robot.move();
-//							robot.putBeeper();
-//							robot.turnLeft();	
-//						}
-//						currentBeeper++;	
-//					}
-//				default:
-//					break;	
-//			}
-//		}
-

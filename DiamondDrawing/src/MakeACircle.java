@@ -12,7 +12,7 @@ public class MakeACircle implements Directions {
 		int circleDiameter = Integer.parseInt(circleDiameterStr);
 		
 		World.setVisible(true);
-		World.setDelay(0);
+		World.setDelay(10);
 		
 		circle.drawCircle(circleDiameter);	
 	}
@@ -39,7 +39,7 @@ public class MakeACircle implements Directions {
 		
 	}
 	
-	private beeperCoordinate[] generateBeeperCoordinate(int circleRadius, Robot robot) {
+	private beeper[] generateBeeperCoordinate(int circleRadius, Robot robot) {
 		int circleCenterX = circleRadius;
 		int circleCenterY = circleRadius;
 		
@@ -51,31 +51,25 @@ public class MakeACircle implements Directions {
 		
 		int currentCord = 0;
 		
-		beeperCoordinate[] beeperCoordinateArray = new beeperCoordinate[circleCircumfrence / 4];
-		
-		System.out.print("# of beepers: " + circleCircumfrence / 4);
-		
-		while (true) {
-			int distanceFromCenter = getDistanceFromCenter(currentXPos, currentYPos, circleCenterX, circleCenterY);
-			beeperCoordinate beeperCord;
+		beeper beeperCord;
+		beeper[] beeperCoordinateArray = new beeper[0];
+				
+		while (beeperCoordinateArray.length < circleCircumfrence / 4) {
 			
-			while (beeperCoordinateArray.length <= circleCircumfrence / 4) {
-				currentXPos = robot.street();
-				currentYPos = robot.avenue();
+			for (int quadrants = 0; quadrants <= 3; quadrants++) {
 				
-				//	TODO: Go up and down every X coordinate checking if the current coordinate allows to draw a line with a distance to the center of 10
-				
-				if (distanceFromCenter >= circleRadius) {
+				slideLeft(robot);
+				for (int steps = 0; steps < circleRadius; steps ++) {
+					int distance = (int) (Math.sqrt((circleRadius * circleRadius - steps*steps)));
+					distance = (int) Math.round(distance);
 					
-					beeperCord = new beeperCoordinate(currentXPos, currentYPos);
-									
-					beeperCoordinateArray[currentCord] = beeperCord;	
-					currentCord++;
-				} else {
-					continue;
+					move(distance, robot);
 				}
+				robot.putBeeper();
+				goToCenter(robot, circleRadius);
+				robot.turnLeft();		
 			}
-			break;
+			
 		}
 		return beeperCoordinateArray;
 	}
@@ -120,22 +114,29 @@ public class MakeACircle implements Directions {
 	}
 	
 	private void slideRight(Robot robot) {
+
+		
 		turnRight(robot);
 		robot.move();
 		robot.turnLeft();
 		slideCount++;
 	}
+
+	private void move(int n, Robot robot) {
+		while (n > 0) {
+			robot.move();
+			n--;
+		}
+	}
 }
 
-class beeperCoordinate {
+class beeper {
 	
 	int xCord;
 	int yCord;
 	
-	beeperCoordinate(int beeperXCord, int beeperYCord) {
+	beeper(int beeperXCord, int beeperYCord) {
 		beeperXCord = xCord;
 		beeperYCord = yCord;
 	}
 }
-
-

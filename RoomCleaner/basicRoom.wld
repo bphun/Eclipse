@@ -1,4 +1,5 @@
 KarelWorld
+
 streets 15
 avenues 15
 beepers 8 11 3
@@ -36,3 +37,5 @@ northsouthwalls 5 8 8
 northsouthwalls 13 11 11
 northsouthwalls 13 9 9
 northsouthwalls 13 7 7
+
+

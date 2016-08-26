@@ -24,12 +24,12 @@ public class RoomCleaner implements Directions {
 				
 		String wrldName = "basicRoom.wld";
 		World.setVisible(true);	
-		World.setDelay(5);
+		World.setDelay(20);
 		World.readWorld(wrldName);		
 	}
 	
 	private void cleanRoom() {
-		scanWorldForRoom();
+		robot = new Robot(7,7, East, infinity);
 //		String robotXPositionStr = JOptionPane.showInputDialog(null, "What X coordinate do you want to place the robot on");
 //		int robotXPosition = Integer.parseInt(robotXPositionStr);
 //		
@@ -38,6 +38,25 @@ public class RoomCleaner implements Directions {
 //		
 //		robot = new Robot(robotYPosition, robotXPosition, North, infinity);
 		
+		int roomArea = getRoomArea();
+		System.out.print("Room Area: " + roomArea + "\n");
+		
+		while (true) {
+			
+			if (robot.frontIsClear()) {
+				robot.move();
+				robot.pickBeeper();
+			} else if ((!robot.frontIsClear()) && (robot.facingEast())) {
+				slideLeft();
+				robot.pickBeeper();
+				turnAround();
+			} else if ((!robot.frontIsClear()) && (robot.facingWest())) {
+				slideRight();
+				robot.pickBeeper();
+				turnAround();
+			}
+		}	
+	
 	}
 	
 	private void printResults() {
@@ -45,57 +64,34 @@ public class RoomCleaner implements Directions {
 		System.out.println("The biggest pile was: ");
 	}
 	
-	
-	private void scanWorldForRoom() {
-		robot = new Robot(1,1,North, 1);
-		for (int avenues = World.numberOfAvenues() - 1; avenues > 0; avenues--) {
-			for (int streets = World.numberOfStreets() - 1; streets > 0; streets--) {
-				slideRight();
-				checkForObstacle();
+	private int getRoomArea() {
+		int roomLength = 0;
+		int roomHeight = 0;
+		int roomArea;
+		
+		int initialXPos = robot.street() - 1;
+		int initialYPos = robot.avenue() - 1;
+		
+		while (robot.frontIsClear()) {
+			if (robot.facingEast()) {
+				roomLength++;
+			} else if (robot.facingNorth()) {
+				roomHeight++;
 			}
 			robot.move();
-			checkForObstacle();
-			for (int streets = World.numberOfStreets() - 1; streets > 0; streets--) {
-				slideLeft();
-				checkForObstacle();
-			}
-			robot.move();
-			checkForObstacle();
-		}
-		
-//		for (int avenues = World.numberOfAvenues() - 1; avenues > 0; avenues--) {
-//			for (int streets = World.numberOfStreets() - 1; streets > 0; streets--) {
-//				robot.move();
-//				robot.turnLeft();
-//				turnRight(robot);
-//			}
-//			slideLeft(robot);
-//			turnAround(robot);
-//			for (int streets = World.numberOfStreets() - 1; streets > 0; streets--) {
-//				robot.move();
-//			}
-//			slideRight(robot);
-//			turnAround(robot);
-//		}
-		
-	}
-	
-	private void checkForObstacle() {
-		int currentXPos = robot.avenue() - 1;
-		int currentYPos = robot.street() - 1;
-		
-		Wall wall;
-		Wall[] wallArray = new Wall[World.numberOfAvenues() * World.numberOfStreets()];
-		
-		int currentElement = 0;
-		
-		if (robot.facingNorth()) {
 			if (!robot.frontIsClear()) {
-				wall = new Wall(currentXPos, currentYPos);
-				wallArray[currentElement] = wall;
-				currentElement++;
-			}			
+				robot.turnLeft();
+			}
+			
+			if ((robot.street() - 1 == initialXPos) && (robot.avenue() - 1 == initialYPos)) {
+				break;
+			}
+			
 		}
+		
+		roomArea = roomLength * roomHeight;
+				
+		return roomArea;
 	}
 	
 	private void turnRight() {

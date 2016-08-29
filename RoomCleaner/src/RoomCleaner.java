@@ -1,116 +1,239 @@
-import java.util.Scanner;
+import java.util.*;
 import javax.swing.JOptionPane;
 import kareltherobot.*;
 
 public class RoomCleaner implements Directions {
 
 	Robot robot;
+	ArrayList<Beeper> beeperArray = new ArrayList<Beeper>();
+	int roomLength = 0;
+	int roomHeight = 0;
+	int roomArea;
+	int totalBeepers;
+	int largestBeeperPile;
 	
 	public static void main(String[] args) {
 		RoomCleaner roomCleaner = new RoomCleaner();
-		
+
 		roomCleaner.getInfo();
 		roomCleaner.cleanRoom();
 		roomCleaner.printResults();
-		
 	}
-	
+
 	private void getInfo() {
 		// this method acquires the starting street, avenue and direction
 		// of the robot from the user.  Also it inputs the name of the world
 		// file.  It then opens the world file and creates the robot
-		
-		//	TODO:	Detect the location and size of the room and place Karel inside of the room.
-				
+
 		String wrldName = "basicRoom.wld";
 		World.setVisible(true);	
 		World.setDelay(20);
 		World.readWorld(wrldName);		
 	}
-	
+
 	private void cleanRoom() {
 		robot = new Robot(7,7, East, infinity);
 //		String robotXPositionStr = JOptionPane.showInputDialog(null, "What X coordinate do you want to place the robot on");
 //		int robotXPosition = Integer.parseInt(robotXPositionStr);
-//		
+//
 //		String robotYPositionStr = JOptionPane.showInputDialog(null, "What Y coordinate do you want to place the robot on");
 //		int robotYPosition = Integer.parseInt(robotYPositionStr);
-//		
+//
 //		robot = new Robot(robotYPosition, robotXPosition, North, infinity);
 		
 		int roomArea = getRoomArea();
 		System.out.print("Room Area: " + roomArea + "\n");
-		
+				
 		while (true) {
-			
 			if (robot.frontIsClear()) {
 				robot.move();
-				robot.pickBeeper();
+				pickBeeper();
 			} else if ((!robot.frontIsClear()) && (robot.facingEast())) {
-				slideLeft();
-				robot.pickBeeper();
-				turnAround();
+				if (leftIsClear()) {
+					slideLeft();
+					turnAround();
+					pickBeeper();	
+				} else {
+					break;
+				}
 			} else if ((!robot.frontIsClear()) && (robot.facingWest())) {
 				slideRight();
-				robot.pickBeeper();
 				turnAround();
+				pickBeeper();
+			} else if ((!robot.frontIsClear() && (robot.facingNorth()))) {
+				robot.turnLeft();
+			} else if ((robot.facingNorth()) && (!rightIsClear())) {
+				break;
 			}
+			
 		}	
-	
+
 	}
-	
+
 	private void printResults() {
 		// A bunch of System.out.prints go here
-		System.out.println("The biggest pile was: ");
+		System.out.print("The area of the room is: " + roomArea +"\n");
+		System.out.print("The total number of beeper piles picked up was: " + beeperArray.size() + "\n");
+		System.out.print("Karel picked up a total of " + totalBeepers + " beepers" + "\n");
+	}
+	
+	private void pickBeeper() {
+		
+		int beeperXPos = 0;
+		int beeperYPos = 0;
+				
+		Beeper beeper;
+				
+		while (robot.nextToABeeper()) {
+			int beeperPileSize = 0;
+			beeperXPos = robot.avenue();
+			beeperYPos = robot.street();
+			
+			robot.pickBeeper();
+			beeperPileSize++;
+			totalBeepers++;
+			beeper = new Beeper(beeperPileSize, beeperXPos, beeperYPos);	
+			
+			System.out.print("Beeper array size: " + beeperArray.size());
+			
+			
+		}
 	}
 	
 	private int getRoomArea() {
-		int roomLength = 0;
-		int roomHeight = 0;
-		int roomArea;
+		int initialXPos;
+		int initialYPos;
+
+		System.out.print("Determing room's area" + "\n");
 		
-		int initialXPos = robot.street() - 1;
-		int initialYPos = robot.avenue() - 1;
+		if (!robot.facingEast()) {
+			faceEast();			
+		}
+		goToBottomLeftCorner();
+		initialXPos = robot.street();
+		initialYPos = robot.avenue();
 		
-		while (robot.frontIsClear()) {
+		while (true) {
+			
 			if (robot.facingEast()) {
 				roomLength++;
 			} else if (robot.facingNorth()) {
 				roomHeight++;
 			}
-			robot.move();
-			if (!robot.frontIsClear()) {
+			
+			if (robot.frontIsClear()) {
+				robot.move();
+			} else if ((!robot.frontIsClear()) && (robot.facingEast())) {
+				robot.turnLeft();	
+			} else if ((!robot.frontIsClear()) && (robot.facingWest())) {
+				robot.turnLeft();
+			} else if ((!robot.frontIsClear()) && (robot.facingNorth())) {
+				robot.turnLeft();
+			} else if ((!robot.frontIsClear()) && (robot.facingSouth())) {
 				robot.turnLeft();
 			}
-			
-			if ((robot.street() - 1 == initialXPos) && (robot.avenue() - 1 == initialYPos)) {
+ 
+			if ((robot.street() == initialXPos) && (robot.avenue() == initialYPos)) {				
 				break;
 			}
-			
 		}
+		faceEast();
+		System.out.print("Room height: " + roomHeight + " Room length: " + roomLength + "\n");
 		
 		roomArea = roomLength * roomHeight;
-				
+
 		return roomArea;
 	}
 	
+	private void goToBottomLeftCorner() {
+		
+		faceEast();
+		while (rearIsClear()) {			
+			slideBackward();
+		}
+		faceEast();
+		while (rightIsClear()) {
+			slideRight();
+		}
+		
+	}
+	private boolean rearIsClear() {
+		
+		boolean rearIsClear = false;
+		
+		turnAround();
+		
+		if (robot.frontIsClear()) {
+			rearIsClear = true;
+		}
+		turnAround();
+		
+		return rearIsClear;
+	}
+	private boolean leftIsClear() {
+
+		boolean leftIsClear = false;
+		
+		robot.turnLeft();
+		if (robot.frontIsClear()) {
+			leftIsClear = true;
+		}
+		turnRight();
+		
+		return leftIsClear;
+	}
+	private boolean rightIsClear() {
+		boolean rightIsClear = false;
+		
+		turnRight();
+		if (robot.frontIsClear()) {
+			rightIsClear = true;
+		}
+		robot.turnLeft();
+		
+		return rightIsClear;
+	}
+	private void slideBackward() {
+		turnAround();
+		robot.move();
+		turnAround();
+	}
+	private void faceEast() {
+		if (robot.facingNorth()) {
+			turnRight();
+		} else if (robot.facingSouth()) {
+			robot.turnLeft();
+		} else if (robot.facingWest()) {
+			turnAround();
+		}
+	}
+	private void faceNorth() {
+		if (robot.facingEast()) {
+			robot.turnLeft();
+		} else if (robot.facingSouth()) {
+			robot.turnLeft();
+			robot.turnLeft();
+		} else if (robot.facingWest()) {
+			turnRight();
+		}
+	}
 	private void turnRight() {
 		robot.turnLeft();
 		robot.turnLeft();
 		robot.turnLeft();
 	}
-	
+
 	private void turnAround() {
 		robot.turnLeft();
 		robot.turnLeft();
 	}
-	
+
 	private void slideLeft() {
 		robot.turnLeft();
 		robot.move();
 		turnRight();
 	}
-	
+
 	private void slideRight() {
 		turnRight();
 		robot.move();
@@ -118,14 +241,16 @@ public class RoomCleaner implements Directions {
 	}	
 }
 
-class Wall {
-	
-	int xCord, yCord;
-	
-	Wall(int xCordI, int yCordI) {
-		
-		xCord = xCordI;
-		yCord = yCordI;
+class Beeper {
+
+	int beeperXCord;
+	int beeperYCord;
+	int beeperPileSize;
+
+	Beeper(int BeeperS, int beeperX, int beeperY) {
+		beeperXCord = beeperX;
+		beeperYCord = beeperY;
+		beeperPileSize = BeeperS;
 	}
-	
+
 }

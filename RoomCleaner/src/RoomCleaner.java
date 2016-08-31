@@ -5,7 +5,7 @@ import kareltherobot.*;
 public class RoomCleaner implements Directions {
 
 	Robot robot;
-	ArrayList<Beeper> beeperArray = new ArrayList<Beeper>();
+	ArrayList<Beeper> beeperArray = new ArrayList<Beeper>();	//	ArrayList used to store beeper piles
 	int roomLength = 0;
 	int roomHeight = 0;
 	int roomArea;
@@ -14,36 +14,43 @@ public class RoomCleaner implements Directions {
 
 	public static void main(String[] args) {
 		RoomCleaner roomCleaner = new RoomCleaner();
-
+		
+		//	Ask the user what world file they would like to use"
 		roomCleaner.getInfo();
+		
+		//	Pick up all of the beepers in the room
 		roomCleaner.cleanRoom();
+		
+		//	Print all the needed info (i.e. Room area, total beeper collected, beeper piles collected, largest beeper pile size, distance relative to largest beeper pile, average beeper size, percent 'dirty')
 		roomCleaner.printResults();
 	}
 
-	private void getInfo() {
-		// this method acquires the starting street, avenue and direction
-		// of the robot from the user.  Also it inputs the name of the world
-		// file.  It then opens the world file and creates the robot
-
-		String wrldName = "basicRoom.wld";
-//		String wrldName = JOptionPane.showInputDialog(null, "What is the name of the world file you want to load?");
-		World.setVisible(true);	
-		World.setDelay(0);
+	//	MARK: Gather the needed world file info
+	private void getInfo() {		
+		//	Prompt the user for the world file that they would like to use and then load it
+		String wrldName = JOptionPane.showInputDialog(null, "What is the name of the world file you want to load?");
 		World.readWorld(wrldName);		
+
+		//	Set the delay to 0 so that we don't have to wait a long time for Karel to clean the room
+		World.setDelay(0);
 	}
 
-	private void cleanRoom() {
-//		robot = new Robot(7,7, East, infinity);
+	//	MARK: Have Karel clean the room it is in 
+	private void cleanRoom() {		
 		
+		//	Prompt the user to ask them for their starting X coordinate and then convert it from a String to an int so that we can use it later on 
 		String robotXPositionStr = JOptionPane.showInputDialog(null, "What X coordinate do you want to place the robot on");
 		int robotXPosition = Integer.parseInt(robotXPositionStr);
 
+		//	Prompt the user to ask them for their starting Y coordinate and then convert it from a String to an int so that we can use it later on
 		String robotYPositionStr = JOptionPane.showInputDialog(null, "What Y coordinate do you want to place the robot on");
 		int robotYPosition = Integer.parseInt(robotYPositionStr);
 
+		//	Prompt the user to ask them for their starting cardinal direction so that we can initialize Karel facing that way
 		String robotStartingDirection = JOptionPane.showInputDialog("What direction do you want karel to face?" + "\n" + "North" + "\n" + "East" + "\n" + "South" + "\n" + "West");
 		Direction startingDirection = null;
 		
+		//	Convert the user inputed string directio value to a Direction value so that we can use it when we initialize Karel
 		if (robotStartingDirection.equalsIgnoreCase("north")) {
 			startingDirection = North;
 		} else if (robotStartingDirection.equalsIgnoreCase("east")) {
@@ -54,13 +61,19 @@ public class RoomCleaner implements Directions {
 			startingDirection = West;
 		}
 		
+		//	Initialize Karel with the desired X,Y coordinates, and starting direction
 		robot = new Robot(robotYPosition, robotXPosition, startingDirection, infinity);
 
-		int roomArea = getRoomArea();
-		System.out.print("Room Area: " + roomArea + "\n");
+		//	Make the world visible after we have loaded everything
+		World.setVisible(true);	
+
+		//	(1). Determine the room's area
+		roomArea = getRoomArea();
 		
+		//	Walk around the room picking up a beeper if there is a beeper there
 		while (true) {
 			if (robot.frontIsClear()) {
+				pickBeeper();	//	This is needed because without it Karel would not pick up any beepers in the bottom left corner
 				robot.move();
 				pickBeeper();
 			} else if ((!robot.frontIsClear()) && (robot.facingEast())) {
@@ -82,8 +95,9 @@ public class RoomCleaner implements Directions {
 			}
 		}	
 	}
+	
+	//	Print all of the required info about what Karel did in the room
 	private void printResults() {
-		// A bunch of System.out.prints go here
 		int largestBeeperPileSize = getLargestBeeperPileSize();
 		double averageBeeperPileSize = calculateAverageBeeperPileSize();
 		double percentDirty = getPercentDirty();
@@ -97,26 +111,33 @@ public class RoomCleaner implements Directions {
 		System.out.print("The average beeper pile size is: " + averageBeeperPileSize + "\n");
 		System.out.print("The percent dirty is: " + percentDirty + "%" + "\n");
 	}
+	
+	//	MARK:	Methods used to calculate the required information about what karel did in the room
+	
+	//	Method used to get the largest beeper pile out of all of the piles Karel picked up
 	private int getLargestBeeperPileSize() {
 	    int largestPile = beeperArray.get(0).beeperPileSize;
 
-	    for(int i=0; i < beeperArray.size(); i++){
+	    //	Loop through the array checking if the current beeper is larger than the current largestPile 
+	    for(int i = 0; i < beeperArray.size(); i++) {
 	        if(beeperArray.get(i).beeperPileSize > largestPile){
 	        	largestPile = beeperArray.get(i).beeperPileSize;
 	        }
-
 	    }
 	    return (largestPile);
 	}	
+	
+	//	Method used to return an array containing the (X,Y) coordinate of the largest beeper pile
 	private ArrayList<Integer> getDistanceFromLargestBeeperPile() {
 	    Beeper largestPile = beeperArray.get(0);
 
-	    for(int i=0; i < beeperArray.size(); i++){
-	        if(beeperArray.get(i).beeperPileSize > largestPile.beeperPileSize){
+	    for(int i = 0; i < beeperArray.size(); i++){
+	        if(beeperArray.get(i).beeperPileSize > largestPile.beeperPileSize) {
 	        	largestPile = beeperArray.get(i);
 	        }
 
 	    }
+	    
 	    ArrayList<Integer> largestPileCoordinate = new ArrayList<Integer>();
 	    
 	    largestPileCoordinate.add(largestPile.beeperXCord);
@@ -124,60 +145,50 @@ public class RoomCleaner implements Directions {
 	    
 	    return largestPileCoordinate;
 	}
+	
+	//	Method used to determine the average beeper pile size
 	private double calculateAverageBeeperPileSize() {
 		Integer sum = 0;
+		
 		if(!beeperArray.isEmpty()) {
+			
+			//	Loop through the array adding the current elements pile size to the sum
 			for (int i = 0; i < beeperArray.size(); i++) {
 				sum += beeperArray.get(i).beeperPileSize;
 			}
+			//	Calculate the average
 			return sum.doubleValue() / beeperArray.size();
 		}
 		return sum;
 	}
+	
+	//	Calculate the percentage of the room that was covered in beepers
 	private double getPercentDirty() {		
 		int beeperArraySize = beeperArray.size();
-		double percentDirty = ((double)beeperArraySize / roomArea) * 10;
+		double percentDirty = ((double) beeperArraySize / roomArea) * 10;
 		return percentDirty;
 	}
-	private void pickBeeper() {
-
-		int beeperXPos = 0;
-		int beeperYPos = 0;
-		int beeperPileSize = 0;
-
-		Beeper beeper;
-
-		while (robot.nextToABeeper()) {
-			beeperXPos = robot.avenue();
-			beeperYPos = robot.street();
-
-			robot.pickBeeper();
-			beeperPileSize++;
-			totalBeepers++;
-		}
-		
-		if (beeperPileSize != 0) {
-			beeper = new Beeper(beeperPileSize, beeperXPos, beeperYPos);
-			System.out.println("Picked up a pile of " + beeperPileSize + " beepers");
-			beeperArray.add(beeper);
-			beeperPileSize = 0;	
-		}
-	}
+	
+	//	Method that is used to determine the rooms area by walking along the rooms perimeter and increasing either the room's height or width depending on Karel's orientation at that time
 	private int getRoomArea() {
 		int initialXPos;
 		int initialYPos;
 
-		System.out.print("Determing room's area" + "\n");
-
+		//	Make sure that Karel is facing east so that the code below works
 		if (!robot.facingEast()) {
 			faceEast();			
 		}
+		
+		//	Move karel to the bottom left corner so that we can begin calculating the room's perimeter
 		goToBottomLeftCorner();
+		
+		//	Get Karel's initial (X,Y) coordinates so that we can check if we have walked around the perimeter
 		initialXPos = robot.street();
 		initialYPos = robot.avenue();
 
 		while (true) {
-
+			
+			//	Check Karel's orientation so that we can get the side length
 			if (robot.facingEast()) {
 				roomLength++;
 			} else if (robot.facingNorth()) {
@@ -207,6 +218,41 @@ public class RoomCleaner implements Directions {
 
 		return roomArea;
 	}
+	
+	//	MARK:	Karel helper methods	
+
+	//	Method used to conditionally pick up beepers 
+	private void pickBeeper() {
+		int beeperXPos = 0;
+		int beeperYPos = 0;
+		int beeperPileSize = 0;
+		Beeper beeper;
+
+		while (robot.nextToABeeper()) {
+			
+			//	Get the robots current (X,Y) coordinates so that we can use it to initialize the beeper with the X and Y coordinates
+			beeperXPos = robot.avenue();
+			beeperYPos = robot.street();
+
+			//	Pick up the beeper, increment the beeper pile size and the total number of beepers picked up 
+			robot.pickBeeper();
+			beeperPileSize++;
+			totalBeepers++;
+		}
+		
+		//	Check if the pile size != 0, this is needed because if we didn't than we would have beepers with a size of 0
+		if (beeperPileSize != 0) {
+			//	Create a beeper object initialized with the pile size and the (X,Y) coordinates
+			beeper = new Beeper(beeperPileSize, beeperXPos, beeperYPos);
+			
+			//	Add the beeper to the ArrayList
+			beeperArray.add(beeper);
+			
+			//	Reset the beeper pile size so that the next beeper pile has the correct size
+			beeperPileSize = 0;	
+		}
+	}
+	
 	private void goToBottomLeftCorner() {
 
 		faceEast();
@@ -219,6 +265,7 @@ public class RoomCleaner implements Directions {
 		}
 
 	}
+	
 	private boolean rearIsClear() {
 
 		boolean rearIsClear = false;

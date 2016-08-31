@@ -254,7 +254,6 @@ public class RoomCleaner implements Directions {
 	}
 	
 	private void goToBottomLeftCorner() {
-
 		faceEast();
 		while (rearIsClear()) {			
 			slideBackward();
@@ -263,15 +262,12 @@ public class RoomCleaner implements Directions {
 		while (rightIsClear()) {
 			slideRight();
 		}
-
 	}
 	
 	private boolean rearIsClear() {
-
 		boolean rearIsClear = false;
-
+		
 		turnAround();
-
 		if (robot.frontIsClear()) {
 			rearIsClear = true;
 		}
@@ -279,8 +275,8 @@ public class RoomCleaner implements Directions {
 
 		return rearIsClear;
 	}
+	
 	private boolean leftIsClear() {
-
 		boolean leftIsClear = false;
 
 		robot.turnLeft();
@@ -291,6 +287,7 @@ public class RoomCleaner implements Directions {
 
 		return leftIsClear;
 	}
+	
 	private boolean rightIsClear() {
 		boolean rightIsClear = false;
 
@@ -302,11 +299,13 @@ public class RoomCleaner implements Directions {
 
 		return rightIsClear;
 	}
+	
 	private void slideBackward() {
 		turnAround();
 		robot.move();
 		turnAround();
 	}
+	
 	private void faceEast() {
 		if (robot.facingNorth()) {
 			turnRight();
@@ -316,16 +315,7 @@ public class RoomCleaner implements Directions {
 			turnAround();
 		}
 	}
-	private void faceNorth() {
-		if (robot.facingEast()) {
-			robot.turnLeft();
-		} else if (robot.facingSouth()) {
-			robot.turnLeft();
-			robot.turnLeft();
-		} else if (robot.facingWest()) {
-			turnRight();
-		}
-	}
+
 	private void turnRight() {
 		robot.turnLeft();
 		robot.turnLeft();
@@ -361,5 +351,4 @@ class Beeper {
 		beeperYCord = beeperY;
 		beeperPileSize = BeeperS;
 	}
-
 }

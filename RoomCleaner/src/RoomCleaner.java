@@ -165,7 +165,7 @@ public class RoomCleaner implements Directions {
 	//	Calculate the percentage of the room that was covered in beepers
 	private double getPercentDirty() {		
 		int beeperArraySize = beeperArray.size();
-		double percentDirty = ((double) beeperArraySize / roomArea) * 10;
+		double percentDirty = ((double) beeperArraySize / roomArea) * 100;
 		return percentDirty;
 	}
 	

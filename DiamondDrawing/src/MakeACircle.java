@@ -120,7 +120,6 @@ public class MakeACircle implements Directions {
 		robot.move();
 		turnRight(robot);
 		slideCount++;
-		System.out.println("Slide count: " + slideCount);
 	}
 	
 	private void slideRight(Robot robot) {

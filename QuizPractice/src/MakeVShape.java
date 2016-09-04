@@ -1,36 +1,45 @@
 
 import kareltherobot.*;
 
-public class Quiz_1_Practice implements Directions {
+public class MakeVShape implements Directions {
 
-	Robot robot = new Robot(1,1,East, infinity);
-
+	Robot robot = new Robot(1,1,North,infinity);
+	
 	public static void main(String[] args) {
-		Quiz_1_Practice q = new Quiz_1_Practice();
-		
+		MakeVShape v = new MakeVShape();
+
 		World.setDelay(10);
 		World.setVisible(true);
-		q.drawTriangle(5, 5);	
+		v.makeVShape(5, 5);
 	}
 
-	private void drawTriangle(int triangleHeight, int triangleBaseLength) {
+	private void makeVShape(int V_height, int V_length) {
+	
+		faceNorth();
 		
-		for (int length = 0; length < triangleHeight; length++) {
+		for (int length = 0; length < V_length; length++) {
+			
 			faceNorth();
-			for (int heightUp = 0; heightUp < triangleHeight; heightUp++) {
+			for (int heightUp = 0; heightUp < V_height; heightUp++) {
 				robot.move();
-				robot.putBeeper();
-			}		
+				if (heightUp == V_height) {
+					robot.putBeeper();
+				}
+			}
+			
+			V_height--;
 			slideRight();
 			turnAround();
-			for (int heightDown = 0; heightDown < triangleHeight; heightDown++) {
+			
+			for (int heightDown = 0; heightDown < V_height; heightDown++) {
 				robot.move();
-			}	
-			triangleHeight--;
+			}
+			slideLeft();			
 		}
+		
 
 	}
-
+	
 	private void slideLeft() {
 		robot.turnLeft();
 		robot.move();
@@ -64,9 +73,6 @@ public class Quiz_1_Practice implements Directions {
 		robot.turnLeft();
 		robot.turnLeft();
 	}
+
+
 }
-
-
-
-
-

@@ -1,42 +1,49 @@
 
+import javax.swing.JOptionPane;
+
 import kareltherobot.*;
 
 public class MakeVShape implements Directions {
 
-	Robot robot = new Robot(1,1,North,infinity);
+	static Robot robot;
 	
 	public static void main(String[] args) {
 		MakeVShape v = new MakeVShape();
 
-		World.setDelay(10);
+		World.setDelay(0);
+		
+		String V_heightStr = JOptionPane.showInputDialog("What height do you want?");
+ 
+		int V_height = Integer.parseInt(V_heightStr);
+
+		World.setSize(V_height, V_height * 2);
 		World.setVisible(true);
-		v.makeVShape(5, 5);
+
+		robot = new Robot(V_height, 1,South,infinity);
+		
+		v.makeVShape(V_height);
+
 	}
 
-	private void makeVShape(int V_height, int V_length) {
-	
-		faceNorth();
+	private void makeVShape(int V_height) {
+		int currentBeeper = 0;	
 		
-		for (int length = 0; length < V_length; length++) {
-			
+			while (currentBeeper < V_height - 1) {
+				robot.putBeeper();
+				robot.move();
+				slideLeft();
+				currentBeeper++;
+			}
+			currentBeeper = 0;
 			faceNorth();
-			for (int heightUp = 0; heightUp < V_height; heightUp++) {
+			while (currentBeeper < V_height - 1) {
+				robot.putBeeper();
 				robot.move();
-				if (heightUp == V_height) {
-					robot.putBeeper();
-				}
+				slideRight();
+				currentBeeper++;
 			}
-			
-			V_height--;
-			slideRight();
-			turnAround();
-			
-			for (int heightDown = 0; heightDown < V_height; heightDown++) {
-				robot.move();
-			}
-			slideLeft();			
-		}
-		
+			currentBeeper = 0;
+
 
 	}
 	
@@ -53,7 +60,6 @@ public class MakeVShape implements Directions {
 	}
 
 	private void faceNorth() {
-		System.out.println("Turning north");
 		if (robot.facingEast()) {
 			robot.turnLeft();
 		} else if (robot.facingSouth()) {
@@ -63,6 +69,16 @@ public class MakeVShape implements Directions {
 		}
 	}
 
+	private void faceSouth() {
+		if (robot.facingEast()) {
+			turnRight();
+		} else if (robot.facingNorth()) {
+			turnAround();
+		} else if (robot.facingWest()) {
+			robot.turnLeft();
+		}
+	}
+	
 	private void turnAround() {
 		robot.turnLeft();
 		robot.turnLeft();	

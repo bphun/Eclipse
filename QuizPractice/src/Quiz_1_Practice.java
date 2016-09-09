@@ -42,12 +42,11 @@ public class Quiz_1_Practice implements Directions {
 				robot.move();
 			}
 			slideLeft();
-			height = height - slope;
+			height -= slope;
 			width--;
 		}
 
 	}
-
 
 	private void faceNorth() {
 		if (robot.facingEast()) {
@@ -61,12 +60,6 @@ public class Quiz_1_Practice implements Directions {
 
 	private void slideLeft() {
 		robot.turnLeft();
-		robot.move();
-		robot.turnLeft();
-	}
-	
-	private void slideRight() {
-		turnRight();
 		robot.move();
 		robot.turnLeft();
 	}

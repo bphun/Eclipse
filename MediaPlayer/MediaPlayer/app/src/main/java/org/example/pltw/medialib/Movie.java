@@ -1,20 +1,21 @@
-package com.helloworld.brandonphan.mediaplayer;
+package org.example.pltw.medialib;
 
 import java.util.*;
 
 public class Movie {
 
-	private String title, director, producer, genre;
-	private double rottenTomatoesRating;
-	private ArrayList<String> actors;
+	public String title, genre;
+	public Human director, producer;
+	public double rottenTomatoesRating;
+	public ArrayList<Human> actors;
 
-	Movie(String movieTitle, String movieDirector, String movieProducer, String movieGenre, double movieRottenTomatoesRating, ArrayList<String> movieActors) {
-		title = movieTitle;
-		director = movieDirector;
-		producer = movieProducer;
-		genre = movieGenre;
-		rottenTomatoesRating = movieRottenTomatoesRating;
-		actors = movieActors;
+	Movie(String title, Human director, Human producer, String genre, double rottenTomatoesRating, ArrayList<Human> actors) {
+		this.title = title;
+		this.director = director;
+		this.producer = producer;
+		this.genre = genre;
+		this.rottenTomatoesRating = rottenTomatoesRating;
+		this.actors = actors;
 	}
 
 	//	Method to get and set title 
@@ -26,18 +27,18 @@ public class Movie {
 	}
 	
 	//	Methods to get and set director
-	public String getDirector() {
+	public Human getDirector() {
 		return director;
 	}
-	public void setDirector(String d) {
+	public void setDirector(Human d) {
 		director = d;
 	}
 
 	//	Methods to get and set producer
-	public String getProducer() {
+	public Human getProducer() {
 		return producer;	
 	}
-	public void setProducer(String p) {
+	public void setProducer(Human p) {
 		producer = p;
 	}
 
@@ -58,10 +59,10 @@ public class Movie {
 	}
 
 	//	Methods to get and set a list of actors
-	public ArrayList<String> getActors() {
+	public ArrayList<Human> getActors() {
 		return actors;
 	}
-	public void setActors(String a) {
+	public void setActors(Human a) {
 		actors.add(a);
 	}
 

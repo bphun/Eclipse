@@ -1,22 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.helloworld.brandonphan.mediaplayer.MainActivity">
+    android:orientation="vertical"
+    tools:context="org.example.pltw.medialib.MainActivity"
+    android:gravity="center_horizontal">
 
-    <ImageButton
+    <TextView
+        android:id="@+id/welcomeTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/imageButton"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        />
+
+    <Button
+        android:id="@+id/mediaLibButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:textSize="20sp"
+        android:text="@string/mediaLibButtonText"
+        android:onClick="showMedia"
+        />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/mediaLibListView"
+        android:layout_gravity="center_horizontal"
+        android:backgroundTint="#484444"
+        android:background="#4f4c4c"
+        android:backgroundTintMode="src_over"
         android:clickable="true"
-        android:cropToPadding="false"
-        android:elevation="1dp"
-        android:focusable="false"
-        android:alpha="1"
-        android:src="@drawable/musicbuttonicon" />
-</RelativeLayout>
+        android:contextClickable="true"
+        android:divider="@color/abc_search_url_text_pressed"
+        android:dividerHeight="@dimen/abc_dialog_fixed_height_minor"
+        android:drawSelectorOnTop="false" />
+
+    <TextView
+        android:id="@+id/mediaLibText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text=""
+        android:textSize="20sp"
+        android:textStyle="bold"
+        />
+</LinearLayout>

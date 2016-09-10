@@ -1,15 +1,16 @@
-package com.helloworld.brandonphan.mediaplayer;
+package org.example.pltw.medialib;
 
 public class Song {
 
-	private String title, album, artist;
-	private double duration;
+	public String title, album;
+	public Human artist;
+	public double duration;
 	
-	public Song(String songTitle, String  songAlbum, String songArtist, double songDuration) {
-		title = songTitle;
-		album = songAlbum;
-		artist = songArtist;
-		duration = songDuration;
+	public Song(String title, String  album, Human artist, double duration) {
+		this.title = title;
+		this.album = album;
+		this.artist = artist;
+		this.duration = duration;
 	}
 	
 	//	Methods to get and set title	
@@ -29,10 +30,10 @@ public class Song {
 	}
 	
 	//	Methods to get and set artist
-	public String getArtist() {
+	public Human getArtist() {
 		return artist;
 	}
-	public void setArtist(String a) {
+	public void setArtist(Human a) {
 		artist = a;
 	}
 	

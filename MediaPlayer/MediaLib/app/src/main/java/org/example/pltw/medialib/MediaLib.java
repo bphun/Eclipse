@@ -12,7 +12,7 @@ public class MediaLib {
     public ArrayList<Song> songs = new ArrayList<Song>();
     public ArrayList<Movie> movies = new ArrayList<Movie>();
 
-    ArrayList<Object> mediaLib = new ArrayList<>();
+    ArrayList<Object> mediaLib = new ArrayList<Object>();
 
     //  Methods to add to books and get books
     public void addBook(Book b) {
@@ -38,18 +38,28 @@ public class MediaLib {
         return movies;
     }
 
+    public ArrayList<Object> getMediaLibContents() {
+        return mediaLib;
+    }
+
     //  Method used to update media list
-    public void updateMediaLib() {
+    public void update() {
         for (int b = 0; b < books.size(); b++) {
-            mediaLib.add(books.get(b));
+            if (!mediaLib.contains(mediaLib.get(b))) {
+                mediaLib.add(books.get(b));
+            }
         }
 
         for (int s = 0; s < songs.size(); s++) {
-            mediaLib.add(songs.get(s));
+            if (!mediaLib.contains(mediaLib.get(s))) {
+                mediaLib.add(songs.get(s));
+            }
         }
 
         for (int m = 0; m < movies.size(); m++) {
-            mediaLib.add(movies.get(m));
+            if (!mediaLib.contains(mediaLib.get(m))) {
+                mediaLib.add(movies.get(m));
+            }
         }
 
     }

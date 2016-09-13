@@ -19,8 +19,8 @@ public class MainActivity extends AppCompatActivity {
 
         Greeting greeting = new Greeting();
 
-        TextView welcomeText = (TextView) findViewById(R.id.welcomeTextView);
-        welcomeText.setText(greeting.getGreeting());
+        TextView greetingTextView = (TextView) findViewById(R.id.welcomeTextView);
+        greetingTextView.setText(greeting.getGreeting());
     }
 
     public void showMedia(View v) {
@@ -45,13 +45,16 @@ public class MainActivity extends AppCompatActivity {
             for (int b = 0; b < mediaLib.getBooks().size(); b++) {
                 Button bookButton = new Button(this);
 
-                bookButton.setText(mediaLib.getBooks().get(b).getTitle());
+                Book currentBook = mediaLib.getBooks().get(b);
+
+                bookButton.setText(currentBook.getTitle());
                 bookButton.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-                bookButton.setTag(buttonTag, null);
+                bookButton.setTag(buttonTag, currentBook);
+
+                linearLayout.addView(bookButton);
 
                 buttonTag++;
-                linearLayout.addView(bookButton);
 
 //                outputText.append("Book: " + mediaLib.getBooks().get(b).getTitle() + "\n");
             }
@@ -59,13 +62,17 @@ public class MainActivity extends AppCompatActivity {
             for (int m = 0; m < mediaLib.getMovies().size(); m++) {
                 Button movieButton = new Button(this);
 
-                movieButton.setText(mediaLib.getMovies().get(m).getTitle());
+                Movie currentMovie = mediaLib.getMovies().get(m);
+
+                movieButton.setText(currentMovie.getTitle());
                 movieButton.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+                movieButton.setTag(buttonTag, currentMovie);
+
                 linearLayout.addView(movieButton);
 
-                movieButton.setTag(buttonTag, null);
-
                 buttonTag++;
+
 //                outputText.append("Movie: " + mediaLib.getMovies().get(m).getTitle() + "\n");
             }
 
@@ -73,13 +80,17 @@ public class MainActivity extends AppCompatActivity {
 
                 Button songButton = new Button(this);
 
-                songButton.setText(mediaLib.getSongs().get(s).getTitle());
+                Song currentSong = mediaLib.getSongs().get(s);
+
+                songButton.setText(currentSong.getTitle());
                 songButton.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+                songButton.setTag(buttonTag, currentSong);
+                
                 linearLayout.addView(songButton);
 
-                songButton.setTag(buttonTag, null);
-
                 buttonTag++;
+
 //                outputText.append("Song: " + mediaLib.getSongs().get(s).getTitle() + "\n");
             }
 

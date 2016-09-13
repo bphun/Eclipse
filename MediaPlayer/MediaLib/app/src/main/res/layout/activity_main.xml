@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="org.example.pltw.medialib.MainActivity"
-    android:gravity="center_horizontal">
+    android:gravity="center_horizontal"
+    android:id="@+id/linearLayout">
     
     <TextView
     android:id="@+id/welcomeTextView"
@@ -37,11 +38,5 @@
     android:textSize="20sp"
     android:textStyle="bold"
     />
-
-    <ExpandableListView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/mediaExpandableListView"
-        android:layout_gravity="center_horizontal" />
 
 </LinearLayout>

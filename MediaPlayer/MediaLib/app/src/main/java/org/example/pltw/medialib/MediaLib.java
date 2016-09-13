@@ -1,5 +1,7 @@
+
 package org.example.pltw.medialib;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -8,15 +10,19 @@ import java.util.Objects;
  */
 public class MediaLib {
 
-    public ArrayList<Book> books = new ArrayList<Book>();
-    public ArrayList<Song> songs = new ArrayList<Song>();
-    public ArrayList<Movie> movies = new ArrayList<Movie>();
+    private ArrayList<Book> books = new ArrayList<Book>();
+    private ArrayList<Song> songs = new ArrayList<Song>();
+    private ArrayList<Movie> movies = new ArrayList<Movie>();
 
-    ArrayList<Object> mediaLib = new ArrayList<Object>();
+    private ArrayList<Object> mediaLib = new ArrayList<Object>();
 
     //  Methods to add to books and get books
     public void addBook(Book b) {
         books.add(b);
+
+        if (!mediaLib.contains(b)) {
+            mediaLib.add(b);
+        }
     }
     public ArrayList<Book> getBooks() {
         return books;
@@ -25,6 +31,10 @@ public class MediaLib {
     //  Methods to add songs and get songs
     public void addSong(Song s) {
         songs.add(s);
+
+        if (!mediaLib.contains(s)) {
+            mediaLib.add(s);
+        }
     }
     public ArrayList<Song> getSongs() {
         return songs;
@@ -32,36 +42,16 @@ public class MediaLib {
 
     //  Methods to add movies and get movies
     public void addMovie(Movie m) {
-        movies.add(m);
+        if (!mediaLib.contains(m)) {
+            movies.add(m);
+        }
     }
     public ArrayList<Movie> getMovies() {
         return movies;
     }
 
-    public ArrayList<Object> getMediaLibContents() {
+    public ArrayList<Object> getMediaLib() {
         return mediaLib;
-    }
-
-    //  Method used to update media list
-    public void update() {
-        for (int b = 0; b < books.size(); b++) {
-            if (!mediaLib.contains(mediaLib.get(b))) {
-                mediaLib.add(books.get(b));
-            }
-        }
-
-        for (int s = 0; s < songs.size(); s++) {
-            if (!mediaLib.contains(mediaLib.get(s))) {
-                mediaLib.add(songs.get(s));
-            }
-        }
-
-        for (int m = 0; m < movies.size(); m++) {
-            if (!mediaLib.contains(mediaLib.get(m))) {
-                mediaLib.add(movies.get(m));
-            }
-        }
-
     }
 
 }

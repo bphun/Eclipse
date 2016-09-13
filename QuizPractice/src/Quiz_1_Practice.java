@@ -32,6 +32,11 @@ public class Quiz_1_Practice implements Directions {
 		
 		while (width >= 0) {
 			
+<<<<<<< HEAD
+		faceNorth();
+	s	
+			
+=======
 			faceNorth();
 			for (int upHeight = 0; upHeight < height; upHeight++) {
 				robot.move();
@@ -44,6 +49,7 @@ public class Quiz_1_Practice implements Directions {
 			slideLeft();
 			height -= slope;
 			width--;
+>>>>>>> 048caa60552b5a10bf989cbe9dad48c7653c84d8
 		}
 
 	}

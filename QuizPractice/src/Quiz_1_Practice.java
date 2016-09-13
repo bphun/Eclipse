@@ -20,8 +20,8 @@ public class Quiz_1_Practice implements Directions {
 		
 		while (beeperCount <= triangleArea) {
 			
-			faceNorth();
-			
+		faceNorth();
+	s	
 			
 		}
 				

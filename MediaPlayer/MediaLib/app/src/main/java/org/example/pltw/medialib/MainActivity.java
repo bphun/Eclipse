@@ -21,8 +21,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        TextView welcomeText = (TextView) findViewById(R.id.welcomeTextView);
-//        welcomeText.setText("Welcome to your media library");
+        Greeting greeting = new Greeting();
+
+        TextView welcomeText = (TextView) findViewById(R.id.welcomeTextView);
+        welcomeText.setText(greeting.getGreeting());
     }
 
 

@@ -1,42 +1,57 @@
+import javax.swing.JOptionPane;
 
 import kareltherobot.*;
 
 public class Quiz_1_Practice implements Directions {
 
-	Robot robot = new Robot(1,1,East, infinity);
+	static Robot robot;	
 
 	public static void main(String[] args) {
-		Quiz_1_Practice q = new Quiz_1_Practice();
-		
-		World.setDelay(10);
-		World.setVisible(true);
-		q.drawTriangle(5, 5);	
-	}
 
-	private void drawTriangle(int triangleHeight, int triangleBaseLength) {
+		Quiz_1_Practice room = new Quiz_1_Practice();
+
+		robot = new Robot(1,1,North,infinity);
+
+		World.setDelay(1);
 		
-		int triangleArea = (triangleHeight * triangleBaseLength) / 2;
-		int beeperCount = 0;
+		String triangleHeightStr = JOptionPane.showInputDialog("What height triangle do you want?");
+		int triangleHeight = Integer.parseInt(triangleHeightStr);
 		
-		while (beeperCount <= triangleArea) {
+		String triangleWidthStr = JOptionPane.showInputDialog("What width triangle do you want?");
+		int triangleWidth = Integer.parseInt(triangleWidthStr);
+		
+		World.setSize(triangleHeight + 3, triangleWidth + 3);
+		World.setVisible(true);
+
+		room.drawTriangle(triangleHeight, triangleWidth);
+	}
+	
+	private void drawTriangle(int height, int width) {
+				
+		int slope = (height / width);
+		
+		while (width >= 0) {
 			
+<<<<<<< HEAD
 		faceNorth();
 	s	
 			
+=======
+			faceNorth();
+			for (int upHeight = 0; upHeight < height; upHeight++) {
+				robot.move();
+				robot.putBeeper();
+			}
+			turnAround();
+			for (int downHeight = 0; downHeight < height; downHeight++) {
+				robot.move();
+			}
+			slideLeft();
+			height -= slope;
+			width--;
+>>>>>>> 048caa60552b5a10bf989cbe9dad48c7653c84d8
 		}
-				
 
-	}
-	private void slideLeft() {
-		robot.turnLeft();
-		robot.move();
-		turnRight();
-	}
-
-	private void slideRight() {
-		turnRight();
-		robot.move();
-		robot.turnLeft();
 	}
 
 	private void faceNorth() {
@@ -49,9 +64,15 @@ public class Quiz_1_Practice implements Directions {
 		}
 	}
 
+	private void slideLeft() {
+		robot.turnLeft();
+		robot.move();
+		robot.turnLeft();
+	}
+	
 	private void turnAround() {
 		robot.turnLeft();
-		robot.turnLeft();	
+		robot.turnLeft();
 	}
 
 	private void turnRight() {
@@ -59,9 +80,6 @@ public class Quiz_1_Practice implements Directions {
 		robot.turnLeft();
 		robot.turnLeft();
 	}
+
+
 }
-
-
-
-
-

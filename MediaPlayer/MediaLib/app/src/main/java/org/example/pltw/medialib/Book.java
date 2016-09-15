@@ -1,8 +1,12 @@
 package org.example.pltw.medialib;
 
+import android.content.Intent;
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.*;
 
-public class Book {
+public class Book implements Parcelable {
 
 	public enum Genre {
 		CLASSIC,
@@ -75,6 +79,39 @@ public class Book {
 	public void setCharacters(String c) {
 		characters.add(c);
 	}
+
+	//	Create a parcel
+	public Book(Parcel parcel) {
+
+		this.title = parcel.readString();
+//		this.author = (Human) parcel.readValue(Human.class.getClassLoader());
+		this.genre = Genre.valueOf(parcel.readString());
+		this.characters = parcel.readArrayList(Human.class.getClassLoader());
+	}
+
+	@Override
+	public int describeContents() {
+		return  0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(this.title);
+//		dest.writeValue(Human.class.getClassLoader());
+		dest.writeString(this.genre.name());
+		dest.writeArray(this.characters.toArray());
+	}
+
+	public static final Parcelable.Creator<Book> CREATOR = new Parcelable.Creator<Book>() {
+		public Book createFromParcel(Parcel in) {
+			return new Book(in);
+		}
+
+		public Book[] newArray(int size) {
+			return new Book[size];
+		}
+	};
+
 
 }
 

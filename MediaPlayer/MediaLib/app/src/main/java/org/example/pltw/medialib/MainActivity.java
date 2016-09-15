@@ -1,6 +1,9 @@
 package org.example.pltw.medialib;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +13,6 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
 
     MediaLib mediaLib = new MediaLib();
-    int buttonTag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,53 +47,46 @@ public class MainActivity extends AppCompatActivity {
             for (int b = 0; b < mediaLib.getBooks().size(); b++) {
                 Button bookButton = new Button(this);
 
-                Book currentBook = mediaLib.getBooks().get(b);
+                final Book currentBook = mediaLib.getBooks().get(b);
 
                 bookButton.setText(currentBook.getTitle());
                 bookButton.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-                bookButton.setTag(buttonTag, currentBook);
+//                bookButton.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        final String mediaKey = "Media";
+//
+//                        Intent intent = new Intent(MainActivity.this, showMediaInfo.class);
+//                        intent.putExtra(mediaKey, currentBook);
+//                        startActivity(intent);
+//                    }
+//                });
 
                 linearLayout.addView(bookButton);
-
-                buttonTag++;
-
-//                outputText.append("Book: " + mediaLib.getBooks().get(b).getTitle() + "\n");
             }
 
             for (int m = 0; m < mediaLib.getMovies().size(); m++) {
                 Button movieButton = new Button(this);
 
-                Movie currentMovie = mediaLib.getMovies().get(m);
+                final Movie currentMovie = mediaLib.getMovies().get(m);
 
                 movieButton.setText(currentMovie.getTitle());
                 movieButton.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-                movieButton.setTag(buttonTag, currentMovie);
-
                 linearLayout.addView(movieButton);
-
-                buttonTag++;
-
-//                outputText.append("Movie: " + mediaLib.getMovies().get(m).getTitle() + "\n");
             }
 
             for (int s = 0; s < mediaLib.getSongs().size(); s++) {
 
                 Button songButton = new Button(this);
 
-                Song currentSong = mediaLib.getSongs().get(s);
+                final Song currentSong = mediaLib.getSongs().get(s);
 
                 songButton.setText(currentSong.getTitle());
                 songButton.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-                songButton.setTag(buttonTag, currentSong);
-                
                 linearLayout.addView(songButton);
-
-                buttonTag++;
-
-//                outputText.append("Song: " + mediaLib.getSongs().get(s).getTitle() + "\n");
             }
 
         } else if (mediaLib.getMediaLib().isEmpty()) {
@@ -99,9 +94,21 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void onMediaButtonClick(View v) {
+    private void onClick(Object media) {
 
+        String mediaKey = "Media";
+
+        Intent intent = new Intent(MainActivity.this, showMediaInfo.class);
+        intent.putExtra(mediaKey, (Parcelable) media);
+
+        MainActivity.this.startActivity(intent);
+
+//        String bundleKey = "Media";
+//        Intent intent = new Intent();
+//        Bundle bundle = new Bundle();
+//
+//        bundle.putParcelable(bundleKey, (Parcelable) media);
+//
+//        intent.putExtras(bundle);
     }
-
-
 }

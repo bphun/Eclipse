@@ -5,15 +5,11 @@ package org.pltw.examples.weather;
  */
 public class WeatherConditionals {
 
-    public static String getWeatherAdvice(int temperature, String description){
-        if (temperature >= 65 && description.equalsIgnoreCase("cloudy")) {
-            return "You're in San Jose.";
-        }
-        else if (description.equalsIgnoreCase("Fair")) {
-            return "You're in Santa Fe.";
-        }
-        else {
-            return "Bring an Umbrella!";
-        }
+    
+
+    public static String getWeatherAdvice(int temperature, int conditionCode){
+
+        if (temperature > 32) &&
+
     }
 }

@@ -98,11 +98,13 @@ public class WeatherService extends IntentService {
             Intent mainActivityIntent = MainActivity.newIntent(this);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, mainActivityIntent, 0);
 
+            WeatherConditionals weatherConditionals = new WeatherConditionals();
+
             Notification notification = new NotificationCompat.Builder(this)
                     .setTicker(resources.getString(R.string.weather_title))
                     .setSmallIcon(android.R.drawable.ic_menu_report_image)
                     .setContentTitle(resources.getString(R.string.weather_title))
-                    .setContentText(WeatherConditionals.getWeatherAdvice(weatherJSONProcessor.getTemperature(), weatherJSONProcessor.getCondition()))
+                    .setContentText(weatherConditionals.getWeatherAdvice(weatherJSONProcessor.getTemperature(), weatherJSONProcessor.getConditionCode()))
                     .setContentIntent(pendingIntent)
                     .setAutoCancel(true)
                     .build();

@@ -12,6 +12,7 @@ public class WeatherJSONProcessor {
     private String json;
     private String location;
     private int conditionCode;
+    private String region;
 
     public WeatherJSONProcessor(JSONObject jsonObject, String location) {
         temperature = jsonObject.optJSONObject("item").optJSONObject("condition").optString("temp");
@@ -38,4 +39,6 @@ public class WeatherJSONProcessor {
     public String getLocation() {
         return location;
     }
+
+    public String getRegion() { return region; }
 }

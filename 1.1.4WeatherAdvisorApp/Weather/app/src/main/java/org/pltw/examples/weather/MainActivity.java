@@ -2,6 +2,7 @@ package org.pltw.examples.weather;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -25,8 +26,10 @@ import java.net.URLConnection;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private Exception error;
-    public static final String LOCATION = "Pleasanton, CA";
+    public static String LOCATION = "";
     private TextView textView;
+    EditText locationEditText;
+
 
     public static Intent newIntent(Context context) {
         return new Intent(context, MainActivity.class);
@@ -37,8 +40,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         textView = (TextView) findViewById(R.id.weatherTest);
-        final EditText locationEditText = (EditText) findViewById(R.id.location_editText);
         final Button searchButton = (Button) findViewById(R.id.search_button);
+        locationEditText = (EditText) findViewById(R.id.location_editText);
 
         textView.setY((float) 200.0);
         locationEditText.setY((float) -900.0);
@@ -65,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void onSearchClick(View v) {
+
+        LOCATION = locationEditText.getText().toString();
 
         WeatherService.setServiceAlarm(getApplicationContext(), true);
         new AsyncTask<String, Void, JSONObject>(){
@@ -116,9 +121,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(JSONObject result) {
                 WeatherJSONProcessor weatherJSONProcessor = new WeatherJSONProcessor(result, LOCATION);
-                textView.setText("" + weatherJSONProcessor.getLocation() + ": " +
-                        weatherJSONProcessor.getTemperature() + " and " +
-                        weatherJSONProcessor.getCondition());
+
+                WeatherConditionals weatherCondition = new WeatherConditionals();
+
+                String currentConditions = weatherCondition.getWeatherAdvice(weatherJSONProcessor.getTemperature(), weatherJSONProcessor.getConditionCode());
+                textView.setText("" + weatherJSONProcessor.getLocation() + ": " + currentConditions);
                 Log.d(TAG, "The temp is: " + weatherJSONProcessor.getTemperature());
                 Log.d(TAG, "The condition is: " + weatherJSONProcessor.getCondition());
                 Log.d(TAG, "The JSON is: " + weatherJSONProcessor.getJson());

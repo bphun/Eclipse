@@ -18,6 +18,7 @@ public class WeatherJSONProcessor {
         temperature = jsonObject.optJSONObject("item").optJSONObject("condition").optString("temp");
         condition = jsonObject.optJSONObject("item").optJSONObject("condition").optString("text");
         conditionCode = Integer.parseInt(jsonObject.optJSONObject("item").optJSONObject("condition").optString("code"));
+//        region = jsonObject.optJSONObject("channel").optJSONObject("yweather:location").optString("region");
         json = jsonObject.toString();
         this.location = location;
     }

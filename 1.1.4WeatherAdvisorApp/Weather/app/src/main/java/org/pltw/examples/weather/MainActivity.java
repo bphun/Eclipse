@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView textView;
     EditText locationEditText;
 
-
     public static Intent newIntent(Context context) {
         return new Intent(context, MainActivity.class);
     }

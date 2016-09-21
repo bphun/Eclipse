@@ -7,55 +7,60 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.weatherapplication.brandonphan.sci_fi_name.MainActivity">
+    tools:context="com.weatherapplication.brandonphan.sci_fi_name.LastNameActivity">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:text="Enter First Name"
+        android:text="Enter City you were born in "
         android:textColor="@color/text_color"
-        android:id="@+id/firstNameTextView"
+        android:id="@+id/cityTextview"
         android:textSize="20sp"
-        android:layout_alignParentTop="true"
         android:layout_alignParentStart="true" />
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:hint="First Name:"
-        android:id="@+id/firstNameEditText"
-        android:layout_below="@+id/firstNameTextView"
+        android:id="@+id/cityEditText"
+        android:hint="City:"
+        android:layout_below="@+id/cityTextview"
         android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:text="Enter Last Name"
+        android:text="Enter your elementary school"
         android:textColor="@color/text_color"
-        android:id="@+id/lastNameTextView"
+        android:id="@+id/elementarySchoolTextView"
         android:textSize="20sp"
-        android:layout_below="@+id/firstNameEditText"
+        android:layout_below="@+id/cityEditText"
         android:layout_alignParentStart="true" />
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:hint="Last Name"
-        android:id="@+id/lastNameEditText"
-        android:layout_below="@+id/lastNameTextView"
+        android:id="@+id/elementarySchoolEditText"
+        android:hint="Elementary School:"
+        android:layout_below="@+id/elementarySchoolTextView"
         android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/Sci_FiTextview"
+        android:layout_below="@+id/generateSci_FiNameButton"
+        android:layout_centerHorizontal="true"
+        android:textSize="30sp"
+        android:gravity="center"
+        android:textColor="@color/text_color"
+        android:layout_marginTop="118dp" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Next"
+        android:text="Generate Sci-Fi Name"
         android:enabled="false"
-        android:onClick="onbuttonClick"
-        android:id="@+id/nextButton"
-        android:layout_below="@+id/lastNameEditText"
+        android:onClick="onButtonClick"
+        android:id="@+id/generateSci_FiNameButton"
+        android:layout_below="@+id/elementarySchoolEditText"
         android:layout_centerHorizontal="true" />
-
 
 </RelativeLayout>

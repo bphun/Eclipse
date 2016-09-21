@@ -1,21 +1,25 @@
 package com.weatherapplication.brandonphan.sci_fi_name;
 
+import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    EditText firstNameEditText;
-    EditText lastNameEditText;
+    EditText firstNameEditText, lastNameEditText;
     Button nextButton;
+    ArrayList<EditText> editTextArray;
+
 
     String sci_FiFirstName;
 
@@ -40,12 +44,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (lastNameEditText.getText().toString().length() >= 2) {
-                    if (lastNameEditText.getText().toString().length() >= 2) {
-                        nextButton.setEnabled(true);
-                    } else {
-                        nextButton.setEnabled(false);
-                    }
+                if ((firstNameEditText.getText().toString().length() >= 2) && (lastNameEditText.getText().toString().length() >= 2)) {
+                    nextButton.setEnabled(true);
                 } else {
                     nextButton.setEnabled(false);
                 }
@@ -64,17 +64,15 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (firstNameEditText.getText().toString().length() >= 2) {
-                    if (lastNameEditText.getText().toString().length() >= 2) {
-                        nextButton.setEnabled(true);
-                    } else {
-                        nextButton.setEnabled(false);
-                    }
+                if ((lastNameEditText.getText().toString().length() >= 2) && (firstNameEditText.getText().toString().length() >= 2)) {
+                    nextButton.setEnabled(true);
                 } else {
                     nextButton.setEnabled(false);
                 }
             }
         });
+
+//        addListeners();
 
     }
 
@@ -82,9 +80,31 @@ public class MainActivity extends AppCompatActivity {
         SciFiName sci_FiNameGenerator = new SciFiName();
         sci_FiFirstName = sci_FiNameGenerator.generateSci_FiFirstName(firstNameEditText.getText().toString(), lastNameEditText.getText().toString());
 
-        Intent intent = new Intent(MainActivity.this, LastNameActivity.class);
+        Intent intent = new Intent(MainActivity.this, SecondActivity.class);
         intent.putExtra("sci_FiFirstName", sci_FiFirstName);
         startActivity(intent);
+    }
+
+    private void addListeners(ArrayList<EditText> editTextArray) {
+
+        for (int i = 0; i < editTextArray.size(); i++) {
+            editTextArray.get(i).addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+                @Override
+                public void afterTextChanged(Editable s) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+
+
+                }
+            });
+        }
+
     }
 
 

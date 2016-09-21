@@ -7,23 +7,26 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.weatherapplication.brandonphan.sci_fi_name.LastNameActivity">
+    tools:context="com.weatherapplication.brandonphan.sci_fi_name.SecondActivity">
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="30dp"
         android:text="Enter City you were born in "
         android:textColor="@color/text_color"
         android:id="@+id/cityTextview"
         android:textSize="20sp"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_height="30dp"
+        />
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/cityEditText"
         android:hint="City:"
+        android:maxLines="1"
         android:layout_below="@+id/cityTextview"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        />
 
     <TextView
         android:layout_width="match_parent"
@@ -33,25 +36,37 @@
         android:id="@+id/elementarySchoolTextView"
         android:textSize="20sp"
         android:layout_below="@+id/cityEditText"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        />
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/elementarySchoolEditText"
         android:hint="Elementary School:"
+        android:maxLines="1"
         android:layout_below="@+id/elementarySchoolTextView"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        />
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/Sci_FiTextview"
-        android:layout_below="@+id/generateSci_FiNameButton"
-        android:layout_centerHorizontal="true"
-        android:textSize="30sp"
-        android:gravity="center"
+        android:layout_height="30dp"
+        android:text="Enter a relative's name"
         android:textColor="@color/text_color"
-        android:layout_marginTop="118dp" />
+        android:id="@+id/relativeTextView"
+        android:textSize="20sp"
+        android:layout_below="@+id/elementarySchoolEditText"
+        android:layout_alignParentStart="true"
+        />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/relativeNameEditText"
+        android:hint="Relative's Name:"
+        android:maxLines="1"
+        android:layout_below="@+id/relativeTextView"
+        android:layout_alignParentStart="true"
+        />
 
     <Button
         android:layout_width="wrap_content"
@@ -60,7 +75,16 @@
         android:enabled="false"
         android:onClick="onButtonClick"
         android:id="@+id/generateSci_FiNameButton"
-        android:layout_below="@+id/elementarySchoolEditText"
+        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/Sci_FiTextview"
+        android:textSize="30sp"
+        android:textColor="@color/text_color"
+        android:layout_marginTop="102dp"
+        android:layout_alignTop="@+id/generateSci_FiNameButton"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

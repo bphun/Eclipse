@@ -18,8 +18,6 @@ public class MainActivity extends AppCompatActivity {
 
     EditText firstNameEditText, lastNameEditText;
     Button nextButton;
-    ArrayList<EditText> editTextArray;
-
 
     String sci_FiFirstName;
 
@@ -35,11 +33,9 @@ public class MainActivity extends AppCompatActivity {
         firstNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
             @Override
             public void afterTextChanged(Editable s) {
-
             }
 
             @Override
@@ -55,11 +51,9 @@ public class MainActivity extends AppCompatActivity {
         lastNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
             @Override
             public void afterTextChanged(Editable s) {
-
             }
 
             @Override
@@ -72,40 +66,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        addListeners();
-
     }
 
     public void onbuttonClick(View v) {
         SciFiName sci_FiNameGenerator = new SciFiName();
         sci_FiFirstName = sci_FiNameGenerator.generateSci_FiFirstName(firstNameEditText.getText().toString(), lastNameEditText.getText().toString());
 
+        String key = "sci_FiFirstName";
+
         Intent intent = new Intent(MainActivity.this, SecondActivity.class);
-        intent.putExtra("sci_FiFirstName", sci_FiFirstName);
+        intent.putExtra(key, sci_FiFirstName);
         startActivity(intent);
     }
-
-    private void addListeners(ArrayList<EditText> editTextArray) {
-
-        for (int i = 0; i < editTextArray.size(); i++) {
-            editTextArray.get(i).addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
-                @Override
-                public void afterTextChanged(Editable s) {
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-
-
-                }
-            });
-        }
-
-    }
-
-
 }

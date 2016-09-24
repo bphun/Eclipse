@@ -35,12 +35,12 @@ public class SecondActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Bundle extra = getIntent().getExtras();
+        String key = "sci_FiFirstName";
 
         if (extra != null) {
-            Sci_FiFirstName = extra.get("sci_FiFirstName").toString();
+            Sci_FiFirstName = extra.get(key).toString();
         }
 
-        //  TODO:   Modify addTextChangedListener to work with more than two EditText views
         elementaryEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -102,8 +102,9 @@ public class SecondActivity extends AppCompatActivity {
         SciFiName sci_FiNameGenerator = new SciFiName();
 
         Sci_FiLastName = sci_FiNameGenerator.generateSci_FiLastName(cityEditText.getText().toString(), elementaryEditText.getText().toString());
+        String origin = sci_FiNameGenerator.generateOrigin(relativeNameEditText.getText().toString());
 
-        textView.setText("Hello, " + Sci_FiFirstName + " " + Sci_FiLastName);
+        textView.setText("Hello, " + Sci_FiFirstName + " " + Sci_FiLastName + " of " + origin);
     }
 
     @Override

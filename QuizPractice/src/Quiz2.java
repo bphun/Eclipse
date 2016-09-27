@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 
 public class Quiz2 {
 
@@ -7,8 +6,11 @@ public class Quiz2 {
 		int numOccur = numOccur("hello", 'h');
 		System.out.print("Num Occur: " + numOccur + "\n");
 		
-		int numVowels = numVowels("Hello");
+		int numVowels = numVowels("Mississippi");
 		System.out.print("Num Vowels: " + numVowels + "\n");
+		
+		boolean consonantHeavy = isConsonantHeavy("Mississippi");
+		System.out.print("isConsonantHeavy: " + consonantHeavy + "\n");
 		
 	}
 	
@@ -27,25 +29,27 @@ public class Quiz2 {
 	
 	private static int numVowels(String s) {
 		int numVowels = 0;
-		ArrayList<Character> vowelList = new ArrayList<Character>();
-		
-		vowelList.add('a');
-		vowelList.add('e');
-		vowelList.add('i');
-		vowelList.add('o');
-		vowelList.add('u');
 
 		s = s.toLowerCase();
 		
-		for (int character = 0; character < s.length(); character++) {
-			for (int vowel = 0; vowel < vowelList.size(); vowel++) {
-				if (s.charAt(character) == vowelList.get(vowel)) {
-					numVowels++;
-				}
+		for (int i = 0; i < s.length(); i++) {
+			if (numOccur(s.substring(i, i + 1), 'a') == 1 || numOccur(s.substring(i, i + 1), 'e') == 1|| numOccur(s.substring(i, i + 1), 'i') == 1|| numOccur(s.substring(i, i + 1), 'o') == 1|| numOccur(s.substring(i, i + 1), 'u') == 1) {
+				numVowels++;
 			}
 		}
+		
 		return (numVowels);
 	}
 	
+	private static boolean isConsonantHeavy(String s) {
+		boolean isConsonantHeavy = false;
+		double numVowels = numVowels(s);
+		double numConsonants = s.length() - numVowels;
+		
+		if (numConsonants / numVowels >= 1.5) {
+			isConsonantHeavy = true;
+		}
+		return isConsonantHeavy;	
+	}
 	
 }

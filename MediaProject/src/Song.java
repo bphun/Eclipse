@@ -83,4 +83,12 @@ public class Song {
 
 		return sortedSongs;
 	}
+	
+	public ArrayList<Song> scrambleSongList(ArrayList<Song> unscrambledSongs) {
+		ArrayList<Song> scrambledSongs = new ArrayList<Song>();
+		
+		
+		
+		return scrambledSongs;
+	}
 }

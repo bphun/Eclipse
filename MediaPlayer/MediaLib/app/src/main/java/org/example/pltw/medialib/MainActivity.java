@@ -27,13 +27,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void showMedia(View v) {
         TextView outputText = (TextView) findViewById(R.id.mediaLibText);
-
         Human testHuman = new Human("Steve Jobs", 2, 24, 1955);
-
+        MediaFile mediaFile = new MediaFile();
+        
         if (mediaLib.getMediaLib().size() == 0) {
             Book book = new Book("Harry Potter", testHuman, Book.Genre.FANTASY, null);
             Movie movie = new Movie("Star Trek", testHuman, testHuman, "Sci-Fi", 9.7, null);
-            Song song = new Song("Dust in The Wind", "Kansas", testHuman, 9.41);
+            Song song = new Song("Dust in The Wind", "Kansas", testHuman, 9.41, 5);
 
             mediaLib.addBook(book);
             mediaLib.addMovie(movie);
@@ -49,20 +49,9 @@ public class MainActivity extends AppCompatActivity {
 
                 final Book currentBook = mediaLib.getBooks().get(b);
 
+                mediaFile.writeString(currentBook.getTitle());
                 bookButton.setText(currentBook.getTitle());
                 bookButton.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
-//                bookButton.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        final String mediaKey = "Media";
-//
-//                        Intent intent = new Intent(MainActivity.this, showMediaInfo.class);
-//                        intent.putExtra(mediaKey, currentBook);
-//                        startActivity(intent);
-//                    }
-//                });
-
                 linearLayout.addView(bookButton);
             }
 
@@ -71,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
                 final Movie currentMovie = mediaLib.getMovies().get(m);
 
+                mediaFile.writeString(currentMovie.getTitle());
                 movieButton.setText(currentMovie.getTitle());
                 movieButton.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
@@ -83,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
                 final Song currentSong = mediaLib.getSongs().get(s);
 
+                mediaFile.writeString(currentSong.getTitle());
                 songButton.setText(currentSong.getTitle());
                 songButton.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
@@ -92,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
         } else if (mediaLib.getMediaLib().isEmpty()) {
             outputText.setText("There isn't any media in your library");
         }
+        mediaFile.saveAndClose();
+
     }
 
     private void onClick(Object media) {

@@ -1,3 +1,0 @@
-hello  |   5
-it's me | 3
-sup  |   8

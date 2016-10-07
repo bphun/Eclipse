@@ -156,29 +156,6 @@ public class MediaFile
      * 
      * @return true if successfully written, false otherwise
      */
-    
-//    public static void writeString(String s) {
-//        if (out == null) {
-//            try {
-//                out = new BufferedWriter(new FileWriter(DATA_FILE));
-//            }
-//            catch (Exception e) {
-//                System.err.println("Cannot create file for output!");
-//                e.printStackTrace();
-//            }
-//        }
-//
-//        try {
-//            out.write(s);
-//            // out.newLine();
-//            out.write("|");
-//        }
-//        catch (Exception e) {
-//            System.err.println("Cannot write file!");
-//            e.printStackTrace();
-//        }
-//
-//    }
     public static void writeSongListToFile(List<Song> list, String fileName){
     	
     	fileName += ".txt";
@@ -193,15 +170,14 @@ public class MediaFile
     	}
     	
     	try {
-    		
     		for (final Song s : list) {
-    			out.write(s.toString());
+    			out.write(s.toString() + "\n");
     		}
     		
     	} catch (Exception e) {
     		System.err.print("Error writing songs to file " + fileName);
     		e.printStackTrace();
     	}
-    	
+    	saveAndClose();
     }
 }

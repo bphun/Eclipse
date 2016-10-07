@@ -18,13 +18,11 @@ public class Song {
 	}
 
 	public static void main(String[] args) {
-		ArrayList<Song> top10 = getTop10Songs();
+		ArrayList<Song> top10 = getTop10Songs(this.sortSongsByRating());
 
 		for (final Song s : top10) {
 			System.out.print(s);
-
 		}
-
 	}
 	
 	//	Methods to get and set title	
@@ -76,12 +74,16 @@ public class Song {
 	}
 
 	public static ArrayList<Song> getTop10Songs() {
-		ArrayList<Song> sortedSongs = sortSongsByRating();
+		ArrayList<Song> sortedSongs = new ArrayList<Song>();
+
+		for (final Song s : sortSongsByRating()) {
+			sortedSongs.add(s);
+		}
 
 		for (int i = sortedSongs.size(); i > 0; i--) {
 			sortedSongs.remove(i);
 		}
+
 		return sortedSongs;
 	}
-
 }

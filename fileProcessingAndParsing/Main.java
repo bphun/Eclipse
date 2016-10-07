@@ -14,16 +14,18 @@ public class Main {
 		songs.add(song);
 		songs.add(song1);
 
-		for (final Song s : songs) {
-			System.out.print(s + "\n");
-		}
+//		for (final Song s : songs) {
+//			System.out.print(s + "\n");
+//		}
 
-
+		String songString = "Song - Title: hello by asdf, time: 10.0, year: 2010, rating: 6";
+		
+		Song song2 = Song.parseSong(songString);
+		
+		System.out.println(songString);
+		
 		MediaFile.writeSongListToFile(songs,"songList");
 
-//		for (final String s : songs) {
-//			System.out.print(s + "\n") ;
-//		}
 	}
 
 }

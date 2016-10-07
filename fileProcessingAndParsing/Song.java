@@ -76,6 +76,36 @@ public class Song
         Song song = null;
         // parse the String and make a new Song.  Then, return the new Song.
         
+		while (true) {
+			String songInfo = s;
+			if (songInfo != null) {		
+				String[] regex = songInfo.split("\\|");
+				
+				for (final String n : regex) {
+					String title = "";
+					String creator = "";
+					double duration = 0.0;
+					int year = 0;
+					int rating = 0;
+					
+					if (n.contains("Title: ")) {
+						title = n;
+					} else if (n.contains("by")) {
+						creator = n;
+					} else if (n.contains(", time: ")) {
+						duration = Double.parseDouble(n);
+					} else if (n.contains(", year: ")) {
+						year = Integer.parseInt(n);
+					} else if (n.contains(", rating: ")) {
+						rating = Integer.parseInt(n);
+					}
+					
+					song = new Song(title, creator, duration, rating, year);
+				}			
+			} else if (songInfo == null){
+				break;
+			}
+		}
         
         return song;
     }

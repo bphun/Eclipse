@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="org.example.pltw.medialib.MainActivity"
+    tools:context="org.example.pltw.medialib.Activities.MainActivity"
     android:gravity="center_horizontal"
     android:id="@+id/linearLayout">
     

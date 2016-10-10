@@ -1,1 +1,3 @@
-hi... sup|
+Song - Title: hi... sup by null, time: -1.0, year: -1, rating: 6
+Song - Title: asdfasdeqerqwr by null, time: -1.0, year: -1, rating: 12
+Song - Title: asdfasd by null, time: -1.0, year: -1, rating: 134

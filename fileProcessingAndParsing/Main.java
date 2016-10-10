@@ -18,14 +18,13 @@ public class Main {
 //			System.out.print(s + "\n");
 //		}
 
-		String songString = "Song - Title: hello by asdf, time: 10.0, year: 2010, rating: 6";
-		
+		String songString = "Song - Title: hellddo by dddddddddbaba, time: 10.0, year: 2010, rating: 6";	
 		Song song2 = Song.parseSong(songString);
-		
-		System.out.println(songString);
-		
+			
 		MediaFile.writeSongListToFile(songs,"songList");
 
+		MediaLib mediaLib = new MediaLib();
+		
 	}
 
 }

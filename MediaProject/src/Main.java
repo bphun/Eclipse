@@ -10,6 +10,8 @@ public class Main {
 		mediaFile.writeString("Title: " + song.getTitle() + " | " + "Album: " + song.getAlbum() + " | " + "Artist: " + song.getArtist() + " | " + "Duration: " + song.getDuration() + " | " + "Rating: " + song.getRating());
 		mediaFile.writeString("Title: " + song1.getTitle() + " | " + "Album: " + song1.getAlbum() + " | " + "Artist: " + song1.getArtist() + " | " + "Duration: " + song1.getDuration() + " | " + "Rating: " + song1.getRating());
 
+//		Song song2 = new Song().sortSongsByRating()
+		
 		mediaFile.saveAndClose();	
 	}
 	

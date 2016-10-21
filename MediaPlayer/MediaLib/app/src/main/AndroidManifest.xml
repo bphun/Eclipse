@@ -18,7 +18,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.showMediaInfo"></activity>
+        <activity android:name=".Activities.showMediaInfo" />
+        <activity
+            android:name=".Activities.MainMediaView"
+            android:label="@string/title_activity_main_media_view"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activities.MainActivity"
+            android:label="@string/title_activity_main_media"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

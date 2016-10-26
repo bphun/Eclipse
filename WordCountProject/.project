@@ -14,21 +14,4 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>src/ProcessNovel.java</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/WordCountProject/ProcessNovel.java</locationURI>
-		</link>
-		<link>
-			<name>src/WordCount.java</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/WordCountProject/WordCount.java</locationURI>
-		</link>
-		<link>
-			<name>src/WordStorage.java</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/WordCountProject/WordStorage.java</locationURI>
-		</link>
-	</linkedResources>
 </projectDescription>

@@ -13,30 +13,26 @@ public class Quiz_1_Practice implements Directions {
 		robot = new Robot(1,1,North,infinity);
 
 		World.setDelay(1);
-		
+
 		String triangleHeightStr = JOptionPane.showInputDialog("What height triangle do you want?");
 		int triangleHeight = Integer.parseInt(triangleHeightStr);
-		
+
 		String triangleWidthStr = JOptionPane.showInputDialog("What width triangle do you want?");
 		int triangleWidth = Integer.parseInt(triangleWidthStr);
-		
+
 		World.setSize(triangleHeight + 3, triangleWidth + 3);
 		World.setVisible(true);
 
 		room.drawTriangle(triangleHeight, triangleWidth);
 	}
-	
+
 	private void drawTriangle(int height, int width) {
-				
+
 		int slope = (height / width);
-		
+
 		while (width >= 0) {
-			
-<<<<<<< HEAD
-		faceNorth();
-	s	
-			
-=======
+
+			faceNorth();
 			faceNorth();
 			for (int upHeight = 0; upHeight < height; upHeight++) {
 				robot.move();
@@ -49,7 +45,6 @@ public class Quiz_1_Practice implements Directions {
 			slideLeft();
 			height -= slope;
 			width--;
->>>>>>> 048caa60552b5a10bf989cbe9dad48c7653c84d8
 		}
 
 	}
@@ -69,7 +64,7 @@ public class Quiz_1_Practice implements Directions {
 		robot.move();
 		robot.turnLeft();
 	}
-	
+
 	private void turnAround() {
 		robot.turnLeft();
 		robot.turnLeft();

@@ -154,7 +154,7 @@ public class Picture extends SimplePicture {
 		for (int r = 0; r < pixels.length / 2; r++) {
 			for (int c = 0; c < pixels[r].length; c++) {
 				leftPixel = pixels[r][c];
-				rightPixel = pixels[r][(pixels.length / 2) + c];
+				rightPixel = pixels[r][(pixels.length - c + 1)];
 				leftPixel.setColor(rightPixel.getColor());
 			}
 		}

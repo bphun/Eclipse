@@ -381,7 +381,7 @@ public class Pixel
   }
   
   public boolean isBlack() {
-	  if (getRed() < 50 && getGreen() < 50 && getBlue() < 50) {
+	  if (getRed() <= 30 && getGreen() <= 30 && getBlue() <= 30) {
 		  return true;
 	  }
 	  return false;

@@ -27,8 +27,8 @@ public class PictureTester
 //		testNegate();
 //		testGrayscale();
 //		testEdgeDetection();
-		testFixUnderwater();
-		//    testMirrorVertical();
+//		testFixUnderwater();
+		testMirrorVertical();
         //	  testMirrorTemple();
 		//    testMirrorArms();
 		//    testMirrorGull();
@@ -40,8 +40,8 @@ public class PictureTester
 //		testGetCountRedOverValue(250);
 //		testSetRedToHalfValueInTopHalf();
 //		testClearBlueOverValue(180);
-		Color avgColor = testGetAverageForColumn(90);// specified column 
-		System.out.println("Average color: " + avgColor);
+//		Color avgColor = testGetAverageForColumn(90);// specified column 
+//		System.out.println("Average color: " + avgColor);
 	}
 	
 	/** Method to test zeroBlue */

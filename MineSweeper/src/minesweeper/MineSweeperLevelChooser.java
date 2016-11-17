@@ -36,7 +36,7 @@ public class MineSweeperLevelChooser extends JFrame {
 			     hard = new JRadioButton("Hard");
 	JRadioButton tall = new JRadioButton("10x10"), grande = new JRadioButton("30X16"),
 			     veinte = new JRadioButton("50x50"),custom = new JRadioButton("Custom") ;
-	JButton go = new JButton("Play");// go button to be pressed to start game
+	JButton play = new JButton("Play");// go button to be pressed to start game
 	
 	public MineSweeperLevelChooser() {
 		super("Choose your level");// What does the String do?
@@ -62,6 +62,9 @@ public class MineSweeperLevelChooser extends JFrame {
 		diffGroup.add(medium);
 		diffGroup.add(hard);
 		
+		// start off with the easy level button selected by default
+		easy.setSelected(true);
+		
 		sizeGroup.add(tall);
 		sizeGroup.add(grande);
 		sizeGroup.add(veinte);
@@ -72,9 +75,11 @@ public class MineSweeperLevelChooser extends JFrame {
 		easy.setSelected(true);
 		levelPanel.add(medium);
 		levelPanel.add(hard);
+		
 		diffButtonList.add(easy);
 		diffButtonList.add(medium);
 		diffButtonList.add(hard);
+		
 		sizePanel.setBorder(new RadioButtonBorder(Color.GRAY, Color.black, Color.CYAN, Color.magenta));
 		panel.add(sizePanel);
 		sizePanel.add(new JLabel("Select Size of Grid"));
@@ -87,37 +92,37 @@ public class MineSweeperLevelChooser extends JFrame {
 		sizeButtonList.add(grande);
 		sizeButtonList.add(veinte);
 		sizeButtonList.add(custom);
-		JPanel goButtonPanel = new JPanel();
-		goButtonPanel.setBorder(new MatteBorder(5,5,1,1, new Color(140, 100, 30)));
 		
-		goButtonPanel.add(go);
-		panel.add(goButtonPanel);
+		JPanel playButtonPanel = new JPanel();
+		playButtonPanel.setBorder(new MatteBorder(5,5,1,1, new Color(140, 100, 30)));
+		playButtonPanel.add(play);
+		panel.add(playButtonPanel);
 
 		// This is the proper way to link a button with an event.
 		// when someone clicks the button, any actionlisteners who have been registered
 		// with the button (you can add more than one).
 		// This process is called creating an anonymous class.  The class implements
 		// the ActionListener interface which requires an actionPerformed method
-		go.addActionListener(new ActionListener(){
+		play.addActionListener(new ActionListener() {
 
 			@Override
 			// What do we do when button is pressed?
 			public void actionPerformed(ActionEvent arg0) {
 				int diffIndex = -1, sizeIndex = -1;
 				// figures out which difficulty button is selected
-				for(JRadioButton db : diffButtonList) {
-					System.out.println("Checking  "+db);
+				for (JRadioButton db : diffButtonList) {
+					System.out.println("Checking  " + db);
 					if(db.isSelected()) {
-						System.out.println(db +" is the selected diff!");
+						System.out.println(db + " is the selected diff!");
 						diffIndex = diffButtonList.indexOf(db);
 						break;
 					}
 				}
 				// figures out which size button is selected
-				for(JRadioButton db : sizeButtonList) {
-					System.out.println("Checking  "+db);
+				for (JRadioButton db : sizeButtonList) {
+					System.out.println("Checking  " + db);
 					if(db.isSelected()) {
-						System.out.println(db +" is the selected size!");
+						System.out.println(db + " is the selected size!");
 						sizeIndex = sizeButtonList.indexOf(db);
 						break;
 					}

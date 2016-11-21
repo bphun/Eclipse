@@ -14,12 +14,11 @@ import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-
 public class MineSweeperPanel extends JPanel {
 
 	//	Images to be displayed
 	private Image unClickedSquare, flaggedSquare;
-	
+
 	//	The desired size of the tiles
 	private static final int SQ = 50;
 	//	The horizontal spacing between each of the tiles
@@ -218,34 +217,70 @@ public class MineSweeperPanel extends JPanel {
 				clickState[r][c] = -1;
 			}
 		}
-		printGrid();
+		printGrid("bomb");
+		printGrid("state");
 	}
 
-	/*
+	/**
 	 * This method is used to print out the mineGrid and numbers
 	 * grid in the console for testing purposes
+	 * @param grid the grid that you want to print out, bomb prints
+	 * mineGrid, number prints numbers, state prints clickState, 
+	 * anything else prints all grids
 	 */
-	private void printGrid() {
-		System.out.println("\n-------- Grid --------");
-		for (int[] r : mineGrid) {
-			for (int c : r) {
-				System.out.print(c + " ");
+	private void printGrid(String grid) {
+		switch (grid) {
+		case "bomb":
+			System.out.println("\n-------- Grid --------");
+			for (int[] r : mineGrid) {
+				for (int c : r) {
+					System.out.print(c + " ");
+				}
+				System.out.print("\n");
 			}
 			System.out.print("\n");
-		}
-
-		System.out.println("\n-------- Numbers --------");
-		for (int[] r : numbers) {
-			for (int c : r) {
-				System.out.print(c + " ");
+			break;
+		case "number":
+			System.out.println("\n-------- Numbers --------");
+			for (int[] r : numbers) {
+				for (int c : r) {
+					System.out.print(c + " ");
+				}
+				System.out.print("\n");
 			}
 			System.out.print("\n");
-		}
-		
-		System.out.println("\n-------- Click State --------");
-		for (int[] r : clickState) {
-			for (int c : r) {
-				System.out.print(c + " ");
+			break;
+		case "state":
+			System.out.println("\n-------- Click State --------");
+			for (int[] r : clickState) {
+				for (int c : r) {
+					System.out.print(c + " ");
+				}
+				System.out.print("\n");
+			}
+			System.out.print("\n");
+			break;
+		default:
+			System.out.println("\n-------- Grid --------");
+			for (int[] r : mineGrid) {
+				for (int c : r) {
+					System.out.print(c + " ");
+				}
+				System.out.print("\n");
+			}
+			System.out.println("\n-------- Numbers --------");
+			for (int[] r : numbers) {
+				for (int c : r) {
+					System.out.print(c + " ");
+				}
+				System.out.print("\n");
+			}
+			System.out.println("\n-------- Click State --------");
+			for (int[] r : clickState) {
+				for (int c : r) {
+					System.out.print(c + " ");
+				}
+				System.out.print("\n");
 			}
 			System.out.print("\n");
 		}
@@ -259,7 +294,6 @@ public class MineSweeperPanel extends JPanel {
 		clickState[row][col] = 0;
 		super.revalidate();
 		super.repaint();
-		printGrid();
 	}
 
 	/*
@@ -268,7 +302,8 @@ public class MineSweeperPanel extends JPanel {
 	 */
 	private void leftClick(int row, int col) {
 		clickState[row][col] = 2;
-		super.revalidate();
+//		super.revalidate();
+		printGrid("number");
 		super.repaint();
 	}
 
@@ -289,8 +324,8 @@ public class MineSweeperPanel extends JPanel {
 	 */
 	@Override
 	public void paintComponent(Graphics g) {
-		Graphics2D g2 = (Graphics2D) g;
 		super.paintComponent(g);
+//		Graphics2D g2 = (Graphics2D) g;
 		for (int r = 0; r < mineGrid.length; r++) {
 			for (int c = 0; c < mineGrid[r].length; c++) {
 				if (clickState[r][c] == -1) {
@@ -298,10 +333,12 @@ public class MineSweeperPanel extends JPanel {
 				} else if (clickState[r][c] == 0) {
 					g.drawImage(this.flaggedSquare, H_BUFFER + (SQ * r), H_BUFFER + (SQ * c), null);
 				} else if (clickState[r][c] == 2) {
+					System.out.print("Clicked row " + r + " and colomn " + c + ", the number value was " + numbers[r][c] + "\n");
+					g.drawString(String.valueOf(numbers[r][c]), (H_BUFFER * 3) + (SQ * r), (H_BUFFER * 4) + (SQ * c));
 					
 				}
 			}
-			g2.draw(new Line2D.Double(0 + H_BUFFER, SQ + H_BUFFER, H_BUFFER + (SQ * r), SQ + H_BUFFER));
+//			g2.draw(new Line2D.Double(0 + H_BUFFER, (SQ + H_BUFFER) * (r + H_BUFFER), H_BUFFER + (SQ * r), (SQ + H_BUFFER) * (r + H_BUFFER)));
 		}	
 	}
 

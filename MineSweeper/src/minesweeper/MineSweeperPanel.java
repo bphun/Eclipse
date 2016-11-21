@@ -2,9 +2,11 @@ package minesweeper;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.Line2D;
 import java.io.IOException;
 import java.net.URL;
 
@@ -20,10 +22,11 @@ public class MineSweeperPanel extends JPanel {
 	
 	//	The desired size of the tiles
 	private static final int SQ = 50;
-
 	//	The horizontal spacing between each of the tiles
 	private static final int H_BUFFER = 10;
 
+	private static int[][] clickState;
+	
 	/*
 	 * This contains the mines.  zero means no mine, 1 means mine
 	 * using zeros and ones instead of booleans will make it easier 
@@ -71,17 +74,13 @@ public class MineSweeperPanel extends JPanel {
 	private final int CUSTOM_INDEX = 3;
 
 	public MineSweeperPanel(int diffIndex, int sizeIndex) {
-		
-		
 		/*
 		 * See below for the proper way to open images and other types of
 		 * resources
 		 */
 		openImages();
-
-		/*
-		 * Rescale the images to the desired size as determined by the variable: SQ
-		 */
+		
+		//	Rescale the images to the desired size as determined by the variable: SQ
 		this.unClickedSquare = this.unClickedSquare.getScaledInstance(SQ, SQ, Image.SCALE_DEFAULT);
 		this.flaggedSquare = this.flaggedSquare.getScaledInstance(SQ, SQ, Image.SCALE_DEFAULT);
 		
@@ -150,20 +149,17 @@ public class MineSweeperPanel extends JPanel {
 	 */
 	protected void clickedAt(MouseEvent click) {
 		// This is called when the panel is clicked.  What should we do?
-		int x = click.getX();
-		int y = click.getY();
+		final int X = click.getX();
+		final int Y = click.getY();
 
-		int row = (y / SQ);
-		int col = (x / SQ);
+		final int ROW = (Y / SQ);
+		final int COL = (X / SQ);
+		final int CLICKED_BUTTON = click.getButton();
 
-		//		mineGrid[row][col] = 0;
-
-		int clickedButton = click.getButton();
-
-		if (clickedButton == 3) {
-			rightClick(row, col);
-		} else if (clickedButton == 1) {
-			leftClick(row, col);
+		if (CLICKED_BUTTON == 3) {
+			rightClick(COL, ROW);
+		} else if (CLICKED_BUTTON == 1) {
+			leftClick(COL, ROW);
 		}
 
 		//		System.out.println("Row: " + row + " Col: " + col);
@@ -183,6 +179,7 @@ public class MineSweeperPanel extends JPanel {
 		}
 		mineGrid = new int[row_col[0]][row_col[1]];
 		numbers = new int[row_col[0]][row_col[1]];
+		clickState = new int[row_col[0]][row_col[1]];
 
 		System.out.println("Created a " + mineGrid.length + " by " + mineGrid[0].length + " grid");
 
@@ -197,7 +194,6 @@ public class MineSweeperPanel extends JPanel {
 	private void populateGrid(int num) {
 		int currentNum = 0;
 		while (currentNum < num) {
-
 			double row = Math.random() * mineGrid.length;
 			double col = Math.random() * mineGrid[(int)row].length;
 
@@ -215,6 +211,11 @@ public class MineSweeperPanel extends JPanel {
 						numbers[r - 1][c]++;		
 					}
 				}
+			}
+		}
+		for (int r = 0; r < clickState.length; r++) {
+			for (int c = 0; c < mineGrid[0].length; c++) {
+				clickState[r][c] = -1;
 			}
 		}
 		printGrid();
@@ -240,6 +241,14 @@ public class MineSweeperPanel extends JPanel {
 			}
 			System.out.print("\n");
 		}
+		
+		System.out.println("\n-------- Click State --------");
+		for (int[] r : clickState) {
+			for (int c : r) {
+				System.out.print(c + " ");
+			}
+			System.out.print("\n");
+		}
 	}
 
 	/*
@@ -247,8 +256,10 @@ public class MineSweeperPanel extends JPanel {
 	 * and updates the tiles with the appropriate image
 	 */
 	private void rightClick(int row, int col) {
-		repaintLocation[0] = row;
-		repaintLocation[1] = col;
+		clickState[row][col] = 0;
+		super.revalidate();
+		super.repaint();
+		printGrid();
 	}
 
 	/*
@@ -256,11 +267,9 @@ public class MineSweeperPanel extends JPanel {
 	 * and updates the tiles with the appropriate image
 	 */
 	private void leftClick(int row, int col) {
-		repaintLocation[0] = row;
-		repaintLocation[1] = col;
+		clickState[row][col] = 2;
 		super.revalidate();
 		super.repaint();
-		System.out.print("Repaint");
 	}
 
 	/*
@@ -280,15 +289,20 @@ public class MineSweeperPanel extends JPanel {
 	 */
 	@Override
 	public void paintComponent(Graphics g) {
-
+		Graphics2D g2 = (Graphics2D) g;
+		super.paintComponent(g);
 		for (int r = 0; r < mineGrid.length; r++) {
 			for (int c = 0; c < mineGrid[r].length; c++) {
-				g.drawImage(this.unClickedSquare,H_BUFFER + (SQ * r), H_BUFFER + (SQ * c) ,null);
+				if (clickState[r][c] == -1) {
+					g.drawImage(this.unClickedSquare,H_BUFFER + (SQ * r), H_BUFFER + (SQ * c),null);					
+				} else if (clickState[r][c] == 0) {
+					g.drawImage(this.flaggedSquare, H_BUFFER + (SQ * r), H_BUFFER + (SQ * c), null);
+				} else if (clickState[r][c] == 2) {
+					
+				}
 			}
+			g2.draw(new Line2D.Double(0 + H_BUFFER, SQ + H_BUFFER, H_BUFFER + (SQ * r), SQ + H_BUFFER));
 		}	
-		initialPaint = false;
-				
-				
 	}
 
 	/*

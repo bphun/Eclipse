@@ -16,17 +16,20 @@ import javax.swing.JPanel;
 
 public class MineSweeperPanel extends JPanel {
 
+	private static final long serialVersionUID = 1L;
+
 	//	Images to be displayed
-	private Image unClickedSquare, flaggedSquare;
+	private Image unClickedSquare, flaggedSquare, bombImage;
 
 	//	The desired size of the tiles
 	private static final int SQ = 50;
+	
 	//	The horizontal spacing between each of the tiles
 	private static final int H_BUFFER = 10;
 
 	private static int[][] clickState;
 	
-	/*
+	/**
 	 * This contains the mines.  zero means no mine, 1 means mine
 	 * using zeros and ones instead of booleans will make it easier 
 	 * to add up the number of mines surrounding a square.
@@ -36,20 +39,20 @@ public class MineSweeperPanel extends JPanel {
 	 */
 	private int[][] mineGrid;
 	
-	/*
+	/**
 	 * This will store the numbers that will be displayed when a 
 	 * square is clicked.  This will be created after creating the 
 	 * mineGrid, so that the correct numbers can be placed into it
 	 */
 	private int[][] numbers;
 
-	/*
+	/**
  	 * Stores the (X,Y) coordinate of the location pressed on the screen,
 	 * so the coordinating tile can be updated with the respected image
 	 */
 	private int[] repaintLocation = new int[2];
 
-	/*
+	/**
 	 * This is used to determine if it is the first time the
 	 * tiles are being drawn, if so then only blank tiles will be drawn
 	 */
@@ -57,7 +60,7 @@ public class MineSweeperPanel extends JPanel {
 
 	//	MARK: Constants to help determine of size and difficulty of the game
 	
-	/*
+	/**
 	 * This is how you make a 2D array and initialize it all in one step
 	 * this is a 2x3 matrix.  This first row represents the number of rows
 	 * for any gameboard, and the second represents the corresponding cols
@@ -73,7 +76,7 @@ public class MineSweeperPanel extends JPanel {
 	private final int CUSTOM_INDEX = 3;
 
 	public MineSweeperPanel(int diffIndex, int sizeIndex) {
-		/*
+		/**
 		 * See below for the proper way to open images and other types of
 		 * resources
 		 */
@@ -82,20 +85,20 @@ public class MineSweeperPanel extends JPanel {
 		//	Rescale the images to the desired size as determined by the variable: SQ
 		this.unClickedSquare = this.unClickedSquare.getScaledInstance(SQ, SQ, Image.SCALE_DEFAULT);
 		this.flaggedSquare = this.flaggedSquare.getScaledInstance(SQ, SQ, Image.SCALE_DEFAULT);
-		
-		/*
+		this.bombImage = this.bombImage.getScaledInstance(SQ, SQ, Image.SCALE_DEFAULT);
+		/**
 		 * This uses the two integers below to access ROW_COL and
 		 * create the 2D array of integers 
 		 */
 		createGrid(diffIndex, sizeIndex);
 
-		/*
+		/**
 		 * Base the size of this JPanel upon the dimension of the 2D array
 		 * which has just been initialized by the method above
 		 */
 		setPreferredSize(new Dimension(mineGrid[0].length * SQ + 20,mineGrid.length * SQ + 20));
 
-		/*
+		/**
 		 * See the method below for the BEST way to set up ways to interact with 
 		 * mouse events. Similar to interact with dragging and moving mouse
 		 */
@@ -103,7 +106,7 @@ public class MineSweeperPanel extends JPanel {
 	}
 
 
-	/*
+	/**
 	 * This is used to track user input on the mouse
 	 * and respond accordingly 
 	 */
@@ -142,7 +145,7 @@ public class MineSweeperPanel extends JPanel {
 
 	}
 
-	/*
+	/**
 	 * This method is used to determine what tile has been clicked
 	 * and then update the tile with the appropriate image
 	 */
@@ -164,7 +167,7 @@ public class MineSweeperPanel extends JPanel {
 		//		System.out.println("Row: " + row + " Col: " + col);
 	}
 
-	/*
+	/**
 	 * This method is used to initialize both the mineGrid and numbers
 	 * arrays with the appropriate number of elements which is defined by the 
 	 * dimensions that user set in the menu panel
@@ -185,7 +188,7 @@ public class MineSweeperPanel extends JPanel {
 		populateGrid((int) ((mineGrid[0].length * mineGrid.length) * DIFF[diffIndex]));
 	}
 
-	/*
+	/**
 	 * This method is used to randomly place bombs around the grid
 	 * and then populate the numbers array with the appropriate count
 	 * around each bomb
@@ -286,7 +289,7 @@ public class MineSweeperPanel extends JPanel {
 		}
 	}
 
-	/*
+	/**
 	 * This method is used to handle right clicks on the mouse
 	 * and updates the tiles with the appropriate image
 	 */
@@ -296,7 +299,7 @@ public class MineSweeperPanel extends JPanel {
 		super.repaint();
 	}
 
-	/*
+	/**
 	 * This method is used to handle left clicks on the mouse
 	 * and updates the tiles with the appropriate image
 	 */
@@ -304,10 +307,11 @@ public class MineSweeperPanel extends JPanel {
 		clickState[row][col] = 2;
 //		super.revalidate();
 		printGrid("number");
+		super.revalidate();
 		super.repaint();
 	}
 
-	/*
+	/**
 	 * This method is used to create a grid of a custom size 
 	 * that the user defined earlier on the setup panel
 	 */
@@ -317,7 +321,7 @@ public class MineSweeperPanel extends JPanel {
 		return new int[]{rows,cols};
 	}
 
-	/*
+	/**
 	 * This method is used to initialize the board with blank
 	 * tiles when the game is loaded and used to refresh the board
 	 * when a left or right click is detected on the user's mouse
@@ -333,16 +337,20 @@ public class MineSweeperPanel extends JPanel {
 				} else if (clickState[r][c] == 0) {
 					g.drawImage(this.flaggedSquare, H_BUFFER + (SQ * r), H_BUFFER + (SQ * c), null);
 				} else if (clickState[r][c] == 2) {
-					System.out.print("Clicked row " + r + " and colomn " + c + ", the number value was " + numbers[r][c] + "\n");
-					g.drawString(String.valueOf(numbers[r][c]), (H_BUFFER * 3) + (SQ * r), (H_BUFFER * 4) + (SQ * c));
-					
+					if (mineGrid[r][c] == 0 && numbers[r][c] != 0) {
+						System.out.print("Clicked row " + r + " and colomn " + c + ", the number value was " + String.valueOf(numbers[r][c]) + "\n");
+						g.drawString(String.valueOf(numbers[r][c]), (H_BUFFER * 3) + (SQ * r), (H_BUFFER * 4) + (SQ * c));	
+					}
+					if (mineGrid[r][c] == 1) {
+						g.drawImage(this.bombImage, H_BUFFER + (SQ * r), H_BUFFER + (SQ * c), null);
+					}
 				}
 			}
 //			g2.draw(new Line2D.Double(0 + H_BUFFER, (SQ + H_BUFFER) * (r + H_BUFFER), H_BUFFER + (SQ * r), (SQ + H_BUFFER) * (r + H_BUFFER)));
 		}	
 	}
 
-	/*
+	/**
 	 * This method is used to load all necessary image assets for the game
 	 * to take place, this includes the bomb, flagged, and unclicked tile
 	 */
@@ -351,21 +359,26 @@ public class MineSweeperPanel extends JPanel {
 			URL url = getClass().getResource("res/images/unclicked.png");
 			unClickedSquare = ImageIO.read(url);
 		} catch (IOException e) {
-			System.out.println("Problem opening the unclicked.png");
+			System.out.println("Problem opening unclicked.png");
 			e.printStackTrace();
 		}
 		try {
 			URL url = getClass().getResource("res/images/flagged.png");
 			flaggedSquare = ImageIO.read(url);
 		} catch (IOException e) {
-			System.out.println("Problem opening the unclicked.png");
+			System.out.println("Problem opening flagged.png");
+			e.printStackTrace();
+		}
+		try {
+			URL url = getClass().getResource("res/images/bomb.png");
+			bombImage = ImageIO.read(url);
+		} catch (IOException e) {
+			System.out.println("Problem opening bomb.png");
 			e.printStackTrace();
 		}
 	}
 
 }
-
-
 
 
 

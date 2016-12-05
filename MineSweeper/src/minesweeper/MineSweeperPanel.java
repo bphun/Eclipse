@@ -16,8 +16,6 @@ import javax.swing.JPanel;
 
 public class MineSweeperPanel extends JPanel {
 
-	private static final long serialVersionUID = 1L;
-
 	//	Images to be displayed
 	private Image unClickedSquare, flaggedSquare, bombImage;
 
@@ -28,6 +26,10 @@ public class MineSweeperPanel extends JPanel {
 	private static final int H_BUFFER = 10;
 
 	private static int[][] clickState;
+	
+	private static boolean[][] alreadyFlagged;
+	
+	private static boolean[][] blankSquare;
 	
 	/**
 	 * This contains the mines.  zero means no mine, 1 means mine
@@ -182,7 +184,8 @@ public class MineSweeperPanel extends JPanel {
 		mineGrid = new int[row_col[0]][row_col[1]];
 		numbers = new int[row_col[0]][row_col[1]];
 		clickState = new int[row_col[0]][row_col[1]];
-
+		alreadyFlagged  = new boolean[row_col[0]][row_col[1]];
+		blankSquare = new boolean[row_col[0]][row_col[1]];
 		System.out.println("Created a " + mineGrid.length + " by " + mineGrid[0].length + " grid");
 
 		populateGrid((int) ((mineGrid[0].length * mineGrid.length) * DIFF[diffIndex]));
@@ -305,7 +308,6 @@ public class MineSweeperPanel extends JPanel {
 	 */
 	private void leftClick(int row, int col) {
 		clickState[row][col] = 2;
-//		super.revalidate();
 		printGrid("number");
 		super.revalidate();
 		super.repaint();
@@ -321,6 +323,8 @@ public class MineSweeperPanel extends JPanel {
 		return new int[]{rows,cols};
 	}
 
+	boolean drawBombs = false;
+	
 	/**
 	 * This method is used to initialize the board with blank
 	 * tiles when the game is loaded and used to refresh the board
@@ -329,21 +333,45 @@ public class MineSweeperPanel extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-//		Graphics2D g2 = (Graphics2D) g;
+		
 		for (int r = 0; r < mineGrid.length; r++) {
 			for (int c = 0; c < mineGrid[r].length; c++) {
-				if (clickState[r][c] == -1) {
-					g.drawImage(this.unClickedSquare,H_BUFFER + (SQ * r), H_BUFFER + (SQ * c),null);					
-				} else if (clickState[r][c] == 0) {
+				
+				if (clickState[r][c] == -1 || alreadyFlagged[r][c] == true) {
+					g.drawImage(this.unClickedSquare,H_BUFFER + (SQ * r), H_BUFFER + (SQ * c),null);	
+				} else if (clickState[r][c] == 0 && !blankSquare[r][c]) {
+
 					g.drawImage(this.flaggedSquare, H_BUFFER + (SQ * r), H_BUFFER + (SQ * c), null);
-				} else if (clickState[r][c] == 2) {
-					if (mineGrid[r][c] == 0 && numbers[r][c] != 0) {
-						System.out.print("Clicked row " + r + " and colomn " + c + ", the number value was " + String.valueOf(numbers[r][c]) + "\n");
-						g.drawString(String.valueOf(numbers[r][c]), (H_BUFFER * 3) + (SQ * r), (H_BUFFER * 4) + (SQ * c));	
+					alreadyFlagged[r][c] = true;
+					
+				} else if (clickState[r][c] == 2 && mineGrid[c][r] == 1) {
+//					g.drawImage(this.bombImage, H_BUFFER + (SQ * r), H_BUFFER + (SQ * c), null);
+					
+					for (int r1 = 0; r1 < mineGrid.length; r1++) {
+						for (int c1 = 0; c1 < mineGrid[r1].length; c1++) {
+							if (mineGrid[c1][r1] == 1) {
+								g.drawImage(this.bombImage, H_BUFFER + (SQ * r1), H_BUFFER + (SQ * c1), null);
+							}
+						}
 					}
-					if (mineGrid[r][c] == 1) {
-						g.drawImage(this.bombImage, H_BUFFER + (SQ * r), H_BUFFER + (SQ * c), null);
+										
+//					try {
+//						Thread.sleep(1000);
+//					} catch (InterruptedException e) {
+//						e.printStackTrace();
+//					}
+					
+//					System.exit(0);
+
+
+				} else {
+					
+					if (numbers[c][r] != 0) {
+						System.out.println("Clicked row " + r + " and colomn " + c + ", the number value was " + String.valueOf(numbers[c][r]) + "\n");
+						g.drawString(String.valueOf(numbers[c][r]), (H_BUFFER * 3) + (SQ * r), (H_BUFFER * 4) + (SQ * c));	
+						blankSquare[r][c] = true;	
 					}
+					
 				}
 			}
 //			g2.draw(new Line2D.Double(0 + H_BUFFER, (SQ + H_BUFFER) * (r + H_BUFFER), H_BUFFER + (SQ * r), (SQ + H_BUFFER) * (r + H_BUFFER)));

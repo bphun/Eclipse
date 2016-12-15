@@ -62,8 +62,7 @@ public class DonJeweledPanel extends JPanel {
 		// add Dons to the Grid
 		donGrid = new Don[ROWS][COLS];
 		
-		Simms s = new Simms();
-		DrDre d = new DrDre();
+		Don[] dons = {new Simms(), new DrDre(), new Ryan(), new Thiel(), new Evan()};
 		
 		int numImages = 0;
 		while (numImages <= (ROWS * COLS)) {
@@ -72,26 +71,56 @@ public class DonJeweledPanel extends JPanel {
 					int rand = (int) (Math.random() * 7);				
 					switch(rand) {
 					case 0: 
-						donGrid[r][c] = s;
+						donGrid[r][c] = dons[0];
 						break;
 					case 1:
-						donGrid[r][c] = d;
+						donGrid[r][c] = dons[1];
+						break;
+					case 2:
+						donGrid[r][c] = dons[2];
+						break;
+					case 3:
+						donGrid[r][c] = dons[3];
+						break;
+					case 4:
+						donGrid[r][c] = dons[4];
 						break;
 					default:
 						break;
-					}
-					for (Don don : donGrid[r]) {
-						if (don.equals(s)) {
-						
-						} else {
-							
-						}
-					}
-					
+					}					
 				}
 			}
 			numImages++;
 		}
+//		
+//		
+//		int numEqual = 0;
+//		Don prev = null;
+//		for (int r = 0; r < ROWS; r++) {
+//			for (int c = 0; c < COLS; c++) {				
+//				if (prev == null) {
+//					prev = donGrid[r][c];
+//					for (Don d : dons) {
+//						if (d != donGrid[r][c]) {
+//							donGrid[r][c] = d;
+//						} else {
+//							continue;
+//						}
+//					}
+//				} else {
+//					if (prev.equals(donGrid[r][c])) {
+//						for (Don d : dons) {
+//							if (d != donGrid[r][c]) {
+//								donGrid[r][c] = d;
+//							} else {
+//								continue;
+//							}
+//						}
+//					}
+//				}
+//				prev = null;
+//			}
+//		}
 
 		addDons();
 	}
@@ -99,7 +128,6 @@ public class DonJeweledPanel extends JPanel {
 
 	private void setUpTimer() {
 		timer = new Timer(100, new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				timeElapsed++;
@@ -166,6 +194,7 @@ public class DonJeweledPanel extends JPanel {
 	
 	int clickRelease_X = 0;
 	int clickRelease_Y = 0;
+	
 	protected void clickedAt(MouseEvent click) {
 		click_X = click.getX();
 		click_Y = click.getY();		
@@ -179,40 +208,77 @@ public class DonJeweledPanel extends JPanel {
 
 		if (direction == null) { return; }
 		
-		Don d = donGrid[click_X / SQ][click_Y / SQ];
-
+		Don d = donGrid[click_Y / SQ][click_X / SQ];
+		
 		switch (direction) {
 		case "left":
 			Don left = donGrid[click_Y / SQ][(click_X / SQ) - 1];
 			donGrid[click_Y / SQ][(click_X / SQ) - 1] = d;
 			d = left;
+			donGrid[click_Y / SQ][click_X / SQ] = left;
 			break;
 		case "right":
 			Don right = donGrid[click_Y / SQ][(click_X / SQ) + 1];
 			donGrid[click_Y / SQ][(click_X / SQ) + 1] = d;
 			d = right;
+			donGrid[click_Y / SQ][click_X/ SQ] = right;
 			break;
 		case "up":
 			Don up = donGrid[(click_Y / SQ) + 1][(click_X / SQ)];
 			donGrid[(click_Y / SQ) + 1][(click_X / SQ)] = d;
 			d = up;
+			donGrid[click_Y / SQ][click_X / SQ] = up;
 			break;
 		case "down":
 			Don down = donGrid[(click_Y / SQ) - 1][(click_X / SQ)];
 			donGrid[(click_Y / SQ) - 1][(click_X / SQ)] = d;
 			d = down;
+			donGrid[click_Y / SQ][click_X / SQ] = down;
 			break;
 		}
 		
-		
-//		for (int r = 0; r < donGrid.length; r++) {
-//			for (int c = 0; c < donGrid[r].length; c++) {
-//							
+		int[] coord = threeInRow();
+
+		System.out.println();
+//		Simms s = new Simms();
+//		System.out.println("\n");
+//		for (Don[] dons: donGrid) {
+//			for (Don don : dons) {
+//				if (don.equals(s)) {
+//					System.out.print("s");
+//				} else {
+//					System.out.print("d");
+//				}
 //			}
+//			System.out.println();
 //		}
 	
+		click_X = 0;
+		click_Y = 0;
 		super.revalidate();
 		super.repaint();	
+	}
+	
+	private int[] threeInRow() {
+		Don prev = donGrid[clickRelease_Y / SQ][clickRelease_X / SQ];
+		int[] coord = new int[2];
+		int numInRow = 0;
+		
+		if (clickRelease_X + 3 <= COLS) {
+			for (int c = clickRelease_X; c <= clickRelease_X + 3; c++) {
+				if (prev == donGrid[clickRelease_Y][c]) {
+					System.out.println("sadf");
+					numInRow++;
+				}
+				if (numInRow >= 3) {
+					System.out.print("asf");
+					numInRow = 0;
+				}
+			}
+		}
+		
+		
+		return null;
 	}
 	
 	private String getDragDirection() {
@@ -222,21 +288,15 @@ public class DonJeweledPanel extends JPanel {
 			
 //		System.out.println("X: " + xDirection + " Y: " + yDirection);
 		
-		int index = -1;
-		
 		if ((xDirection > 0) && (yDirection < SQ)) {
-//			index = 1;
 			return directions[1];
 		} else if ((xDirection < 0) && (yDirection < SQ)) {
-//			index = 0;
 			return directions[0];
 		} 
 		
 		if ((yDirection > 0) && (xDirection < SQ)) {
-//			index = 3;
 			return directions[3];
 		} else if ((yDirection < 0) && (xDirection < SQ)) {
-//			index = 2;
 			return directions[2];
 		}
 		return null;
@@ -248,16 +308,17 @@ public class DonJeweledPanel extends JPanel {
 		// grid to check to see if any empty spots below them
 		dropDons();
 		// add Dons to each column and have them drop.  Repeat until col is full.
-		// repeat for each column
-		
-		
+		// repeat for each column		
 	}
 
 // Starting at bottom, if there are any empty spots, have those spots get filled by 
 // the Dons above, if there are any non-null Dons above
 	private static void dropDons() {
-		
-		
+//		for (int r = 0; r < donGrid.length; r++) {
+//			for (int c = 0; c < donGrid[0].length; c++) {
+//				
+//			}
+//		}
 	}
 
 	@Override

@@ -15,10 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.Timer;
+import javax.swing.border.TitledBorder;
+
+import javafx.scene.layout.Border;
 
 
 
@@ -35,10 +39,14 @@ public class DonJeweledPanel extends JPanel {
 	
 	private List<Image> backGroundList = new ArrayList();
 	private int TEXT_YC = 20;
-	private int timeElapsed;
+	private int timeRemaining;
 	private Timer timer;
 	private Don[][] donGrid;
-	private int[][] clickState = new int[ROWS][COLS];
+	private Don[][] prevDonGrid;
+	
+	private String statusStr = "";
+	
+	private int points = 0;
 	
 	public DonJeweledPanel() {
 		// See below for the proper way to open images and other types of
@@ -54,21 +62,26 @@ public class DonJeweledPanel extends JPanel {
 		setVisible(true);
 		timer.start();
 	}
+	Don[] dons = {new Simms(), new DrDre(), new Ryan(), new Thiel(), new Evan()};
 
-
+	boolean gameOver = false;
+	
+	private JProgressBar progressBar;
 	
 	private void setUpGame() {
 		// set up the grid.
 		// add Dons to the Grid
 		donGrid = new Don[ROWS][COLS];
 		
-		Don[] dons = {new Simms(), new DrDre(), new Ryan(), new Thiel(), new Evan()};
+		progressBar = new JProgressBar(0,1000);
+		progressBar.setValue(0);
+		progressBar.setStringPainted(true);
+		add(progressBar);
 		
-		int numImages = 0;
-		while (numImages <= (ROWS * COLS)) {
-			for (int r = 0; r < ROWS; r++) {
-				for (int c = 0; c < COLS; c++) {
-					int rand = (int) (Math.random() * 7);				
+		for (int r = 0; r < ROWS; r++) {
+			for (int c = 0; c < COLS; c++) {
+				int rand = (int) (Math.random() * dons.length);		
+				if (donGrid[r][c] == null) {
 					switch(rand) {
 					case 0: 
 						donGrid[r][c] = dons[0];
@@ -87,52 +100,57 @@ public class DonJeweledPanel extends JPanel {
 						break;
 					default:
 						break;
-					}					
+					}	
+				}					
+			}
+		}
+		
+		if (threeInRow() != null) {
+			while (threeInRow() != null) {
+				for (int r = 0; r < ROWS; r++) {
+					for (int c = 0; c < COLS; c++) {
+						int rand = (int) (Math.random() * 7);	
+						switch(rand) {
+						case 0: 
+							donGrid[r][c] = dons[0];
+							break;
+						case 1:
+							donGrid[r][c] = dons[1];
+							break;
+						case 2:
+							donGrid[r][c] = dons[2];
+							break;
+						case 3:
+							donGrid[r][c] = dons[3];
+							break;
+						case 4:
+							donGrid[r][c] = dons[4];
+							break;
+						default:
+							break;
+						}					
+					}
 				}
 			}
-			numImages++;
 		}
-//		
-//		
-//		int numEqual = 0;
-//		Don prev = null;
-//		for (int r = 0; r < ROWS; r++) {
-//			for (int c = 0; c < COLS; c++) {				
-//				if (prev == null) {
-//					prev = donGrid[r][c];
-//					for (Don d : dons) {
-//						if (d != donGrid[r][c]) {
-//							donGrid[r][c] = d;
-//						} else {
-//							continue;
-//						}
-//					}
-//				} else {
-//					if (prev.equals(donGrid[r][c])) {
-//						for (Don d : dons) {
-//							if (d != donGrid[r][c]) {
-//								donGrid[r][c] = d;
-//							} else {
-//								continue;
-//							}
-//						}
-//					}
-//				}
-//				prev = null;
-//			}
-//		}
-
-		addDons();
+		
+//		addDons();
 	}
 
 
 	private void setUpTimer() {
-		timer = new Timer(100, new ActionListener() {
+		timeRemaining = 600;
+		timer = new Timer(1000, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				timeElapsed++;
+				if (timeRemaining <= 0) {
+					gameOver = true;
+					statusStr = "Game Over";
+				}
+				timeRemaining--;
+				statusStr = "Time Remaining: " + timeRemaining;
 				updateProgressBar();
-//				repaint();
+				repaint();
 			}
 		});
 		
@@ -141,6 +159,7 @@ public class DonJeweledPanel extends JPanel {
 	// We would like to see a progress bar get smaller and smaller
 	// as time elapses.
 	protected void updateProgressBar() {
+		progressBar.setValue(points);
 	}
 
 
@@ -198,7 +217,6 @@ public class DonJeweledPanel extends JPanel {
 	protected void clickedAt(MouseEvent click) {
 		click_X = click.getX();
 		click_Y = click.getY();		
-		clickState[click_Y / SQ][click_X / SQ] = 1;
 	}
 
 	void clickRelease(MouseEvent click) {
@@ -206,10 +224,11 @@ public class DonJeweledPanel extends JPanel {
 		clickRelease_Y = click.getY();
 		String direction = getDragDirection();		
 
+		prevDonGrid = donGrid;
+
 		if (direction == null) { return; }
-		
+				
 		Don d = donGrid[click_Y / SQ][click_X / SQ];
-		
 		switch (direction) {
 		case "left":
 			Don left = donGrid[click_Y / SQ][(click_X / SQ) - 1];
@@ -237,54 +256,60 @@ public class DonJeweledPanel extends JPanel {
 			break;
 		}
 		
-		int[] coord = threeInRow();
-
-		System.out.println();
-//		Simms s = new Simms();
-//		System.out.println("\n");
-//		for (Don[] dons: donGrid) {
-//			for (Don don : dons) {
-//				if (don.equals(s)) {
-//					System.out.print("s");
-//				} else {
-//					System.out.print("d");
-//				}
-//			}
-//			System.out.println();
-//		}
+		dropDons();
 	
 		click_X = 0;
 		click_Y = 0;
 		super.revalidate();
 		super.repaint();	
+		
 	}
 	
 	private int[] threeInRow() {
-		Don prev = donGrid[clickRelease_Y / SQ][clickRelease_X / SQ];
-		int[] coord = new int[2];
-		int numInRow = 0;
 		
-		if (clickRelease_X + 3 <= COLS) {
-			for (int c = clickRelease_X; c <= clickRelease_X + 3; c++) {
-				if (prev == donGrid[clickRelease_Y][c]) {
-					System.out.println("sadf");
-					numInRow++;
+		boolean row = false;
+		boolean col = false;
+		
+		int[] coord = new int[2];
+		
+		for (int r = 0; r < donGrid.length; r++) {
+			for (int c = 0; c < donGrid[r].length - 2; c++) {
+				if (donGrid[r][c] != null && donGrid[r][c + 1] != null && donGrid[r][c + 2] != null) { 
+					if (donGrid[r][c].equals(donGrid[r][c + 1]) && donGrid[r][c].equals(donGrid[r][c + 2])) { 
+						col = true; 
+						coord[0] = r;
+						coord[1] = c;
+						break;
+					}
 				}
-				if (numInRow >= 3) {
-					System.out.print("asf");
-					numInRow = 0;
+			}
+		}
+
+		if (row == true) { return coord; }
+		for (int r = 0; r < donGrid.length - 2; r++) {
+			for (int c = 0; c < donGrid[0].length; c++) {
+				if (donGrid[r][c] != null && donGrid[r + 1][c] != null && donGrid[r + 2][c] != null) { 
+					if (donGrid[r][c].equals(donGrid[r + 1][c]) && donGrid[r][c].equals(donGrid[r + 2][c])) { 
+						row = true;
+						coord[0] = r;
+						coord[1] = c;
+						break;
+					}
 				}
 			}
 		}
 		
+		if (row || col) {
+			return coord;
+		}
 		
 		return null;
-	}
+    }
 	
 	private String getDragDirection() {
-		String[] directions = {"left", "right", "up", "down"};
-		int xDirection = clickRelease_X - click_X;
-		int yDirection = clickRelease_Y - click_Y;
+		final String[] directions = {"left", "right", "up", "down"};
+		final int xDirection = clickRelease_X - click_X;
+		final int yDirection = clickRelease_Y - click_Y;
 			
 //		System.out.println("X: " + xDirection + " Y: " + yDirection);
 		
@@ -292,18 +317,18 @@ public class DonJeweledPanel extends JPanel {
 			return directions[1];
 		} else if ((xDirection < 0) && (yDirection < SQ)) {
 			return directions[0];
-		} 
-		
-		if ((yDirection > 0) && (xDirection < SQ)) {
-			return directions[3];
-		} else if ((yDirection < 0) && (xDirection < SQ)) {
+		} else if ((yDirection > 0) && (xDirection < SQ)) {
 			return directions[2];
+		} else if ((yDirection < 0) && (xDirection < SQ)) {
+			return directions[3];
 		}
+		
+		
 		return null;
 	}
 	
 	// this is called any time new Dons need to be added
-	private static void addDons() {
+	private void addDons() {
 		// in case there are some empty spots, tell all the Dons in the 
 		// grid to check to see if any empty spots below them
 		dropDons();
@@ -313,27 +338,106 @@ public class DonJeweledPanel extends JPanel {
 
 // Starting at bottom, if there are any empty spots, have those spots get filled by 
 // the Dons above, if there are any non-null Dons above
-	private static void dropDons() {
-//		for (int r = 0; r < donGrid.length; r++) {
-//			for (int c = 0; c < donGrid[0].length; c++) {
-//				
-//			}
-//		}
+	private void dropDons() {
+
+		int[] coords = threeInRow();
+		
+		if (coords == null) { 
+			
+			if (prevDonGrid.equals(donGrid)) {
+				System.out.print("true");
+			}
+			
+			donGrid = prevDonGrid;
+			super.revalidate();
+			super.repaint();
+			return;
+		}
+		
+		int r = coords[0];
+		int c = coords[1];
+		
+		int numCleared = 0;
+		
+		int i = 0;
+		Don start = donGrid[r][c];
+
+		if (c + 1 < COLS && donGrid[r][c + 1] != null &&  donGrid[r][c + 1].equals(start)) {
+			while (c + i < COLS && donGrid[r][c + i] != null && donGrid[r][c + i].equals(start)) {
+				donGrid[r][c + i] = null;
+				i++;
+			}
+		} else if (c - 1 > COLS && donGrid[r][c - 1] != null && donGrid[r][c - 1].equals(start)) {
+			while (c - i > COLS && donGrid[r][c - i] != null &&  donGrid[r][c - i].equals(start)) {
+				donGrid[r][c + i] = null;
+				i++;
+			}
+		} else if (r + 1 < ROWS && donGrid[r + 1][c] != null && donGrid[r + 1][c].equals(start)) {
+			while (r + i < ROWS && donGrid[r + i][c] != null && donGrid[r + i][c].equals(start)) {
+				donGrid[r + i][c] = null;
+				i++;
+			}
+		} else if (r - 1 > ROWS && donGrid[r - 1][c] != null && donGrid[r - 1][c].equals(start)) {
+			while (r - i > ROWS && donGrid[r - i][c] != null && donGrid[r - i][c].equals(start)) {
+				donGrid[r - i][c] = null;
+				i++;
+			}
+		}
+
+		for (int row = ROWS - 1; row > 0; row--) {
+			for (int col = COLS - 1; col > 0; col--) {
+				if (donGrid[row][col] == null) {
+					//Don bottom = donGrid[row + 1][col];
+					donGrid[row][col] = donGrid[row-1][col];
+					//donGrid[row][col] = bottom;
+					donGrid[row-1][col] = null;
+					numCleared++;
+				}
+			}
+		}
+	
+		for (int row = 0; row < ROWS; row++) {
+			for (int col = 0; col < COLS; col++) {
+				if (donGrid[row][col] == null) {
+					int rand = (int) (Math.random() * dons.length);
+					donGrid[row][col] = dons[rand];		
+				}
+			}
+		}
+		
+		points += (10 * numCleared);
+		
+		updateProgressBar();
+		
+		coords = threeInRow();
+		if (coords != null) {
+			dropDons();
+		}
 	}
 
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		drawBackground(g);
+				
+//		if (!gameOver) {
+//			g.drawString("Remaining: " + timeRemaining, 200, 20);
+//		} else {
+//			g.drawString("Game Over", 200, 20);
+//			return;
+//		}
+		g.drawString(statusStr, 170, 20);
+		
 		for(int r = 0; r < donGrid.length; r++) {
 			for(int c = 0; c < donGrid[0].length;c++) {
 				Don d = donGrid[r][c];
 				
 				if(d != null) {
-					d.draw(g,c*SQ,SQ*r,SQ, SQ);
+					d.draw(g,c*SQ, 30 + SQ*r,SQ, SQ);
 				}
 			}
 		}
+
 		drawExtraStuff(g);
 	}
 

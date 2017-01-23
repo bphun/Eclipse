@@ -297,7 +297,11 @@ public class MineSweeperPanel extends JPanel {
 	 * and updates the tiles with the appropriate image
 	 */
 	private void rightClick(int row, int col) {
-		clickState[row][col] = 0;
+		if (clickState[row][col] == 0) {
+			clickState[row][col] = 0;
+		} else {
+			clickState[row][col] = 2;
+		}
 		super.revalidate();
 		super.repaint();
 	}
@@ -339,10 +343,9 @@ public class MineSweeperPanel extends JPanel {
 				
 				if (clickState[r][c] == -1 || alreadyFlagged[r][c] == true) {
 					g.drawImage(this.unClickedSquare,H_BUFFER + (SQ * r), H_BUFFER + (SQ * c),null);	
-				} else if (clickState[r][c] == 0 && !blankSquare[r][c]) {
-
+				} else if (clickState[r][c] == 0 /*&& !blankSquare[r][c]*/) {
 					g.drawImage(this.flaggedSquare, H_BUFFER + (SQ * r), H_BUFFER + (SQ * c), null);
-					alreadyFlagged[r][c] = true;
+//					alreadyFlagged[r][c] = true;
 					
 				} else if (clickState[r][c] == 2 && mineGrid[c][r] == 1) {
 //					g.drawImage(this.bombImage, H_BUFFER + (SQ * r), H_BUFFER + (SQ * c), null);
@@ -354,13 +357,13 @@ public class MineSweeperPanel extends JPanel {
 							}
 						}
 					}
-										
+					alreadyFlagged[r][c] = false;				
 //					try {
 //						Thread.sleep(1000);
 //					} catch (InterruptedException e) {
 //						e.printStackTrace();
 //					}
-					
+//					
 //					System.exit(0);
 
 

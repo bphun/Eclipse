@@ -4,3 +4,10 @@
 /DeckTester.class
 /Shuffler.class
 /ElevensBoard.class
+/Board.class
+/ElevensGUIRunner.class
+/CardGameGUI.class
+/CardGameGUI$1.class
+/CardGameGUI$2.class
+/CardGameGUI$MyMouseListener.class
+/cards/

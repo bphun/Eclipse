@@ -93,7 +93,6 @@ public class ProcessNovel extends Application {
 		}
 		
 		System.out.print("Finished reading file contents\n");
-
 		System.out.println("Converting all characters in novel to lowercase");
 		novelStr = novelStr.toLowerCase();
 		System.out.println("Completed converting all characters in novel to lowercase");

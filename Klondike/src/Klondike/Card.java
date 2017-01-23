@@ -1,6 +1,6 @@
-package Klondike;
 import java.awt.Color;
 import java.awt.Image;
+import java.io.IOException;
 
 public class Card {
 
@@ -44,7 +44,19 @@ public class Card {
 		return false;
 	}
 	
-	private boolean isBlack() {
+	public boolean isLessThan(Card c) {
+		int num1 = 0;
+		int num2 = 0;
+		try {
+			num1 = Integer.parseInt(this.rank);
+			num2 = Integer.parseInt(c.rank());
+		} catch (NullPointerException e) {
+			System.out.println("Err");
+		}
+		return num1 < num2;
+	}
+
+	public boolean isBlack() {
 		if (this.rank().equalsIgnoreCase("spades") || this.rank().equalsIgnoreCase("clubs")) {
 			return true;
 		} else if (this.rank().equalsIgnoreCase("diamonds") || this.rank().equalsIgnoreCase("hearts")) {

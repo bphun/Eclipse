@@ -1,6 +1,3 @@
-package Klondike;
-
-import Klondike.KlondikeFrame;
 
 public class KlondikeLauncher {
 

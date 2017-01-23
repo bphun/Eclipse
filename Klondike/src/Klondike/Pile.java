@@ -1,4 +1,3 @@
-package Klondike;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -51,8 +50,12 @@ public class Pile {
 		return size;
 	}
 	
+	public Card get(int index) {
+		return cards.get(index);
+	}
+
 	public void draw(Graphics2D g) {
-		int x = 300;
+		int x = 100;
 		int y = 30;
 		
 		openImages();
@@ -83,7 +86,7 @@ public class Pile {
 		for (Card c : cards) {
 			try {	
 				String cardImageFileName = c.fileName();
-				URL cardImgURL = getClass().getResource(cardImageFileName);
+				URL cardImgURL = getClass().getResource("cards/2clubs.GIF");
 				System.out.println(cardImgURL);
 				if (cardImgURL != null) {
 					Image img = ImageIO.read(cardImgURL);

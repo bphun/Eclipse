@@ -1,4 +1,3 @@
-package Klondike;
 import java.util.List;
 import java.awt.Color;
 import java.util.ArrayList;

@@ -41,9 +41,9 @@ public class KlondikeBoard {
 	*/
 	public void clickedAt(int x, int y) {
 		for (Pile p : piles) {
-			p.clickedAt(x,y);
+			// p.clickedAt(x,y);
 			for (Card c : p.cards()) {
-				if (p.addedCardsContainPoint(x,y)) {
+				if (c.containsPoint(x,y)) {
 					clickedCard = true;
 				}
 			}

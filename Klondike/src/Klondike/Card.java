@@ -97,6 +97,24 @@ public class Card {
 		return false;
 	}
 	
+	public boolean containsPoint(int x, int y) {
+		//	The origin of the image is at the top left hand corner so min values are at the origin or the global X and Y variables
+		final int MIN_Y = this.y; 
+		final int MAX_Y = this.y + IMG_HEIGHT;
+
+		final int MIN_X = this.x;
+		final int MAX_X = this.x + IMG_WIDTH;
+			
+		if (((this.x == MIN_X) && (this.y == MIN_Y)) || ((this.x == MAX_X) && (this.y == MAX_Y))) {
+			return true;
+		} else if (((this.x >= MIN_X) && (this.x <= MAX_X)) || ((this.y >= MIN_Y) && (this.y <= MAX_Y))) {
+			return true;
+		}
+		
+
+		return false;
+	}
+
 	/**
 	 * @return the file name of this card by combining the directory, rank, and suit
 	 */

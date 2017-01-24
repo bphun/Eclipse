@@ -90,23 +90,6 @@ public class Pile {
 		this.numCardsAdded++;
 	}
 
-	public boolean addedCardsContainPoint(int x, int y) {
-		//	The origin of the image is at the top left hand corner so min values are at the origin or the global X and Y variables
-		final int MIN_Y = this.y; 
-		final int MAX_Y = this.y + IMG_HEIGHT;
-
-		final int MIN_X = this.x;
-		final int MAX_X = this.x + IMG_WIDTH;
-
-		if (((x == MIN_X) && (y == MIN_Y)) || ((x == MAX_X) && (y == MAX_Y)) {
-			return true;
-		} else if (((x >= MIN_X) && (x <= MAX_X)) || ((y >= MIN_Y) && (y <= MAX_Y))) {
-			return true;
-		}
-
-		return false;
-	}
-
 	/**
 	 * @param g is the Graphics2D context
 	 * Draws all the cards in the pile

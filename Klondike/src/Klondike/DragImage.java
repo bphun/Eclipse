@@ -10,7 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.RepaintManager;
 
 public class DragImage extends JComponent implements MouseMotionListener {
-  static int imageWidth = 60, imageHeight = 60;
+  final static int imageWidth = 60, imageHeight = 60;
   int imageX, imageY;
 
   Image image;

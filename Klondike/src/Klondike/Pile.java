@@ -4,7 +4,7 @@ import java.awt.Image;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Pile {
+public class Pile extends Deck {
 
 	//	A static deck that is shared among all the piles that are in the game
 	private static Deck d;
@@ -29,17 +29,20 @@ public class Pile {
 	private static final String[] SUITS = {"spades", "hearts", "diamonds", "clubs"};
 
 	public Pile(int numCards, int pileNumber) {
+		super(RANKS, SUITS);
 		/**	
 		 * Only initialize the deck if this is the first time creating a pile so that 
 		 * they all share one deck -- this is done by making the Deck static
 		 */
 		if (d == null) {
-			d  = new Deck(RANKS, SUITS);			
+			d = new Deck(RANKS, SUITS);			
 		}
 
 		this.numCardsAdded = 1;
 		this.pileNumber = pileNumber;
 		
+		// shuffle();
+
 		/* Initialize the list of cards with the desired number of cards
 		 * by calling the decks deal() method
 		 */
@@ -79,6 +82,7 @@ public class Pile {
 	public void addCards(List<Card> cards) {
 		this.cards.addAll(cards);
 		this.numCardsAdded += cards.size();
+		size = this.cards.size();
 	}
 
 	/*
@@ -88,6 +92,11 @@ public class Pile {
 	public void addCard(Card c) {
 		this.cards.add(c);
 		this.numCardsAdded++;
+		size = this.cards.size();
+	}
+
+	public int numCardsAdded() {
+		return numCardsAdded;
 	}
 
 	/**

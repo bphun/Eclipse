@@ -9,16 +9,16 @@ import javax.swing.JPanel;
 
 public class KlondikePanel extends JPanel {
 
-	/**
-	*	The preferred dimensions of the board
-	*/
+	//	The preferred dimensions of the board
 	private static final Dimension PREFERRED_DIM = new Dimension(800,700);
 	
 	private static KlondikeBoard klondikeBoard;
 	
 	public KlondikePanel() {
 		klondikeBoard = new KlondikeBoard();
-		
+
+		setUpClickListener();
+
 		setBackground(new Color(46,125,50));
 //		setBackground(new Color(27,94,32));
 		this.setPreferredSize(PREFERRED_DIM);
@@ -26,14 +26,10 @@ public class KlondikePanel extends JPanel {
 	}
 	
 	private void setUpClickListener() {
-		// Whoever has focus is who can interact with mouse and keyboard, etc
 		this.requestFocusInWindow();
-
-		// similar to having an entity ready to interact with the Mouse
 		this.addMouseListener(new MouseListener() {
-			/*
-			 * If you want to detect mouse dragging, then use a mouseMotionListener
-			 */
+
+			//	If you want to detect mouse dragging, then use a mouseMotionListener
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 

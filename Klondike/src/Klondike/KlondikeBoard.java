@@ -13,9 +13,6 @@ public class KlondikeBoard {
 
 	private static final String[] RANKS = {"ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "jack", "queen", "king"};
 
-	/**
-	 * The suits of the cards for this game to be sent to the deck.
-	 */
 	private static final String[] SUITS = {"spades", "hearts", "diamonds", "clubs"};
 
 	private boolean clickedCard;
@@ -29,6 +26,13 @@ public class KlondikeBoard {
 		}
 
 		this.clickedCard = false;
+
+		// Use this to test adding cards to a pile
+		// List<Card> cards = new ArrayList<>();
+		// for (int i = 0; i < SUITS.length; i++) {
+		// 	cards.add(new Card(RANKS[i], SUITS[i]));
+		// }
+		// piles.get(0).addCards(cards);
 	}
 
 	/**
@@ -36,15 +40,17 @@ public class KlondikeBoard {
 	* @param y is the Y coordinate of the click
 	* Determines what card has been clicked in the board
 	* and returns if there is no card at the clicked position
-	* by using a cards getX() and getY() methods, if a card is clicked
-	* then it will tell the board that a card was clicked
+	* by going through each pile's cards and calculating wether 
+	* or not the click was in the cards boundaries
 	*/
 	public void clickedAt(int x, int y) {
 		for (Pile p : piles) {
-			// p.clickedAt(x,y);
-			for (Card c : p.cards()) {
-				if (c.containsPoint(x,y)) {
+			for (int i = p.size() - 1; i >= p.size() - (p.numCardsAdded()); i--) {
+				final Object[] containsPoint = p.get(i).containsPoint(x,y);
+				if (containsPoint != null && ((Boolean)containsPoint[0])) {
+					System.out.print(containsPoint[1]);
 					clickedCard = true;
+					return;
 				}
 			}
 		}

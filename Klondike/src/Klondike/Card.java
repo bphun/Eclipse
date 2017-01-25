@@ -4,12 +4,18 @@ import javax.imageio.ImageIO;
 import java.net.URL;
 import java.awt.Graphics2D;
 import java.io.IOException;
+import java.awt.Toolkit;
+import javax.swing.JFrame;
+import java.awt.Graphics;
+import javax.swing.JComponent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 
 public class Card {
 
 	private String rank;
 	private String suit;
-	private boolean isBlack;
+	private String color;
 	private String fileName;
 		
 
@@ -19,8 +25,8 @@ public class Card {
 
 	private Image img;
 
-	private final static int IMG_WIDTH = 71;
-	private final static int IMG_HEIGHT = 96;
+	private static final int IMG_WIDTH = 71;
+	private static final int IMG_HEIGHT = 96;
 
 	//	The back of card image that is used if we are drawing the back of a card
 	private static final String BACK_CARD_FILE_NAME = "cards/back1.GIF";
@@ -28,7 +34,7 @@ public class Card {
 	public Card(String rank, String suit) {
 		this.rank = rank;
 		this.suit = suit;
-		this.isBlack = isBlack();
+		this.color = isBlack();
 		this.fileName = imageFileName();
 	}
 
@@ -41,10 +47,7 @@ public class Card {
 	}
 
 	public String color() {
-		if (isBlack) {
-			return "Black";
-		}
-		return "Red";
+		return this.color;
 	}
 
 	public String fileName() {
@@ -70,7 +73,7 @@ public class Card {
 	public boolean matches(Card c) {
 		if ((this.rank.equalsIgnoreCase(c.rank)) && 
 				(this.suit.equalsIgnoreCase(c.suit)) &&
-				(this.isBlack == c.isBlack)) {
+				(this.color.equals(c.color))) {
 			return true;
 		}
 		return false;
@@ -88,16 +91,23 @@ public class Card {
 		return num1 < num2;
 	}
 
-	public boolean isBlack() {
+	public String isBlack() {
 		if (this.rank().equalsIgnoreCase("spades") || this.rank().equalsIgnoreCase("clubs")) {
-			return true;
+			return "black";
 		} else if (this.rank().equalsIgnoreCase("diamonds") || this.rank().equalsIgnoreCase("hearts")) {
-			return false;
+			return "red";
 		}
-		return false;
+		return "";
 	}
 	
-	public boolean containsPoint(int x, int y) {
+	/**
+	 * @param x coordinate of the click
+	 * @param y coordiante of the click
+	 * Determines if the click that was just executed was at a clickable card
+	 * if a clickable card was clicked, then it will return an array in the form of 
+	 * [Boolean, Card], the
+	 */
+	public Object[] containsPoint(int x, int y) {
 		//	The origin of the image is at the top left hand corner so min values are at the origin or the global X and Y variables
 		final int MIN_Y = this.y; 
 		final int MAX_Y = this.y + IMG_HEIGHT;
@@ -105,14 +115,20 @@ public class Card {
 		final int MIN_X = this.x;
 		final int MAX_X = this.x + IMG_WIDTH;
 			
-		if (((this.x == MIN_X) && (this.y == MIN_Y)) || ((this.x == MAX_X) && (this.y == MAX_Y))) {
-			return true;
-		} else if (((this.x >= MIN_X) && (this.x <= MAX_X)) || ((this.y >= MIN_Y) && (this.y <= MAX_Y))) {
-			return true;
+		Object[] data = new Object[2];
+
+		if (((x == MIN_X) && (y == MIN_Y)) || ((x == MAX_X) && (y == MAX_Y))) {
+			data[0] = true;
+			data[1] = this;
+			return data;
+		} else if (((x > MIN_X) && (x < MAX_X)) && ((y > MIN_Y) && (y < MAX_Y))) {
+			data[0] = true;
+			data[1] = this;
+			return data;
 		}
 		
 
-		return false;
+		return null;
 	}
 
 	/**
@@ -152,11 +168,10 @@ public class Card {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void draw(Graphics2D g, int x, int y, boolean drawBackOfCard) {
 		openImage(drawBackOfCard);
 		g.drawImage(img, x, y, null);
-
 		//	Set the (X, Y) coordinates of the card so that it can be used to determine fi teh card has been clicked
 		setX(x);
 		setY(y);
@@ -164,11 +179,7 @@ public class Card {
 
 	@Override
 	public String toString() {
-		if (isBlack) {
-			return "Card: " + color() + " " + this.rank + " of " + this.suit;
-		} else {
-			return "Card: " + color() + " " + this.rank + " of " + this.suit;
-		}
+		return "Card: " + color() + " " + this.rank + " of " + this.suit;
 	}
 
 }

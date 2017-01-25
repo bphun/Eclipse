@@ -39,28 +39,52 @@ public class Deck {
 	}
 
 	/**
-	 * Shuffle the deck of cards usng a perfect shuffle technique --
-	 * splitting the deck in half and interleving the two piles to form 
-	 * one perfectly shuffled deck
+	 * Shuffles the deck by doing a selection then a 
+	 * perfect shuffle
 	 */
 	public void shuffle() {
-		Card[] shuffled = new Card[cards.size()];
+		selectionShuffle();
+		perfectShuffle();
+	}
 
-		//	The index of the shuffled array that the card will be added to
+	/**
+	 * Performs a perfect shuffle. A perfect shuffle
+	 * is executed by splitting the deck of cards in half
+	 * and then interleving the two decks of cards together --
+	 * resulting in a "perfectly" shuffled deck
+	 */
+	private void perfectShuffle() {
 		int s = 0;
 		for (int c = 0; c < cards.size() / 2; c++) {
-			shuffled[s] = cards.get(c);
+			cards.set(s, cards.get(c));
+			// shuffled[s] = cards.get(c);
 			s += 2;
 		}
 
 		s = 1;
 		for (int c = cards.size() / 2; c < cards.size(); c++) {
-			shuffled[s] = cards.get(c);
+			cards.set(s, cards.get(c));
+			// shuffled[s] = cards.get(c);
 			s += 2;
 		}
-		cards.clear();
-		for (Card c : shuffled) {
-			cards.add(c);
+	}
+
+	/**
+	 * Performs a selction. A selction shuffle is
+	 * a form of a random shuffle where each card are place 
+	 * in randomly selected location within the deck
+	 */
+	private void selectionShuffle() {
+		int r = cards.size();
+		for (int i = 0; i < cards.size(); i++) {
+			final int rand = (int) (Math.random() * r);
+			// final Card value = values[i];
+			final Card value = cards.get(i);
+			// values[i] = values[rand];
+			cards.set(i, cards.get(rand));
+			// values[rand] = value;
+			cards.set(rand, value);
+			r--;
 		}
 	}
 

@@ -5,17 +5,19 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.ArrayList;
 import java.util.List;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 
 public class KlondikeBoard {
 
 	//	A list of seven Piles that are drawn horizontally on the Board
-	private static List<Pile> piles;
+	private List<Pile> piles;
 
 	private static final String[] RANKS = {"ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "jack", "queen", "king"};
 
 	private static final String[] SUITS = {"spades", "hearts", "diamonds", "clubs"};
 
-	private boolean clickedCard;
+	private Card clickedCard;
 
 	public KlondikeBoard() {
 		piles = new ArrayList<>();
@@ -24,8 +26,6 @@ public class KlondikeBoard {
 		for (int i = 1; i < 8; i++) {
 			piles.add(new Pile(i, i - 1));
 		}
-
-		this.clickedCard = false;
 
 		// Use this to test adding cards to a pile
 		// List<Card> cards = new ArrayList<>();
@@ -43,21 +43,21 @@ public class KlondikeBoard {
 	* by going through each pile's cards and calculating wether 
 	* or not the click was in the cards boundaries
 	*/
-	public void clickedAt(int x, int y) {
+	public void clickedAt(int x, int y, MouseEvent event) {
 		for (Pile p : piles) {
 			for (int i = p.size() - 1; i >= p.size() - (p.numCardsAdded()); i--) {
 				final Object[] containsPoint = p.get(i).containsPoint(x,y);
 				if (containsPoint != null && ((Boolean)containsPoint[0])) {
-					System.out.print(containsPoint[1]);
-					clickedCard = true;
+					clickedCard = (Card) containsPoint[1];
+					clickedCard();
 					return;
 				}
 			}
 		}
 	}
 
-	public boolean clickedCard() {
-		return clickedCard;
+	public void clickedCard() {
+		c.drawBlankImage();
 	}
 
 	/**

@@ -34,7 +34,7 @@ public class Card {
 	public Card(String rank, String suit) {
 		this.rank = rank;
 		this.suit = suit;
-		this.color = isBlack();
+		this.color = getColor();
 		this.fileName = imageFileName();
 	}
 
@@ -54,7 +54,7 @@ public class Card {
 		return fileName;
 	}
 
-	private void setX(int x) {
+	public void setX(int x) {
 		this.x = x;
 	}
 
@@ -66,7 +66,7 @@ public class Card {
 		return this.y;
 	}
 
-	private void setY(int y) {
+	public void setY(int y) {
 		this.y = y;
 	}
 
@@ -91,10 +91,10 @@ public class Card {
 		return num1 < num2;
 	}
 
-	public String isBlack() {
-		if (this.rank().equalsIgnoreCase("spades") || this.rank().equalsIgnoreCase("clubs")) {
+	public String getColor() {
+		if (this.suit.equalsIgnoreCase("spades") || this.suit.equalsIgnoreCase("clubs")) {
 			return "black";
-		} else if (this.rank().equalsIgnoreCase("diamonds") || this.rank().equalsIgnoreCase("hearts")) {
+		} else if (this.suit.equalsIgnoreCase("diamonds") || this.suit.equalsIgnoreCase("hearts")) {
 			return "red";
 		}
 		return "";
@@ -179,7 +179,7 @@ public class Card {
 
 	@Override
 	public String toString() {
-		return "Card: " + color() + " " + this.rank + " of " + this.suit;
+		return "Card: " + color + " " + this.rank + " of " + this.suit;
 	}
 
 }

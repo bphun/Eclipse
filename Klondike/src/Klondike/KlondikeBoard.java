@@ -29,6 +29,7 @@ public class KlondikeBoard {
 
 		// Use this to test adding cards to a pile
 		// List<Card> cards = new ArrayList<>();
+
 		// for (int i = 0; i < SUITS.length; i++) {
 		// 	cards.add(new Card(RANKS[i], SUITS[i]));
 		// }
@@ -45,19 +46,16 @@ public class KlondikeBoard {
 	*/
 	public void clickedAt(int x, int y, MouseEvent event) {
 		for (Pile p : piles) {
+			// System.out.println(p.numCardsAdded() - 1);
 			for (int i = p.size() - 1; i >= p.size() - (p.numCardsAdded()); i--) {
 				final Object[] containsPoint = p.get(i).containsPoint(x,y);
 				if (containsPoint != null && ((Boolean)containsPoint[0])) {
 					clickedCard = (Card) containsPoint[1];
-					clickedCard();
+					clickedCard.setSelected();					
 					return;
 				}
 			}
 		}
-	}
-
-	public void clickedCard() {
-		c.drawBlankImage();
 	}
 
 	/**

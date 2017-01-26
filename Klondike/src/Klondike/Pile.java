@@ -4,7 +4,7 @@ import java.awt.Image;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Pile extends Deck {
+public class Pile {
 
 	//	A static deck that is shared among all the piles that are in the game
 	private static Deck d;
@@ -29,7 +29,7 @@ public class Pile extends Deck {
 	private static final String[] SUITS = {"spades", "hearts", "diamonds", "clubs"};
 
 	public Pile(int numCards, int pileNumber) {
-		super(RANKS, SUITS);
+		// super(RANKS, SUITS);
 		/**	
 		 * Only initialize the deck if this is the first time creating a pile so that 
 		 * they all share one deck -- this is done by making the Deck static

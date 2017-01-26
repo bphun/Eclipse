@@ -20,7 +20,7 @@ public class KlondikePanel extends JPanel {
 		setUpClickListener();
 
 		setBackground(new Color(46,125,50));
-//		setBackground(new Color(27,94,32));
+//		setBackground(new Color(27,94,32));2
 		this.setPreferredSize(PREFERRED_DIM);
 		setVisible(true);
 	}

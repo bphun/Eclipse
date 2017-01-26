@@ -16,8 +16,7 @@ public class Card {
 	private String rank;
 	private String suit;
 	private String color;
-	private String fileName;
-		
+	private String fileName;		
 
 	//	The (X, Y) coordinate of the card on the board
 	private int x;
@@ -28,14 +27,18 @@ public class Card {
 	private static final int IMG_WIDTH = 71;
 	private static final int IMG_HEIGHT = 96;
 
+	private boolean isSelected;
+
+	private Graphics2D graphics;
+
 	//	The back of card image that is used if we are drawing the back of a card
 	private static final String BACK_CARD_FILE_NAME = "cards/back1.GIF";
 
 	public Card(String rank, String suit) {
 		this.rank = rank;
 		this.suit = suit;
-		this.color = getColor();
 		this.fileName = imageFileName();
+		this.color = getColor();
 	}
 
 	public String rank() {
@@ -131,6 +134,12 @@ public class Card {
 		return null;
 	}
 
+	public void setSelected() {
+		isSelected = true;
+		this.fileName = imageFileName();
+		draw(graphics, this.x(), this.y(), false);
+	}
+
 	/**
 	 * @return the file name of this card by combining the directory, rank, and suit
 	 */
@@ -138,8 +147,12 @@ public class Card {
 		String str = "cards/";
 		
 		str += this.rank() + this.suit();
-		str += ".GIF";
 
+		if (isSelected) {
+			str += "S";
+		}
+
+		str += ".GIF";
 		return str;
 	}
 
@@ -170,6 +183,11 @@ public class Card {
 	}
 
 	public void draw(Graphics2D g, int x, int y, boolean drawBackOfCard) {
+		if (graphics == null) {
+			graphics = g;
+		}
+		System.out.println("sdf");
+
 		openImage(drawBackOfCard);
 		g.drawImage(img, x, y, null);
 		//	Set the (X, Y) coordinates of the card so that it can be used to determine fi teh card has been clicked

@@ -54,18 +54,22 @@ public class Deck {
 	 * resulting in a "perfectly" shuffled deck
 	 */
 	private void perfectShuffle() {
+		Card[] shuffled = new Card[cards.size()];
+
 		int s = 0;
 		for (int c = 0; c < cards.size() / 2; c++) {
-			cards.set(s, cards.get(c));
-			// shuffled[s] = cards.get(c);
+			shuffled[s] = cards.get(c);
 			s += 2;
 		}
 
 		s = 1;
 		for (int c = cards.size() / 2; c < cards.size(); c++) {
-			cards.set(s, cards.get(c));
-			// shuffled[s] = cards.get(c);
+			shuffled[s] = cards.get(c);
 			s += 2;
+		}
+		cards.clear();
+		for (Card c : shuffled) {
+			cards.add(c);
 		}
 	}
 

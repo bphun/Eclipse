@@ -59,6 +59,7 @@ public class KlondikePanel extends JPanel {
 	
 	protected void clickedAt(MouseEvent click) {	
 		klondikeBoard.clickedAt(click.getX(), click.getY(), click);
+		repaint();
 	}
 
 	@Override

@@ -75,6 +75,11 @@ public class Pile {
 		return cards;
 	}
 
+	public void remove(List<Card> cards) {
+		this.cards.removeAll(cards);
+		this.size = cards.size();
+	}
+
 	/*
 	 * Adds a list of cards to the cards list
 	 * and updates the number of cards added
@@ -113,26 +118,27 @@ public class Pile {
 				Card c = cards.get(i);
 
 				//	Set the x position of the pile depending on the pile's position on the board
-				switch (pileNumber) {
-				case 1:
-					x = 170;
-					break;
-				case 2: 
-					x = 270;
-					break;
-				case 3:
-					x = 370;
-					break;
-				case 4:
-					x = 470;
-					break;
-				case 5:
-					x = 570;
-					break;
-				case 6:
-					x = 670;
-					break;
-				}
+				// switch (pileNumber) {
+				// case 1:
+				// 	x = 170;
+				// 	break;
+				// case 2: 
+				// 	x = 270;
+				// 	break;
+				// case 3:
+				// 	x = 370;
+				// 	break;
+				// case 4:
+				// 	x = 470;
+				// 	break;
+				// case 5:
+				// 	x = 570;
+				// 	break;
+				// case 6:
+				// 	x = 670;
+				// 	break;
+				// }
+				x = 70 + 100 * pileNumber;
 
 				/*
 				 * Check if the we aren't drawing the last card, 
@@ -140,11 +146,8 @@ public class Pile {
 				 * otherwise draw the back of the card by using the boolean
 				 * argument in c.draw(Graphics2D g, int x, int y, boolean drawBackOfCard)
 				 */	
-				if (i < cards.size() - numCardsAdded) {
-					c.draw(g, x, y, true);
-				} else if (i < cards.size()) {
-					c.draw(g, x, y, false);
-				}
+				c.draw(g, x, y);
+
 				y += 19;
 			}
 		} else if (cards.size() == 0) { 	
@@ -153,7 +156,7 @@ public class Pile {
 	}
 	
 	public String toString() {
-		String s = "\n ------ Pile ------ \n";
+		String s = "\n ------ Pile " + pileNumber + " " + "------ \n";
 		for (Card c : cards) {
 			s += c.toString();
 		}

@@ -6,6 +6,7 @@ import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.JPanel;
+import java.awt.BasicStroke;
 
 public class KlondikePanel extends JPanel {
 
@@ -17,11 +18,12 @@ public class KlondikePanel extends JPanel {
 	public KlondikePanel() {
 		klondikeBoard = new KlondikeBoard();
 
+		setBackground(new Color(46,125,50));
+		// setBackground(new Color(27,94,32));
+		this.setPreferredSize(PREFERRED_DIM);
+
 		setUpClickListener();
 
-		setBackground(new Color(46,125,50));
-//		setBackground(new Color(27,94,32));2
-		this.setPreferredSize(PREFERRED_DIM);
 		setVisible(true);
 	}
 	
@@ -54,11 +56,10 @@ public class KlondikePanel extends JPanel {
 			}
 
 		});
-
 	}
 	
 	protected void clickedAt(MouseEvent click) {	
-		klondikeBoard.clickedAt(click.getX(), click.getY(), click);
+		klondikeBoard.clickedAt(click.getX(), click.getY());
 		repaint();
 	}
 
@@ -74,6 +75,10 @@ public class KlondikePanel extends JPanel {
 		 * Link with different paramters here: https://docs.oracle.com/javase/tutorial/2d/advanced/quality.html
 		 */
 		final RenderingHints quality = new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+
+		//	Set the color of the strokes to white and increase stroke thickness to two
+		graphics2d.setColor(Color.WHITE);
+		graphics2d.setStroke(new BasicStroke(2));
 
 		//	Add the rendering hints
 		graphics2d.addRenderingHints(antialiasing);

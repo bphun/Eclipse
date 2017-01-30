@@ -36,7 +36,6 @@ public class Card {
 	private Image selectedImage;
 	private final String selectedImageFileName;
 
-
 	//	The back of card image that is used if we are drawing the back of a card
 	private static final String BACK_CARD_FILE_NAME = "cards/back1.GIF";
 
@@ -51,11 +50,12 @@ public class Card {
 		this.openImage();
 	}
 
-	public boolean faceDown(){
-		return !faceUp;
-	}
 	public boolean faceUp(){
 		return faceUp;
+	}
+
+	public boolean faceDown(){
+		return !faceUp;
 	}
 
 	public void flip(){
@@ -104,6 +104,16 @@ public class Card {
 
 	public void setY(int y) {
 		this.image_Y = y;
+	}
+
+	public int intSuit() {
+		if (this.rank.equalsIgnoreCase("jack") || this.rank.equalsIgnoreCase("queen") || this.rank.equalsIgnoreCase("king")) {
+			return 10;
+		} else if (this.rank.equalsIgnoreCase("ace")) {
+			return 1;
+		} else {
+			return Integer.parseInt(this.rank);
+		}
 	}
 
 	public boolean matches(Card c) {
@@ -157,9 +167,6 @@ public class Card {
 		String str = "cards/";
 		
 		str += this.rank() + this.suit();
-		if (this.isSelected) {
-			str += "S";
-		}
 		str += ".GIF";
 		return str;
 	}
@@ -217,10 +224,6 @@ public class Card {
 		} else {
 			g.drawImage(this.backImage, x, y, null);
 		}
-		// System.out.println("X: " + x + " Y: " + y);
-		g.setPaint(Color.GREEN);
-		g.drawLine(x, y, x, y);
-		g.setPaint(Color.WHITE);
 	}
 
 	@Override

@@ -38,6 +38,13 @@ public class Deck {
 		return cards.get(size);
 	}
 
+	public void returnCardsToDeck(List<Card> cards) {
+		this.cards.addAll(cards);
+		size = this.cards.size();
+		System.out.println(size);
+		shuffle();
+	}
+
 	/**
 	 * Shuffles the deck by doing a selection then a 
 	 * perfect shuffle
@@ -54,16 +61,16 @@ public class Deck {
 	 * resulting in a "perfectly" shuffled deck
 	 */
 	private void perfectShuffle() {
-		Card[] shuffled = new Card[cards.size()];
+		Card[] shuffled = new Card[size];
 
 		int s = 0;
-		for (int c = 0; c < cards.size() / 2; c++) {
+		for (int c = 0; c < size / 2; c++) {
 			shuffled[s] = cards.get(c);
 			s += 2;
 		}
 
 		s = 1;
-		for (int c = cards.size() / 2; c < cards.size(); c++) {
+		for (int c = size / 2; c < size; c++) {
 			shuffled[s] = cards.get(c);
 			s += 2;
 		}

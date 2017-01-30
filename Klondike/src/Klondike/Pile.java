@@ -41,8 +41,6 @@ public class Pile {
 		this.numCardsAdded = 1;
 		this.pileNumber = pileNumber;
 		
-		// shuffle();
-
 		/* Initialize the list of cards with the desired number of cards
 		 * by calling the decks deal() method
 		 */
@@ -50,13 +48,37 @@ public class Pile {
 		for (int n = 0; n < numCards; n++) {
 			cards.add(d.deal());
 		}
-		size = cards.size();
+		updateSize();
+	}
+
+	public Pile(int numCards) {
+		if (d == null) {
+			d = new Deck(RANKS, SUITS);
+		}
+
+		cards = new ArrayList<>();
+		deal();
+		updateSize();
+	}
+
+	public Pile() {
+		if (d == null) {
+			d = new Deck(RANKS, SUITS);
+		}
+
+		cards = new ArrayList<>();
+		for (int n = 0; n < d.size(); n++) {
+			cards.add(d.deal());
+		}
+
+		updateSize();
 	}
 
 	/**
 	 * @return number of cards in the pile
 	 */
 	public int size() {
+		updateSize();
 		return size;
 	}
 	
@@ -75,9 +97,14 @@ public class Pile {
 		return cards;
 	}
 
+	public void deal() {
+		cards.add(d.deal());
+		updateSize();
+	}
+
 	public void remove(List<Card> cards) {
 		this.cards.removeAll(cards);
-		this.size = cards.size();
+		updateSize();
 	}
 
 	/*
@@ -87,7 +114,12 @@ public class Pile {
 	public void addCards(List<Card> cards) {
 		this.cards.addAll(cards);
 		this.numCardsAdded += cards.size();
-		size = this.cards.size();
+		updateSize();
+	}
+
+	public void returnCards() {
+		d.returnCardsToDeck(cards);
+		cards.clear();
 	}
 
 	/*
@@ -97,61 +129,105 @@ public class Pile {
 	public void addCard(Card c) {
 		this.cards.add(c);
 		this.numCardsAdded++;
-		size = this.cards.size();
+		updateSize();
 	}
 
 	public int numCardsAdded() {
 		return numCardsAdded;
 	}
 
+	private void updateSize() {
+		this.size = this.cards.size();
+	}
+
+	public boolean empty() {
+		return d.isEmpty();
+	}
+
 	/**
 	 * @param g is the Graphics2D context
 	 * Draws all the cards in the pile
 	 */
-	public void draw(Graphics2D g) {
-		int x = 70;
-		int y = 330;
+	public void draw(Graphics2D g, int mode) {
+		int x;
+		int y;
+
+		switch (mode) {
+		case 0:
+			x = 70;
+			y = 80;
+
+			Card first = cards.get(0);
+			first.draw(g, x, y);
+
+			break;
+		case 1:
+
+			x = 70;
+			y = 330;
 		
-		//	Check if there are cards in cards, if not then draw a rounded rect
-		if (cards.size() > 0) {
-			for (int i = 0; i < cards.size(); i++) {
-				Card c = cards.get(i);
+			//	Check if there are cards in cards, if not then draw a rounded rect
+			if (cards.size() > 0) {
+				for (int i = 0; i < cards.size(); i++) {
+					Card c = cards.get(i);
 
-				//	Set the x position of the pile depending on the pile's position on the board
-				// switch (pileNumber) {
-				// case 1:
-				// 	x = 170;
-				// 	break;
-				// case 2: 
-				// 	x = 270;
-				// 	break;
-				// case 3:
-				// 	x = 370;
-				// 	break;
-				// case 4:
-				// 	x = 470;
-				// 	break;
-				// case 5:
-				// 	x = 570;
-				// 	break;
-				// case 6:
-				// 	x = 670;
-				// 	break;
-				// }
-				x = 70 + 100 * pileNumber;
+					//	Set the x position of the pile depending on the pile's position on the board
+					// switch (pileNumber) {
+					// case 1:
+					// 	x = 170;
+					// 	break;
+					// case 2: 
+					// 	x = 270;
+					// 	break;
+					// case 3:
+					// 	x = 370;
+					// 	break;
+					// case 4:
+					// 	x = 470;
+					// 	break;
+					// case 5:
+					// 	x = 570;
+					// 	break;
+					// case 6:
+					// 	x = 670;	
+					// 	break;
+					// }
+					x = 70 + 100 * pileNumber;
 
-				/*
-				 * Check if the we aren't drawing the last card, 
-				 * if we are then don't draw the back of the card, 
-				 * otherwise draw the back of the card by using the boolean
-				 * argument in c.draw(Graphics2D g, int x, int y, boolean drawBackOfCard)
-				 */	
-				c.draw(g, x, y);
+					/*
+					 * Check if the we aren't drawing the last card, 
+					 * if we are then don't draw the back of the card, 
+					 * otherwise draw the back of the card by using the boolean
+					 * argument in c.draw(Graphics2D g, int x, int y, boolean drawBackOfCard)
+					 */	
+					c.draw(g, x, y);
 
-				y += 19;
+					y += 19;
+				}
+			} else if (cards.size() == 0) { 	
+				g.drawRoundRect(x, y, 70, 120, 25, 50);
 			}
-		} else if (cards.size() == 0) { 	
-			g.drawRoundRect(x, y, 90, 150, 25, 50);
+			break;
+		case 2:
+			x = 180;
+			y = 80;
+
+			if (cards.size() > 0) {
+				for (int i = 0; i < cards.size(); i++) {
+					Card c = cards.get(i);
+
+					/*
+					 * Check if the we aren't drawing the last card, 
+					 * if we are then don't draw the back of the card, 
+					 * otherwise draw the back of the card by using the boolean
+					 * argument in c.draw(Graphics2D g, int x, int y, boolean drawBackOfCard)
+					 */	
+					c.draw(g, x, y);
+
+					x += 19;
+				}
+			}
+			break;
 		}	 
 	}
 	

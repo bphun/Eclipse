@@ -70,6 +70,10 @@ public class Card {
 		}
 	}
 
+	public void setSelected(boolean b) {
+		this.isSelected = b;
+	}
+
 	public boolean isSelected() {
 		return isSelected;
 	}
@@ -106,9 +110,13 @@ public class Card {
 		this.image_Y = y;
 	}
 
-	public int intSuit() {
-		if (this.rank.equalsIgnoreCase("jack") || this.rank.equalsIgnoreCase("queen") || this.rank.equalsIgnoreCase("king")) {
-			return 10;
+	public int intRank() {
+		if (this.rank.equalsIgnoreCase("king")) {
+			return 13;
+		} else if (this.rank.equalsIgnoreCase("queen")) {
+			return 12;
+		} else if (this.rank.equalsIgnoreCase("jack")) {
+			return 11;
 		} else if (this.rank.equalsIgnoreCase("ace")) {
 			return 1;
 		} else {

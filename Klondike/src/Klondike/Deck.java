@@ -39,10 +39,9 @@ public class Deck {
 	}
 
 	public void returnCardsToDeck(List<Card> cards) {
+		this.cards.removeAll(cards);
 		this.cards.addAll(cards);
 		size = this.cards.size();
-		System.out.println(size);
-		shuffle();
 	}
 
 	/**

@@ -7,7 +7,7 @@ import java.util.List;
 public class Pile {
 
 	//	A static deck that is shared among all the piles that are in the game
-	private static Deck d;
+	public static Deck d;
 
 	//	Holds all of the cards that are displayed in a pile
 	private List<Card> cards;
@@ -118,8 +118,8 @@ public class Pile {
 	}
 
 	public void returnCards() {
-		d.returnCardsToDeck(cards);
-		cards.clear();
+		this.d.returnCardsToDeck(this.cards);
+		this.cards.clear();
 	}
 
 	/*
@@ -172,36 +172,8 @@ public class Pile {
 					Card c = cards.get(i);
 
 					//	Set the x position of the pile depending on the pile's position on the board
-					// switch (pileNumber) {
-					// case 1:
-					// 	x = 170;
-					// 	break;
-					// case 2: 
-					// 	x = 270;
-					// 	break;
-					// case 3:
-					// 	x = 370;
-					// 	break;
-					// case 4:
-					// 	x = 470;
-					// 	break;
-					// case 5:
-					// 	x = 570;
-					// 	break;
-					// case 6:
-					// 	x = 670;	
-					// 	break;
-					// }
 					x = 70 + 100 * pileNumber;
-
-					/*
-					 * Check if the we aren't drawing the last card, 
-					 * if we are then don't draw the back of the card, 
-					 * otherwise draw the back of the card by using the boolean
-					 * argument in c.draw(Graphics2D g, int x, int y, boolean drawBackOfCard)
-					 */	
 					c.draw(g, x, y);
-
 					y += 19;
 				}
 			} else if (cards.size() == 0) { 	
@@ -212,20 +184,10 @@ public class Pile {
 			x = 180;
 			y = 80;
 
-			if (cards.size() > 0) {
-				for (int i = 0; i < cards.size(); i++) {
-					Card c = cards.get(i);
-
-					/*
-					 * Check if the we aren't drawing the last card, 
-					 * if we are then don't draw the back of the card, 
-					 * otherwise draw the back of the card by using the boolean
-					 * argument in c.draw(Graphics2D g, int x, int y, boolean drawBackOfCard)
-					 */	
-					c.draw(g, x, y);
-
-					x += 19;
-				}
+			for (int i = 0; i < cards.size(); i++) {
+				Card c = cards.get(i);
+				c.draw(g, x, y);
+				x += 19;
 			}
 			break;
 		}	 

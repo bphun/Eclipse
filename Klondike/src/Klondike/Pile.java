@@ -1,6 +1,5 @@
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,17 +60,26 @@ public class Pile {
 		updateSize();
 	}
 
-	public Pile() {
+	public Pile(boolean empty) {
 		if (d == null) {
 			d = new Deck(RANKS, SUITS);
 		}
-
 		cards = new ArrayList<>();
+
+		if (empty) {
+			size = 0;
+			return;
+		}
+
 		for (int n = 0; n < d.size(); n++) {
 			cards.add(d.deal());
 		}
 
 		updateSize();
+	}
+
+	public boolean noCards() {
+		return size == 0;
 	}
 
 	/**

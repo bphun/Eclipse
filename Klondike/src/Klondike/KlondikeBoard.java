@@ -1,6 +1,7 @@
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
 import java.awt.Font;
 
 public class KlondikeBoard {
@@ -15,17 +16,19 @@ public class KlondikeBoard {
 	private static Pile usablePile;
 
 	//	The List of cards that holds all the cards in the piles at the top right
-	private Card[] topCardsList;
+	private Pile topCardsPile;
 	private int[] nextRankArray;
 
 	//	The list containing lists of cards that where selected and ready to swap between playing piles
 	private List<List<Card>> selectedCards;
 
 	public KlondikeBoard() {
-		topCardsList = new Card[4];
+		// topCardsPileList = new int[4];
 		nextRankArray = new int[]{1, 1, 1, 1};
  		piles = new ArrayList<>();
 		selectedCards = new ArrayList<>();
+
+		topCardsPile = new Pile(true);
 
 		//	Initialize the seven piles with (i - 1) cards each
 		for (int i = 1; i < 8; i++) {
@@ -33,21 +36,21 @@ public class KlondikeBoard {
 		}
 
 		//	This must go here for a reason that I forgot
-		deck = new Pile();
+		deck = new Pile(false);
 
 		for (Pile p : piles) {
 			p.get(p.size() - 1).flip();
 		}
 
-		// private static final String[] RANKS = {"ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "jack", "queen", "king"};
-		// private static final String[] SUITS = {"spades", "hearts", "diamonds", "clubs"};
-		// List<Card> cards = new ArrayList<>();
+		// final String[] RANKS = {"ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "jack", "queen", "king"};
+		// final String[] SUITS = {"spades", "hearts", "diamonds", "clubs"};
+ 		// List<Card> cards = new ArrayList<>();
 		// for (int i = 0; i < SUITS.length; i++) {
 		// 	Card c = new Card(RANKS[i], SUITS[i]);
 		// 	c.flip();
 		// 	cards.add(c);
 		// }
-		// piles.get(0).addCards(cards);
+		// piles.get(2).addCards(cards);
 
 		// Card c = new Card("ace", "spades");
 		// Card c1 = new Card("ace", "hearts");
@@ -81,10 +84,15 @@ public class KlondikeBoard {
 
 		//	Check if the usablePile was pressed, if so, select it and add it to the selectedCards list
 		if (clickedUsablePile(x, y)) {
-			moveCardToSelectedPlayPile(x, y);
+			moveCardFromUsablePileToSelectedPlayPile(x, y);
 			return;
 		}
 
+		if (clickedTopCardPile(x,y)) {
+			moveCardToSelectedPlayPile(x, y);
+			return;
+		}
+		// noMoreMoves();
 		/**
 		 *	Check if a playing pile was pressed, if so, check if a another pile is selected, 
 		 * then move the selected card to the second pile
@@ -92,10 +100,48 @@ public class KlondikeBoard {
 		clickedPlayingPile(x, y);
 	}
 
+	private boolean clickedTopCardPile(int x, int y) {
+		for (Card c : topCardsPile.cards()) {
+			if (c.containsPoint(x, y) != null) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private void moveCardToSelectedPlayPile(int x, int y) {
+		for (Card c : topCardsPile.cards()) {
+			if (c.containsPoint(x, y) != null) {
+				if (selectedCards.size() < 2) {
+					List<Card> selected_ = new ArrayList<>();
+					c.setSelected();
+					selected_.add(c);
+
+					if (!selectedCards.contains(selected_)) {
+						selectedCards.add(selected_);
+					} else {
+						selectedCards.remove(selected_);
+					}
+
+					for (List<Card> cards : selectedCards) {
+						for (Card card : cards) {
+							System.out.println("Card: " + card);
+						}
+					}
+
+					if (canTransfer()) {
+						transferCards();
+					}
+					return;
+				}
+			}
+		}
+	}
+
 	/**
 	 * @param x is the X coordinate of the click
 	 * @param y is the Y coordinate of the click
-	 * 1. Checks if an ace is clicked in any of the playing piles, if one is then it will move it to the topCardsList and return
+	 * 1. Checks if an ace is clicked in any of the playing piles, if one is then it will move it to the topCardsPile and return
 	 * 2. Checks if any card that is not an ace is clicked, selects it, checks if another card is 
 	 * selected, and then moves the first selected card to the second selected card's pile
 	 */
@@ -125,7 +171,9 @@ public class KlondikeBoard {
 								nextRankArray[index]++;
 								break;
 							}
-							topCardsList[index] = c;
+							// topCardsList[index] = c;
+							topCardsPile.addCard(c);
+
 							c.setSelected();
 							removeCardsFrom(p);
 
@@ -163,7 +211,7 @@ public class KlondikeBoard {
 	 * @param y is the Y coordinate of the click
 	 * Moves a card from the 'usablePile' to selected 'playingPile'
 	 */
-	private void moveCardToSelectedPlayPile(int x, int y) {
+	private void moveCardFromUsablePileToSelectedPlayPile(int x, int y) {
 		Card c = usablePile.cards().get(usablePile.size() - 1);	//	We can only click on the last card in the 'usablePile'
 
 		if (c.containsPoint(x, y) != null) {
@@ -222,8 +270,9 @@ public class KlondikeBoard {
 	 * @return a boolean that tells you if the top most card in the usablePile was clicked
 	 */
 	private boolean clickedUsablePile(int x, int y) {
-		if ((usablePile != null) && (usablePile.cards().get(usablePile.size() - 1).containsPoint(x, y) != null)) {
-		 return true;
+		if ((usablePile == null) || (usablePile.noCards())) { return false; }
+		if (usablePile.cards().get(usablePile.size() - 1).containsPoint(x, y) != null) {
+			return true;
 		}
 		return false;
 	}
@@ -324,20 +373,50 @@ public class KlondikeBoard {
 
 	/**
 	 * Checks if the user won the game. 
-	 * Checks if all the cards in the topCardsList are kings, meaning that the game was won (I think)
+	 * Checks if all the cards in the topCardsPile are kings, meaning that the game was won (I think)
 	 * @return a boolean that tells you if the user won the game, True if user won, False if user lost
 	 */
 	private boolean wonGame() {
-		if (topCardsList == null) { return false; }
+		if (topCardsPile.noCards()) { return false; }
 		int numKing = 0;
 
-		for (Card c : topCardsList) {
+		for (Card c : topCardsPile.cards()) {
 			if (c == null) { return false; }	//	We shouldn't continue because this means that we are already missing on king
 			if (c.rank().equals("king")) {
 				numKing++;
 			}
 		}
 		if (numKing == 4) { return true; }
+		return false;
+	}
+
+	private boolean noMoreMoves() {
+		List<Card> allCards = new ArrayList<>();
+
+		for (Pile p : piles) {
+			for (Card c : p.cards()) {
+				allCards.add(c);
+			}
+		} 
+		// allCards.addAll(deck.cards());
+		// allCards.addAll(usablePile.cards());
+		// allCards.addAll(topCardsPile.cards());
+		for (Card c : deck.cards()) {
+			if (c == null) { continue; }
+			allCards.add(c);
+		}
+		for (Card c : usablePile.cards()) {
+			if (c == null) { continue; }
+			allCards.add(c);
+		} 
+		for (Card c : topCardsPile.cards()) {
+			if (c == null) { continue; }
+			allCards.add(c);
+		}
+		Collections.sort(allCards, new CardCompare());
+		for (Card c : allCards) {
+			System.out.println(c.toString());
+		}
 		return false;
 	}
 
@@ -420,8 +499,9 @@ public class KlondikeBoard {
 			usablePile.draw(g, 2);
 		}
 
+		if (topCardsPile.noCards()) { return; }
 		final int y = 70;
-		for (Card c : topCardsList) {
+		for (Card c : topCardsPile.cards()) {
 			if (c != null) {
 				switch (c.suit()) {
 				case "spades":
@@ -437,8 +517,8 @@ public class KlondikeBoard {
 					x = 710;
 					break;
 				}
-				c.setSelected(false);
 				c.draw(g, x, y);
+				// c.setSelected();
 			}
 		}
 	}

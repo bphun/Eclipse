@@ -4,14 +4,9 @@ import javax.imageio.ImageIO;
 import java.net.URL;
 import java.awt.Graphics2D;
 import java.io.IOException;
-import java.awt.Toolkit;
-import javax.swing.JFrame;
-import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Point;
 import javax.swing.JComponent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 
 public class Card {
 

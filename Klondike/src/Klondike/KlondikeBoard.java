@@ -1,13 +1,7 @@
-import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.Font;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
-import java.util.Iterator;
 
 public class KlondikeBoard {
 
@@ -20,12 +14,9 @@ public class KlondikeBoard {
 	//	The pile of cards that can be added to the playing piles
 	private static Pile usablePile;
 
-	//	The List of cards that holds all the aces, when full, the game is won
+	//	The List of cards that holds all the cards in the piles at the top right
 	private Card[] topCardsList;
 	private int[] nextRankArray;
-
-	private static final String[] RANKS = {"ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "jack", "queen", "king"};
-	private static final String[] SUITS = {"spades", "hearts", "diamonds", "clubs"};
 
 	//	The list containing lists of cards that where selected and ready to swap between playing piles
 	private List<List<Card>> selectedCards;
@@ -48,7 +39,8 @@ public class KlondikeBoard {
 			p.get(p.size() - 1).flip();
 		}
 
-		// Use this to test adding cards to a pile
+		// private static final String[] RANKS = {"ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "jack", "queen", "king"};
+		// private static final String[] SUITS = {"spades", "hearts", "diamonds", "clubs"};
 		// List<Card> cards = new ArrayList<>();
 		// for (int i = 0; i < SUITS.length; i++) {
 		// 	Card c = new Card(RANKS[i], SUITS[i]);
@@ -273,12 +265,9 @@ public class KlondikeBoard {
 			usablePile.returnCards();
 			usablePile.deal();
 
-			//	Fix deck problem, cards in playing pile are identical to cards in deck
 			if (usablePile.cards().get(usablePile.size() - 1).faceDown()) {
 				usablePile.cards().get(usablePile.size() - 1).flip();
 			}	
-			// System.out.println(usablePile.toString());
-			System.out.println(usablePile.d.equals(piles.get(0).d));
 		}
 		return;
 	}

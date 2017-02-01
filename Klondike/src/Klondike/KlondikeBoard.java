@@ -257,7 +257,7 @@ public class KlondikeBoard {
 	 * If any of the previosu weren't executed then we will just add another card to the pile
 	 */
 	private void addCardToUsablePile() {
-		if ((usablePile != null) && (usablePile.empty())) { System.out.println("Empty"); return; }
+		if ((usablePile != null) && (usablePile.empty())) { return; }
 
 		if (usablePile == null) {
 			usablePile = new Pile(1);
@@ -265,20 +265,20 @@ public class KlondikeBoard {
 				usablePile.cards().get(usablePile.size() - 1).flip();
 			}	
 		} else if (usablePile.size() < 3) {
-			usablePile.deal();	
-			if (usablePile.cards().get(usablePile.size() - 1).faceDown()) {
-				usablePile.cards().get(usablePile.size() - 1).flip();
+			usablePile.deal();
+			if (usablePile.cards().get(usablePile.cards().size() - 1).faceDown()) {
+				usablePile.cards().get(usablePile.cards().size() - 1).flip();
 			}
 		} else if (usablePile.size() == 3) {
-			// System.out.println(usablePile.toString());
 			usablePile.returnCards();
-			System.out.println("asdf");
-			System.out.println(usablePile.d.toString());
 			usablePile.deal();
+
+			//	Fix deck problem, cards in playing pile are identical to cards in deck
 			if (usablePile.cards().get(usablePile.size() - 1).faceDown()) {
 				usablePile.cards().get(usablePile.size() - 1).flip();
 			}	
 			// System.out.println(usablePile.toString());
+			System.out.println(usablePile.d.equals(piles.get(0).d));
 		}
 		return;
 	}
@@ -410,7 +410,7 @@ public class KlondikeBoard {
 
 		int x = 183;
 		for (int i = 0; i < 5; i++) {
-			g.drawRoundRect(x, 60, 70, 120, 25, 50);
+			g.drawRoundRect(x, 75, 71, 110, 25, 50);
 			switch (i) {
 			case 0:
 				x += 170;

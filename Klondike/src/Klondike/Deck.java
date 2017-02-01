@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.Collections;
 import java.awt.Color;
 import java.util.ArrayList;
 
@@ -33,14 +34,18 @@ public class Deck {
 	public Card deal() {
 		if (this.isEmpty()) {
 			return null;
-		}
+		}	
 		size--;
-		return cards.get(size);
+		Card c = cards.get(size);
+		cards.remove(c);
+		return c;
 	}
 
 	public void returnCardsToDeck(List<Card> cards) {
 		this.cards.removeAll(cards);
-		this.cards.addAll(cards);
+		for (Card c : cards) {
+			this.cards.add(0, c);
+		}
 		size = this.cards.size();
 	}
 
@@ -51,6 +56,7 @@ public class Deck {
 	public void shuffle() {
 		selectionShuffle();
 		perfectShuffle();
+		// Collections.shuffle(cards);
 	}
 
 	/**

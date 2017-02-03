@@ -14,6 +14,9 @@ public class Pile {
 	//	The pile's order form left to right (0-6)
 	private int pileNumber;
 	
+	private int xCoord;
+	private int yCoord;
+
 	// The number of cards in the pile
 	private int size;
 	
@@ -47,6 +50,10 @@ public class Pile {
 		for (int n = 0; n < numCards; n++) {
 			cards.add(d.deal());
 		}
+		
+		xCoord = cards.get(0).x();
+		yCoord = cards.get(0).y();
+
 		updateSize();
 	}
 
@@ -60,17 +67,12 @@ public class Pile {
 		updateSize();
 	}
 
-	public Pile(boolean empty) {
+	public Pile() {
 		if (d == null) {
 			d = new Deck(RANKS, SUITS);
 		}
+
 		cards = new ArrayList<>();
-
-		if (empty) {
-			size = 0;
-			return;
-		}
-
 		for (int n = 0; n < d.size(); n++) {
 			cards.add(d.deal());
 		}

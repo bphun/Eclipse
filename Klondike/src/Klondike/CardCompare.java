@@ -9,5 +9,4 @@ public class CardCompare implements Comparator<Card> {
 
 		return c1Rank.compareTo(c2Rank);
 	}
-
 }

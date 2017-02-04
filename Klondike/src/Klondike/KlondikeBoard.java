@@ -15,14 +15,14 @@ public class KlondikeBoard {
 	private static Pile usablePile;
 
 	//	The List of cards that holds all the cards in the piles at the top right
-	private Card[] topCardsList;
+	private List<Pile> topCardPiles;
 	private int[] nextRankArray;
 
 	//	The list containing lists of cards that where selected and ready to swap between playing piles
 	private List<List<Card>> selectedCards;
 
 	public KlondikeBoard() {
-		topCardsList = new Card[4];
+		topCardPiles = new ArrayList<>();
 		nextRankArray = new int[]{1, 1, 1, 1};
  		piles = new ArrayList<>();
 		selectedCards = new ArrayList<>();
@@ -33,15 +33,19 @@ public class KlondikeBoard {
 		}
 
 		//	This must go here for a reason that I forgot
-		deck = new Pile();
+		deck = new Pile(false);
 
 		for (Pile p : piles) {
 			p.get(p.size() - 1).flip();
 		}
 
+		for (int i = 0; i < 4; i++) {
+			topCardPiles.add(new Pile(true));
+		}
+
 		// private static final String[] RANKS = {"ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "jack", "queen", "king"};
 		// private static final String[] SUITS = {"spades", "hearts", "diamonds", "clubs"};
-		List<Card> cards = new ArrayList<>();
+		// List<Card> cards = new ArrayList<>();
 		// for (int i = 0; i < SUITS.length; i++) {
 		// 	Card c = new Card(RANKS[i], SUITS[i]);
 		// 	c.flip();
@@ -49,22 +53,22 @@ public class KlondikeBoard {
 		// }
 		// piles.get(0).addCards(cards);
 
-		Card c = new Card("ace", "spades");
-		Card c1 = new Card("ace", "hearts");
-		Card c2 = new Card("ace", "diamonds");
-		Card c3 = new Card("ace", "clubs");
-		Card c4 = new Card("2", "spades");
-		c.flip();
-		c1.flip();
-		c2.flip();
-		c3.flip();
-		c4.flip();
-		cards.add(c);
-		cards.add(c1);
-		cards.add(c2);
-		cards.add(c3);
-		piles.get(2).addCard(c4);
-		piles.get(3).addCards(cards);
+		// Card c = new Card("ace", "spades");
+		// Card c1 = new Card("ace", "hearts");
+		// Card c2 = new Card("ace", "diamonds");
+		// Card c3 = new Card("ace", "clubs");
+		// Card c4 = new Card("2", "spades");
+		// c.flip();
+		// c1.flip();
+		// c2.flip();
+		// c3.flip();
+		// c4.flip();
+		// cards.add(c);
+		// cards.add(c1);
+		// cards.add(c2);
+		// cards.add(c3);
+		// piles.get(2).addCard(c4);
+		// piles.get(3).addCards(cards);
 	}
 
 	/**
@@ -89,14 +93,17 @@ public class KlondikeBoard {
 		}
 
 		if (clickedTopCardPile(x, y)) {
-			for (Card c : topCardsList) {
-				if ((c != null) && (c.containsPoint(x, y) != null)) {
-					c.setSelected();
-					System.out.println(c.isSelected());
-					List<Card> selected_ = new ArrayList<>();
-					selected_.add(c);
-				} 
+			for (Pile p : topCardPiles) {
+				for (Card c : p.cards()) {
+					if ((c != null) && (c.containsPoint(x, y) != null)) {
+						c.setSelected();
+						System.out.println(c.isSelected());
+						List<Card> selected_ = new ArrayList<>();
+						selected_.add(c);
+					} 
+				}
 			}
+
 			return;
 		}
 
@@ -108,12 +115,14 @@ public class KlondikeBoard {
 	}
 
 	private boolean clickedTopCardPile(int x, int y) {
-		if (topCardsList == null) { return false; }
-		for (Card c : topCardsList) {
-			if ((c != null) && (c.containsPoint(x, y) != null)) {
+		if (topCardPiles == null) { return false; }
+		for (Pile p : topCardPiles) {
+			if (p.containsPoint(x, y)) {
+				System.out.println("sdf");
 				return true;
 			}
 		}
+
 		return false;
 	}
 
@@ -150,7 +159,8 @@ public class KlondikeBoard {
 								nextRankArray[index]++;
 								break;
 							}
-							topCardsList[index] = c;
+							// topCardsList[index] = c;
+							topCardPiles.get(index).addCard(c);
 							c.setSelected();
 							removeCardsFrom(p);
 
@@ -363,13 +373,15 @@ public class KlondikeBoard {
 	 * @return a boolean that tells you if the user won the game, True if user won, False if user lost
 	 */
 	private boolean wonGame() {
-		if (topCardsList == null) { return false; }
+		if (topCardPiles == null) { return false; }
 		int numKing = 0;
 
-		for (Card c : topCardsList) {
-			if (c == null) { return false; }	//	We shouldn't continue because this means that we are already missing on king
-			if (c.rank().equals("king")) {
-				numKing++;
+		for (Pile p : topCardPiles) {
+			for (Card c : p.cards()) {
+				if (c == null) { return false; }	//	We shouldn't continue because this means that we are already missing on king
+					if (c.rank().equals("king")) {
+						numKing++;
+				}
 			}
 		}
 		if (numKing == 4) { return true; }
@@ -456,24 +468,26 @@ public class KlondikeBoard {
 		}
 
 		final int y = 70;
-		for (Card c : topCardsList) {
-			if (c != null) {
-				switch (c.suit()) {
-				case "spades":
-					x = 350;
-					break;
-				case "hearts":
-					x = 470;
-					break;
-				case "diamonds":
-					x = 590;
-					break;
-				case "clubs":
-					x = 710;
-					break;
+		for (Pile p : topCardPiles) {
+			for (Card c : p.cards()) {
+				if (c != null) {
+					switch (c.suit()) {
+					case "spades":
+						x = 350;
+						break;
+					case "hearts":
+						x = 470;
+						break;
+					case "diamonds":
+						x = 590;
+						break;
+					case "clubs":
+						x = 710;
+						break;
+					}
+					c.setSelected(false);
+					c.draw(g, x, y);
 				}
-				c.setSelected(false);
-				c.draw(g, x, y);
 			}
 		}
 	}

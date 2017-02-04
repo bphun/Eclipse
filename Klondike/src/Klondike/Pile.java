@@ -2,6 +2,8 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
+import java.awt.Point;
+import java.awt.Rectangle;
 
 public class Pile {
 
@@ -19,7 +21,12 @@ public class Pile {
 
 	// The number of cards in the pile
 	private int size;
+
+	private boolean empty;
 	
+	private static final int IMG_WIDTH = 71;
+	private static final int IMG_HEIGHT = 97;
+
 	//	Used to make sure only the first card and the cards added to the pile are shown
 	private int numCardsAdded;
 
@@ -67,17 +74,40 @@ public class Pile {
 		updateSize();
 	}
 
-	public Pile() {
+	public Pile(boolean empty) {
 		if (d == null) {
 			d = new Deck(RANKS, SUITS);
 		}
 
 		cards = new ArrayList<>();
+		if (empty) {
+			this.empty = true;
+			size = 0;
+			return;
+		}
+
 		for (int n = 0; n < d.size(); n++) {
 			cards.add(d.deal());
 		}
 
 		updateSize();
+	}
+
+	public int x() {
+		return 70 + 100 * pileNumber;
+	}
+
+	public int y() {
+		return 80;
+	}
+
+	public boolean containsPoint(int x, int y) {
+		System.out.println("X: " + x() + " yCoord: " + y());
+		Rectangle pileBounds = new Rectangle(x(), y(), IMG_WIDTH, IMG_HEIGHT);
+		if (pileBounds.contains(new Point(x,y))){
+    		return true;
+		}
+		return false;
 	}
 
 	public boolean noCards() {
@@ -168,6 +198,8 @@ public class Pile {
 			y = 80;
 
 			Card first = cards.get(0);
+			xCoord = x;
+			yCoord = y;
 			first.draw(g, x, y);
 
 			break;

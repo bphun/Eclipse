@@ -180,10 +180,12 @@ public class Card {
 	 * Opens the image of this card and returns it
 	 */
 	private void openImage() {
+		Toolkit toolkit = this.getDefaultToolkit();
 		try {		
-			URL cardImgURL = getClass().getResource(fileName);
+			URL cardImgURL = this.getClass().getResource(fileName);
 			if (cardImgURL != null) {
-				img = ImageIO.read(cardImgURL);
+				// img = ImageIO.read(cardImgURL);
+				img = toolkit.getImage(cardImgURL);
 				// img = img.getScaledInstance(img.getWidth(null) , img.getHeight(null), Image.SCALE_DEFAULT);
 			}
 		} catch (IOException e) {
@@ -193,9 +195,10 @@ public class Card {
 
 		if (backImage == null){
 			try {	
-				URL cardImgURL = getClass().getResource(BACK_CARD_FILE_NAME);
+				URL cardImgURL = this.getClass().getResource(BACK_CARD_FILE_NAME);
 				if (cardImgURL != null) {
-					backImage = ImageIO.read(cardImgURL);
+					backImage = toolkit.getImage(cardImgURL);
+					// backImage = ImageIO.read(cardImgURL);
 				}
 			} catch (IOException e) {
 				System.err.println("Could not open image ( " + fileName() + " )");
@@ -204,9 +207,10 @@ public class Card {
 		}
 
 		try {		
-			URL cardImgURL = getClass().getResource(selectedImageFileName);
+			URL cardImgURL = this.getClass().getResource(selectedImageFileName);
 			if (cardImgURL != null) {
-				selectedImage = ImageIO.read(cardImgURL);
+				selectedImage = toolkit.getImage(cardImgURL);
+				// selectedImage = ImageIO.read(cardImgURL);
 				// img = img.getScaledInstance(img.getWidth(null) , img.getHeight(null), Image.SCALE_DEFAULT);
 			}
 		} catch (IOException e) {

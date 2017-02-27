@@ -1,0 +1,4 @@
+Brandon Phan: Did a majority of the GUI and game logic
+Sam Pitluk: Sam worked on his own project and did not collaborate with us
+Andrew Wang: Helped with game logic and debugging the game
+Chris Murphy: Taught us the game rules by playing solitaire

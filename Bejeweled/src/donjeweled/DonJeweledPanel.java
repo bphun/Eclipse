@@ -132,9 +132,7 @@ public class DonJeweledPanel extends JPanel {
 					}
 				}
 			}
-		}
-		
-//		addDons();
+		}		
 	}
 
 

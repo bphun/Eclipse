@@ -1,51 +1,62 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
 
 public class LifeAsWeKnowIt {
-	
+
 	private int displayType = 3;
-	private int rows = 35;
+	private int rows = 40;
 	private int cols = 63;
 	
-	private int[][] grid;// this is how you declare a 2D array of int.  What if you wanted 
-				 // a 2D array of String?  
+	// Contains layout of the grid (selected/unselected squares)
+	private int[][] grid;
+
+	//	Contains the number of neighbors each cell has
+	private int[][] neighbors;
 	
-	private JFrame frame;// to be used if displayType is not 1 or 2
+	//	The past grids that have been created, used to rewind to past generations
+	private List<TwoDimensionArray> history;
 	
-	private LifeWorld world;// Gridworld world.  This was part of the APCS curriculum until 
-	                // 2015 Exam.  It is a nice class for displaying things that are
-					// typically displayed in grid fashion.
-	
-	
-	private LifePanel panel;// this is a type of JPanel, and thus has all functionality of one.
-	 				// I have provided this class for you.  It has a couple of functions
-					// but you can add more, if you like.
-	
+	private JFrame frame;
+	private LifePanel panel;
+
+	// private LifeWorld world;
+
+	//	The timer that is used for the game loop which redraws the panel every 1ms
 	private Timer timer;
 	
+	//	The timer that is used to step the game every 500ms when the start button is pressed
+	private Timer playTimer;
+	//	Tells the game if it should play
 	private boolean shouldPlay;
-	
+
 	public static void main(String[] args) {
 		new LifeAsWeKnowIt().start();
 	}
-	
+
 	private void start() {
-//		displayType = promptDisplay();
-		
-		world = new LifeWorld(rows, cols);
-		
+		//		displayType = promptDisplay();
+
+		//		world = new LifeWorld(rows, cols);
+		neighbors = new int[rows][cols];
+		history = new ArrayList<>();
+		grid = new int[rows][cols];
+
 		loadLife();
 		show();
-		for(int steps = 0; steps < 10; steps++) {
-			step();	// advances to the next generation
-			show();	// displays current gen
-			pause(); // pauses... may change according to the display type
-		}
+		playTimer = new Timer(500, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				play();
+			}
+		});
+		playTimer.start();
 	}
 
 	private int promptDisplay() {
@@ -53,52 +64,96 @@ public class LifeAsWeKnowIt {
 		return 1;
 	}
 
-	private void pause() {
-		if(this.displayType == 1) {
-			System.out.println("Hit enter to continue");
-			new Scanner(System.in).nextLine();
+	public void step() {
+		for (int r = 0; r < neighbors.length - 1; r++) {
+			for (int c = 0; c < neighbors[r].length - 1; c++) {
+				neighbors[r][c] = getNumNeighbors(r,c);
+			}
 		}
-		// otherwise, use the buttons in the other interface
+		
+		for (int r = 0; r < grid.length - 1; r++) {
+			for (int c = 0; c < grid[r].length - 1; c++) {
+				if (grid[r][c] == 1) {
+					if (neighbors[r][c] == 1 || neighbors[r][c] == 0) {
+						grid[r][c] = 0;
+					} else if (neighbors[r][c] >= 4) {
+						grid[r][c] = 0;
+					} /*else if (neighbors[r][c] == 2 || neighbors[r][c] == 3) {
+						continue;
+					}
+					*/
+				} else {
+					if (neighbors[r][c] == 3) {
+						grid[r][c] = 1;
+					}
+				}
+				
+			}
+		}
+		history.add(new TwoDimensionArray(grid));
 	}
 
-	public void step() {
-		// takes the organisms from one generation to the next, instantaneously
-		
+	private int getNumNeighbors(int row, int col) {
+		int neighbors = 0;    
+		if(row != 0 && row != rows - 1 && col != 0 && col != cols - 1) {
+			if(grid[row+1][col] == 1) {
+				neighbors++;
+			}
+			if(grid[row-1][col] == 1) {
+				neighbors++;
+			}
+			if(grid[row][col + 1] == 1) {
+				neighbors++;
+			}
+			if(grid[row][col-1] == 1) {
+				neighbors++;
+			}
+			if(grid[row+1][col+1] == 1) {
+				neighbors++;
+			}
+			if(grid[row-1][col-1] == 1) {
+				neighbors++;
+			}
+			if(grid[row-1][col+1] == 1) {
+				neighbors++;
+			}
+			if(grid[row+1][col-1] == 1) {
+				neighbors++;
+			}
+		}
+		return neighbors;
 	}
-	
+
 	public void play() {
-//		if (shouldPlay) {
-//			while (true) {
-//				step();
-//				System.out.println("Start");
-//			}
-//		} else {
-//			shouldPlay = false;
-//		}
+		if (shouldPlay) {
+			step();
+		}
 	}
 	
 	public void shouldPlay() {
-		shouldPlay = true;
+		shouldPlay = !shouldPlay;
 	}
-
+	
 	private void show() {
-		if(displayType == 1) {
-			dispConsole();
-		} else if(this.displayType == 2) {
-			displayGridWorld();
-		} else {
-			displayCool();
+		switch (displayType) {
+			case 1:
+				dispConsole();
+			case 2:
+				displayGridWorld();
+			case 3:
+				displayCool();
 		}
+		// if(displayType == 1) {
+		// 	dispConsole();
+		// } else if(this.displayType == 2) {
+		// 	displayGridWorld();
+		// } else {
+		// 	displayCool();
+		// }
 	}
 
 	private void displayCool() {
-		// checks to see if the LifePanel is null.  If so, makes a new one and adds it 
-		// to the Jframe, then asks the JFrame to setVisible(true)  
-		// Then, asks the LifePanel to display the grid;
 		if (panel == null) {
-			if (grid == null) {
-				grid = new int[rows][cols];
-			}
 			panel = new LifePanel(grid, this);
 			frame = new JFrame("Life As We Know It");
 			frame.add(panel);
@@ -107,17 +162,53 @@ public class LifeAsWeKnowIt {
 			frame.setVisible(true);
 			startTimer();
 		}
-		panel.displayGrid(grid);
+		// panel.displayGrid(grid);
 	}
 
 	private void refresh() {
 		panel.refresh();
 	}
 
+	private int currentGridVersion = -1;
+	public void rewind() {
+//		if (currentGridVersion == -1) {
+//			currentGridVersion = history.size() - 1;
+//		}
+//		if (currentGridVersion >= 0) {
+//			int[][] temp = history.get(currentGridVersion).array();
+//			history.remove(currentGridVersion);
+//			for (int r = 0; r < grid.length; r++) {
+//				for (int c = 0; c < grid.length; c++) {
+//					grid[r][c] = temp[r][c];
+//				}
+//			}
+//			panel.setGrid(grid);
+//			currentGridVersion--;
+//		}	
+		
+		if (currentGridVersion == -1) {
+			currentGridVersion = history.size() - 1; 
+		} 
+		if (currentGridVersion >= 0) {
+			int[][] temp = history.get(currentGridVersion).array();
+			 for (int r = 0; r < grid.length; r++) {
+				 for (int c = 0; c < grid[r].length; c++) {
+					 grid[r][c] = temp[r][c];
+					 System.out.print(grid[r][c] + ", ");
+				 }
+				 System.out.println();
+			 }
+			 panel.setGrid(grid);
+		}
+		
+	}
+		
+	public void setGrid(int[][] grid) {
+		this.grid = grid;
+	}
+
 	private void startTimer() {
-		if (timer != null) { return; }
-		timer = new Timer(11, new ActionListener() {
-			
+		timer = new Timer(1, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				refresh();
@@ -125,28 +216,16 @@ public class LifeAsWeKnowIt {
 		});
 		timer.start();
 	}
-	
+
 	private void displayGridWorld() {
-		// checks to see if the world is null, first.  If so, makes a world.  
-		// simply ask the LifeWorld to display the contents of gr
-		if (grid == null) { 
-			grid = new int[rows][cols];
-		}
-		world.display(grid);
+//		world.display(grid);
 	}
 
 	private void dispConsole() {
-		// go through the 2D array, displaying the life or not
-		if (grid == null) {
-			grid = new int[rows][cols];
-		}
-		world.print(grid);
+//		world.print(grid);
 	}
 
 	private void loadLife() {
-		// inputs the file containing info about the grid.  This file contains the size
-		// (rows and cols) of the grid, as well as the locations of the organisms.
-		
 		File f = getFile();
 		Scanner scan = null;
 		try {
@@ -156,15 +235,10 @@ public class LifeAsWeKnowIt {
 		}
 		if(scan == null)
 			loadLife();
-//		this.rows = scan.nextInt();
-//		this.cols = scan.nextInt();
-//		while(scan.hasNext()) {
-//			System.out.println("Still something to scan...");
-//		}
+
 	}
 
 	private File getFile() {
-		// You can substitute other approaches of acquiring a file
 		return new File("life100.txt");
 	}
 

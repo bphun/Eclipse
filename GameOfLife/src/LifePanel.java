@@ -1,21 +1,22 @@
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
-//import javax.swing.AbstractButton;
-//import javax.swing.JButton;
-//import javax.swing.JPanel;
-import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+
+import javax.swing.JButton;
+import javax.swing.JPanel;
+
 import java.awt.event.ActionListener;
 
 public class LifePanel extends JPanel {
 
+	// Contains layout of the grid (selected/unselected squares)
 	private int[][] grid;
 
 	final static int SQUARE_WIDTH = 12;
@@ -24,6 +25,8 @@ public class LifePanel extends JPanel {
 
 	private JButton nextButton;
 	private JButton startButton;
+	private JButton clearButton;
+	private JButton rewindButton;
 
 	private LifeAsWeKnowIt life;
 	
@@ -35,13 +38,8 @@ public class LifePanel extends JPanel {
 
 		this.life = life;
 		setUpClickListener();
-		addButtons();
+		addUI();
 		setVisible(true);
-	}
-
-
-	public void displayGrid(int[][] gr) {		
-		repaint();
 	}
 
 	public void refresh() {
@@ -83,6 +81,7 @@ public class LifePanel extends JPanel {
 		int row = e.getY() / SQUARE_WIDTH;
 		int col = e.getX() / SQUARE_WIDTH;
 
+		if (grid  == null) { return; }
 		if (grid[row][col] == 1) {
 			grid[row][col] = 0;
 		} else {
@@ -91,45 +90,11 @@ public class LifePanel extends JPanel {
 		repaint();
 	}
 
-	@Override
-	public void paintComponent(Graphics g) {
-		super.paintComponent(g);
-
-		Graphics2D g2 = (Graphics2D)g;
-		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-		for (int r = 0; r < grid.length; r++) {
-			for (int c = 0; c < grid[0].length; c++) {
-				if (grid[r][c] == 1) {
-					g.setColor(new Color(67, 160, 71));
-					g2.fillRect(c * SQUARE_WIDTH + LINE_THICKNESS, r * SQUARE_WIDTH + LINE_THICKNESS, SQUARE_WIDTH - LINE_THICKNESS, SQUARE_WIDTH - LINE_THICKNESS);		
-					g.setColor(Color.BLACK);
-				}
-			}
-		}
-		drawGrid(g2);
-	}
-
-	private void drawGrid(Graphics2D g2) {
-		for (int r = 0; r < grid.length; r++) {
-			for (int c = 0; c < grid[0].length; c++) {
-				//	TODO: Fix grid resizing so that it adjusts when the panel is resized
-				g2.drawLine(SQUARE_WIDTH * c, 0, SQUARE_WIDTH * c, (DIMENSIONS.height) - 92);
-			}
-			g2.drawLine(0, SQUARE_WIDTH * r, (DIMENSIONS.width), SQUARE_WIDTH * r);
-		}
-//		for (int r = 0; r < grid.length; r++) {
-//			for (int c = 0; c < grid[0].length; c++) {
-//				//	TODO: Fix grid resizing so that it adjusts when the panel is resized
-//				g2.drawLine(SQUARE_WIDTH * c, 80, SQUARE_WIDTH * c, (DIMENSIONS.height));
-//			}
-//			g2.drawLine(0, (SQUARE_WIDTH * r) + 80, (DIMENSIONS.width), (SQUARE_WIDTH * r) + 80);
-//		}
-	}
-
-	private void addButtons() {
+	private void addUI() {
 		nextButton = new JButton("Next");
 		startButton = new JButton("Start");
+		clearButton = new JButton("Clear");
+		rewindButton = new JButton("Rewind");
 		
 		nextButton.addActionListener(new ActionListener() {
 			@Override
@@ -143,9 +108,42 @@ public class LifePanel extends JPanel {
 				startButtonAction();
 			}		
 		});
+		clearButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				clearButtonAction();
+			}	
+		});
+		rewindButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				rewindButtonAction();
+			}	
+		});
 
-		this.add(startButton);
-		this.add(nextButton);
+		this.setLayout(new BorderLayout());
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setBackground(new Color(69,90,100));
+		buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+		buttonPanel.add(startButton);
+		buttonPanel.add(nextButton);
+		buttonPanel.add(clearButton);
+		buttonPanel.add(rewindButton);
+		this.add(buttonPanel, BorderLayout.SOUTH);
+	}
+	
+	public void setGrid(int[][] grid) {
+		this.grid = grid;
+		repaint();
+	}
+	
+	private void rewindButtonAction() {
+		life.rewind();
+	}
+	
+	private void clearButtonAction() {
+		this.grid = new int[grid.length][grid[0].length];
+		life.setGrid(this.grid);
 	}
 
 	private void nextButtonAction() {
@@ -155,6 +153,35 @@ public class LifePanel extends JPanel {
 	private void startButtonAction() {
 		life.shouldPlay();
 		life.play();
+	}
+	
+	@Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+
+		Graphics2D g2 = (Graphics2D)g;
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+		drawGrid(g2);
+		
+		for (int r = 0; r < grid.length; r++) {
+			for (int c = 0; c < grid[0].length; c++) {
+				if (grid[r][c] == 1) {
+					g.setColor(new Color(67, 160, 71));
+					g2.fillRect(c * SQUARE_WIDTH + LINE_THICKNESS, r * SQUARE_WIDTH + LINE_THICKNESS, SQUARE_WIDTH - LINE_THICKNESS, SQUARE_WIDTH - LINE_THICKNESS);		
+					g.setColor(Color.BLACK);
+				}
+			}
+		}
+	}
+
+	private void drawGrid(Graphics2D g2) {
+		for (int r = 0; r < grid.length; r++) {
+			for (int c = 0; c < grid[0].length; c++) {
+				g2.drawLine(SQUARE_WIDTH * c, 0, SQUARE_WIDTH * c, (DIMENSIONS.height) - 45);
+			}
+			g2.drawLine(0, SQUARE_WIDTH * r, (DIMENSIONS.width), SQUARE_WIDTH * r);
+		}
 	}
 
 }

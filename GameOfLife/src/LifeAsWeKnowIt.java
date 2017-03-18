@@ -1,6 +1,9 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -23,6 +26,8 @@ public class LifeAsWeKnowIt {
 	//	The past grids that have been created, used to rewind to past generations
 	private List<TwoDimensionArray> history;
 	
+	private List<Layout> savedLayouts;
+
 	private JFrame frame;
 	private LifePanel panel;
 
@@ -36,6 +41,8 @@ public class LifeAsWeKnowIt {
 	//	Tells the game if it should play
 	private boolean shouldPlay;
 
+	private String SAVE_FILE_DIRECTORY = "../SaveFile.txt";
+	
 	public static void main(String[] args) {
 		new LifeAsWeKnowIt().start();
 	}
@@ -48,7 +55,6 @@ public class LifeAsWeKnowIt {
 		history = new ArrayList<>();
 		grid = new int[rows][cols];
 
-		loadLife();
 		show();
 		playTimer = new Timer(500, new ActionListener() {
 			@Override
@@ -170,21 +176,7 @@ public class LifeAsWeKnowIt {
 	}
 
 	private int currentGridVersion = -1;
-	public void rewind() {
-//		if (currentGridVersion == -1) {
-//			currentGridVersion = history.size() - 1;
-//		}
-//		if (currentGridVersion >= 0) {
-//			int[][] temp = history.get(currentGridVersion).array();
-//			history.remove(currentGridVersion);
-//			for (int r = 0; r < grid.length; r++) {
-//				for (int c = 0; c < grid.length; c++) {
-//					grid[r][c] = temp[r][c];
-//				}
-//			}
-//			panel.setGrid(grid);
-//			currentGridVersion--;
-//		}	
+	public void rewind() {	
 		
 		if (currentGridVersion == -1) {
 			currentGridVersion = history.size() - 1; 
@@ -194,7 +186,7 @@ public class LifeAsWeKnowIt {
 			 for (int r = 0; r < grid.length; r++) {
 				 for (int c = 0; c < grid[r].length; c++) {
 					 grid[r][c] = temp[r][c];
-					 System.out.print(grid[r][c] + ", ");
+					 System.out.print(temp[r][c] + ", ");
 				 }
 				 System.out.println();
 			 }
@@ -225,6 +217,40 @@ public class LifeAsWeKnowIt {
 //		world.print(grid);
 	}
 
+	public String[] getSavedLayoutTitles() {
+		List<Layout> savedLayouts = new ArrayList<>();
+		List<String> lines = new ArrayList<>();
+		Layout layout = new Layout();
+
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(new File(SAVE_FILE_DIRECTORY)));	
+			for (String x = reader.readLine(); x != null; x = reader.readLine()) {
+				if (x.contains("name: ")) {
+					if (layout.unnamed()) {
+						layout.setName(x.substring(6, x.length()));
+					} else if (!layout.locations().isEmpty()) {
+						savedLayouts.add(layout);
+						layout = new Layout();
+						layout.setName(x.substring(6, x.length()));
+					} 
+					continue;
+				}
+				String[] coords = x.split("  ");
+				layout.addLocation(new Location(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]))); 				
+			}
+		} catch (IOException e) {
+			System.out.println("Error reading (" + SAVE_FILE_DIRECTORY + ")");
+			e.printStackTrace();
+		} 
+
+		this.savedLayouts = savedLayouts;
+		String[] fileNames = new String[savedLayouts.size()];
+		for (int i = 0; i < fileNames.length; i++) {
+			fileNames[i] = savedLayouts.get(i).name();
+		}
+		return fileNames;
+	}
+	
 	private void loadLife() {
 		File f = getFile();
 		Scanner scan = null;
@@ -235,7 +261,6 @@ public class LifeAsWeKnowIt {
 		}
 		if(scan == null)
 			loadLife();
-
 	}
 
 	private File getFile() {

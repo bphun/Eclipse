@@ -10,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
 import java.awt.event.ActionListener;
@@ -27,12 +28,13 @@ public class LifePanel extends JPanel {
 	private JButton startButton;
 	private JButton clearButton;
 	private JButton rewindButton;
-
+	private JComboBox<String> savedLayouts;
+	
 	private LifeAsWeKnowIt life;
 	
 	public LifePanel(int[][] grid, LifeAsWeKnowIt life) {
 		this.grid = grid;
-		//		setBackground(new Color(84,110,122));
+				// setBackground(new Color(84,110,122));
 		setBackground(new Color(69,90,100));
 		setPreferredSize(DIMENSIONS);
 
@@ -91,10 +93,12 @@ public class LifePanel extends JPanel {
 	}
 
 	private void addUI() {
+		String[] choices = { "CHOICE 1","CHOICE 2", "CHOICE 3","CHOICE 4","CHOICE 5","CHOICE 6"};
 		nextButton = new JButton("Next");
 		startButton = new JButton("Start");
 		clearButton = new JButton("Clear");
 		rewindButton = new JButton("Rewind");
+		savedLayouts = new JComboBox<String>(life.getSavedLayoutTitles());
 		
 		nextButton.addActionListener(new ActionListener() {
 			@Override
@@ -122,14 +126,15 @@ public class LifePanel extends JPanel {
 		});
 
 		this.setLayout(new BorderLayout());
-		JPanel buttonPanel = new JPanel();
-		buttonPanel.setBackground(new Color(69,90,100));
-		buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-		buttonPanel.add(startButton);
-		buttonPanel.add(nextButton);
-		buttonPanel.add(clearButton);
-		buttonPanel.add(rewindButton);
-		this.add(buttonPanel, BorderLayout.SOUTH);
+		JPanel UIPanel = new JPanel();
+		UIPanel.setBackground(new Color(69,90,100));
+		UIPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+		UIPanel.add(startButton);
+		UIPanel.add(nextButton);
+		UIPanel.add(clearButton);
+		UIPanel.add(rewindButton);
+		UIPanel.add(savedLayouts);
+		this.add(UIPanel, BorderLayout.SOUTH);
 	}
 	
 	public void setGrid(int[][] grid) {

@@ -1,14 +1,9 @@
 #!/bin/sh
 
 echo "Compiling LifeAsWeKnowIt"
-#for file in *.java
-#do
-#	javac -cp "../gridworld.jar" $file
-#done
+javac LifeAsWeKnowIt.java 
 
-javac LifeAsWeKnowIt.java
-
-echo "Running LifeAsWeKnowIt"
+echo "Running LifeAsWeKnowIt"  
 java LifeAsWeKnowIt
 
 for file in *.class

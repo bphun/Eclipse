@@ -183,9 +183,11 @@ public class LifePanel extends JPanel {
 	private void drawGrid(Graphics2D g2) {
 		for (int r = 0; r < grid.length; r++) {
 			for (int c = 0; c < grid[0].length; c++) {
+				//	Draws the vertical line
 				g2.drawLine(SQUARE_WIDTH * c, 0, SQUARE_WIDTH * c, (DIMENSIONS.height) - 45);
 			}
-			g2.drawLine(0, SQUARE_WIDTH * r, (DIMENSIONS.width), SQUARE_WIDTH * r);
+			//	Draws the horizontal line
+			g2.drawLine(0, (SQUARE_WIDTH * r), DIMENSIONS.width, (SQUARE_WIDTH * r)); 
 		}
 	}
 

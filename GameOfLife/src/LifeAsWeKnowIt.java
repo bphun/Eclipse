@@ -79,21 +79,33 @@ public class LifeAsWeKnowIt {
 		
 		for (int r = 0; r < grid.length - 1; r++) {
 			for (int c = 0; c < grid[r].length - 1; c++) {
-				if (grid[r][c] == 1) {
-					if (neighbors[r][c] == 1 || neighbors[r][c] == 0) {
-						grid[r][c] = 0;
-					} else if (neighbors[r][c] >= 4) {
-						grid[r][c] = 0;
-					} /*else if (neighbors[r][c] == 2 || neighbors[r][c] == 3) {
-						continue;
-					}
-					*/
-				} else {
-					if (neighbors[r][c] == 3) {
-						grid[r][c] = 1;
-					}
-				}
+				// if (grid[r][c] == 1) {
+				// 	if (neighbors[r][c] == 1 || neighbors[r][c] == 0) {
+				// 		grid[r][c] = 0;
+				// 	} else if (neighbors[r][c] >= 4) {
+				// 		grid[r][c] = 0;
+				// 	}
+				// } else {
+				// 	if (neighbors[r][c] == 3) {
+				// 		grid[r][c] = 1;
+				// 	}
+				// }
 				
+				switch(grid[r][c]) {
+					case 1:
+						if (neighbors[r][c] == 1 || neighbors[r][c] == 0) {
+							grid[r][c] = 0;
+						} else if (neighbors[r][c] >= 4) {
+							grid[r][c] = 0;
+						}
+						break;
+					default:
+						if (neighbors[r][c] == 3) {
+							grid[r][c] = 1;
+						}
+						break;
+				}
+
 			}
 		}
 		history.add(new TwoDimensionArray(grid));
@@ -143,11 +155,11 @@ public class LifeAsWeKnowIt {
 	private void show() {
 		switch (displayType) {
 			case 1:
-				dispConsole();
+			dispConsole();
 			case 2:
-				displayGridWorld();
+			displayGridWorld();
 			case 3:
-				displayCool();
+			displayCool();
 		}
 		// if(displayType == 1) {
 		// 	dispConsole();
@@ -163,12 +175,12 @@ public class LifeAsWeKnowIt {
 			panel = new LifePanel(grid, this);
 			frame = new JFrame("Life As We Know It");
 			frame.add(panel);
+			System.setProperty("sun.java2d.opengl", "true");
 			frame.pack();
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.setVisible(true);
 			startTimer();
 		}
-		// panel.displayGrid(grid);
 	}
 
 	private void refresh() {
@@ -183,18 +195,18 @@ public class LifeAsWeKnowIt {
 		} 
 		if (currentGridVersion >= 0) {
 			int[][] temp = history.get(currentGridVersion).array();
-			 for (int r = 0; r < grid.length; r++) {
-				 for (int c = 0; c < grid[r].length; c++) {
-					 grid[r][c] = temp[r][c];
-					 System.out.print(temp[r][c] + ", ");
-				 }
-				 System.out.println();
-			 }
-			 panel.setGrid(grid);
+			for (int r = 0; r < grid.length; r++) {
+				for (int c = 0; c < grid[r].length; c++) {
+					grid[r][c] = temp[r][c];
+					System.out.print(temp[r][c] + ", ");
+				}
+				System.out.println();
+			}
+			panel.setGrid(grid);
 		}
 		
 	}
-		
+
 	public void setGrid(int[][] grid) {
 		this.grid = grid;
 	}
@@ -203,8 +215,8 @@ public class LifeAsWeKnowIt {
 		timer = new Timer(1, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				refresh();
-			}
+				refresh()
+;			}
 		});
 		timer.start();
 	}
@@ -218,32 +230,32 @@ public class LifeAsWeKnowIt {
 	}
 
 	public String[] getSavedLayoutTitles() {
-		List<Layout> savedLayouts = new ArrayList<>();
-		List<String> lines = new ArrayList<>();
-		Layout layout = new Layout();
+		if (this.savedLayouts  == null) {
+			this.savedLayouts = new ArrayList<>();
+			List<Layout> savedLayouts = new ArrayList<>();
+			Layout layout = new Layout();
 
-		try {
-			BufferedReader reader = new BufferedReader(new FileReader(new File(SAVE_FILE_DIRECTORY)));	
-			for (String x = reader.readLine(); x != null; x = reader.readLine()) {
-				if (x.contains("name: ")) {
-					if (layout.unnamed()) {
+			try {
+				BufferedReader reader = new BufferedReader(new FileReader(new File(SAVE_FILE_DIRECTORY)));	
+				for (String x = reader.readLine(); x != null; x = reader.readLine()) {
+					if (x.contains("name: ")) {
 						layout.setName(x.substring(6, x.length()));
-					} else if (!layout.locations().isEmpty()) {
 						savedLayouts.add(layout);
 						layout = new Layout();
-						layout.setName(x.substring(6, x.length()));
-					} 
-					continue;
+						continue;
+					}
+					String[] coords = x.split("  ");
+					layout.addLocation(new Location(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]))); 				
 				}
-				String[] coords = x.split("  ");
-				layout.addLocation(new Location(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]))); 				
+				reader.close();
+			} catch (IOException e) {
+				System.out.println("Error reading (" + SAVE_FILE_DIRECTORY + ")");
+				e.printStackTrace();
 			}
-		} catch (IOException e) {
-			System.out.println("Error reading (" + SAVE_FILE_DIRECTORY + ")");
-			e.printStackTrace();
-		} 
 
-		this.savedLayouts = savedLayouts;
+			this.savedLayouts = savedLayouts;
+		}
+
 		String[] fileNames = new String[savedLayouts.size()];
 		for (int i = 0; i < fileNames.length; i++) {
 			fileNames[i] = savedLayouts.get(i).name();

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Scanner;
 import javax.swing.JFrame;
 import javax.swing.Timer;
-
+import java.util.HashMap;
 
 public class LifeAsWeKnowIt {
 
@@ -24,9 +24,9 @@ public class LifeAsWeKnowIt {
 	private int[][] neighbors;
 	
 	//	The past grids that have been created, used to rewind to past generations
-	private List<TwoDimensionArray> history;
+	private HashMap<Integer, TwoDimensionArray> history;
 	
-	private List<Layout> savedLayouts;
+	private HashMap<String, Layout> savedLayouts;
 
 	private JFrame frame;
 	private LifePanel panel;
@@ -44,6 +44,7 @@ public class LifeAsWeKnowIt {
 	private String SAVE_FILE_DIRECTORY = "../SaveFile.txt";
 	
 	public static void main(String[] args) {
+		System.setProperty("sun.java2d.opengl", "true");
 		new LifeAsWeKnowIt().start();
 	}
 
@@ -52,7 +53,7 @@ public class LifeAsWeKnowIt {
 
 		//		world = new LifeWorld(rows, cols);
 		neighbors = new int[rows][cols];
-		history = new ArrayList<>();
+		history = new HashMap<>();
 		grid = new int[rows][cols];
 
 		show();
@@ -79,18 +80,6 @@ public class LifeAsWeKnowIt {
 		
 		for (int r = 0; r < grid.length - 1; r++) {
 			for (int c = 0; c < grid[r].length - 1; c++) {
-				// if (grid[r][c] == 1) {
-				// 	if (neighbors[r][c] == 1 || neighbors[r][c] == 0) {
-				// 		grid[r][c] = 0;
-				// 	} else if (neighbors[r][c] >= 4) {
-				// 		grid[r][c] = 0;
-				// 	}
-				// } else {
-				// 	if (neighbors[r][c] == 3) {
-				// 		grid[r][c] = 1;
-				// 	}
-				// }
-				
 				switch(grid[r][c]) {
 					case 1:
 						if (neighbors[r][c] == 1 || neighbors[r][c] == 0) {
@@ -108,7 +97,7 @@ public class LifeAsWeKnowIt {
 
 			}
 		}
-		history.add(new TwoDimensionArray(grid));
+		history.put(new Integer(history.size()), new TwoDimensionArray(grid));
 	}
 
 	private int getNumNeighbors(int row, int col) {
@@ -161,13 +150,6 @@ public class LifeAsWeKnowIt {
 			case 3:
 			displayCool();
 		}
-		// if(displayType == 1) {
-		// 	dispConsole();
-		// } else if(this.displayType == 2) {
-		// 	displayGridWorld();
-		// } else {
-		// 	displayCool();
-		// }
 	}
 
 	private void displayCool() {
@@ -175,7 +157,6 @@ public class LifeAsWeKnowIt {
 			panel = new LifePanel(grid, this);
 			frame = new JFrame("Life As We Know It");
 			frame.add(panel);
-			System.setProperty("sun.java2d.opengl", "true");
 			frame.pack();
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.setVisible(true);
@@ -189,22 +170,23 @@ public class LifeAsWeKnowIt {
 
 	private int currentGridVersion = -1;
 	public void rewind() {	
-		
 		if (currentGridVersion == -1) {
 			currentGridVersion = history.size() - 1; 
 		} 
+		System.out.println(currentGridVersion);
 		if (currentGridVersion >= 0) {
-			int[][] temp = history.get(currentGridVersion).array();
+			System.out.println(currentGridVersion);
+			int[][] temp = history.get(new Integer(currentGridVersion)).array();
 			for (int r = 0; r < grid.length; r++) {
 				for (int c = 0; c < grid[r].length; c++) {
 					grid[r][c] = temp[r][c];
-					System.out.print(temp[r][c] + ", ");
+					System.out.print(grid[r][c] + ", ");
 				}
 				System.out.println();
 			}
 			panel.setGrid(grid);
-		}
-		
+			currentGridVersion--;
+		}	
 	}
 
 	public void setGrid(int[][] grid) {
@@ -231,7 +213,7 @@ public class LifeAsWeKnowIt {
 
 	public String[] getSavedLayoutTitles() {
 		if (this.savedLayouts  == null) {
-			this.savedLayouts = new ArrayList<>();
+			this.savedLayouts = new HashMap<>();
 			List<Layout> savedLayouts = new ArrayList<>();
 			Layout layout = new Layout();
 
@@ -245,6 +227,7 @@ public class LifeAsWeKnowIt {
 						continue;
 					}
 					String[] coords = x.split("  ");
+					System.out.println("X: " + coords[0] + " Y: " + coords[1]);
 					layout.addLocation(new Location(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]))); 				
 				}
 				reader.close();
@@ -253,16 +236,39 @@ public class LifeAsWeKnowIt {
 				e.printStackTrace();
 			}
 
-			this.savedLayouts = savedLayouts;
+			for (Layout l : savedLayouts) {
+				this.savedLayouts.put(l.name(), l);
+			}
 		}
 
 		String[] fileNames = new String[savedLayouts.size()];
-		for (int i = 0; i < fileNames.length; i++) {
-			fileNames[i] = savedLayouts.get(i).name();
+		int i = 0;
+		for (String name : this.savedLayouts.keySet()) {
+			fileNames[i] = name;
+			i++;
 		}
 		return fileNames;
 	}
 	
+	public void loadGrid(String key) {
+		int[][] newGrid = savedLayouts.get(key).grid(grid.length, grid[0].length);
+		// for (int[] r : newGrid) {
+		// 	for (int c : r) {
+		// 		System.out.print(c);
+		// 	}
+		// 	System.out.println();
+		// }
+		System.out.println(this.grid == newGrid);
+		for (int r = 0; r < grid.length; r++) {
+			// for (int c = 0; c < grid[0].length; c++) {
+			// 	this.grid[r][c] = newGrid[r][c];
+			// }
+			System.arraycopy(newGrid[r], 0, grid[r], 0, grid.length);
+		}
+		System.out.println(this.grid == newGrid);
+		panel.setGrid(this.grid);
+	}
+
 	private void loadLife() {
 		File f = getFile();
 		Scanner scan = null;

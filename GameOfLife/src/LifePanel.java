@@ -125,6 +125,13 @@ public class LifePanel extends JPanel {
 			}	
 		});
 
+		savedLayouts.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				comboBoxAction();
+			}	
+		});
+
 		this.setLayout(new BorderLayout());
 		JPanel UIPanel = new JPanel();
 		UIPanel.setBackground(new Color(69,90,100));
@@ -142,6 +149,10 @@ public class LifePanel extends JPanel {
 		repaint();
 	}
 	
+	private void comboBoxAction() {
+		life.loadGrid((String)savedLayouts.getSelectedItem());
+	}
+
 	private void rewindButtonAction() {
 		life.rewind();
 	}
@@ -155,7 +166,15 @@ public class LifePanel extends JPanel {
 		life.step();
 	}
 
+	boolean currentlyPlaying = false;
 	private void startButtonAction() {
+		if (currentlyPlaying) {
+			startButton.setText("Start");
+			currentlyPlaying = false;
+		} else {
+			startButton.setText("Stop");
+			currentlyPlaying = true;
+		}
 		life.shouldPlay();
 		life.play();
 	}

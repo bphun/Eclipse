@@ -8,12 +8,15 @@ import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
+import java.util.Hashtable;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
-
+import javax.swing.JLabel;
+import javax.swing.JSlider;
 import java.awt.event.ActionListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class LifePanel extends JPanel {
 
@@ -23,11 +26,14 @@ public class LifePanel extends JPanel {
 	final static int SQUARE_WIDTH = 12;
 	final static int LINE_THICKNESS = 1;
 	final static Dimension DIMENSIONS = new Dimension(750, 500);
+	final static int MIN_SPEED = 1200;
+	final static int MAX_SPEED = 300;
 
 	private JButton nextButton;
 	private JButton startButton;
 	private JButton clearButton;
 	private JButton rewindButton;
+	private JSlider playSpeed;
 	private JComboBox<String> savedLayouts;
 	
 	private LifeAsWeKnowIt life;
@@ -82,7 +88,6 @@ public class LifePanel extends JPanel {
 	private void clicked(MouseEvent e) {
 		int row = e.getY() / SQUARE_WIDTH;
 		int col = e.getX() / SQUARE_WIDTH;
-
 		if (grid  == null) { return; }
 		if (grid[row][col] == 1) {
 			grid[row][col] = 0;
@@ -93,13 +98,22 @@ public class LifePanel extends JPanel {
 	}
 
 	private void addUI() {
-		String[] choices = { "CHOICE 1","CHOICE 2", "CHOICE 3","CHOICE 4","CHOICE 5","CHOICE 6"};
 		nextButton = new JButton("Next");
 		startButton = new JButton("Start");
 		clearButton = new JButton("Clear");
 		rewindButton = new JButton("Rewind");
 		savedLayouts = new JComboBox<String>(life.getSavedLayoutTitles());
+		playSpeed = new JSlider(JSlider.VERTICAL, MIN_SPEED, MAX_SPEED);
 		
+		playSpeed.setInverted(true);
+
+		Hashtable<Integer, JLabel> labelTable = new Hashtable<Integer, JLabel>();
+		labelTable.put(new Integer(MAX_SPEED), new JLabel("Fast"));
+		labelTable.put(new Integer(MIN_SPEED), new JLabel("Slow"));
+		playSpeed.setLabelTable(labelTable);
+
+		playSpeed.setPaintLabels(true);
+
 		nextButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -132,11 +146,18 @@ public class LifePanel extends JPanel {
 			}	
 		});
 
+		playSpeed.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent event) {
+				playSpeedChange();
+			}
+		});
+
 		this.setLayout(new BorderLayout());
 		JPanel UIPanel = new JPanel();
 		UIPanel.setBackground(new Color(69,90,100));
 		UIPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		UIPanel.add(startButton);
+		UIPanel.add(playSpeed);
 		UIPanel.add(nextButton);
 		UIPanel.add(clearButton);
 		UIPanel.add(rewindButton);
@@ -149,6 +170,10 @@ public class LifePanel extends JPanel {
 		repaint();
 	}
 	
+	private void playSpeedChange() {
+		life.updatePlaySpeed(playSpeed.getValue());
+	}
+
 	private void comboBoxAction() {
 		life.loadGrid((String)savedLayouts.getSelectedItem());
 	}

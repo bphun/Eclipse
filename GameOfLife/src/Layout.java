@@ -21,7 +21,7 @@ public class Layout {
 	}
 
 	public void addLocation(Location location) {
-		locations.add(location);
+		this.locations.add(location);
 	}
 	
 	public String name() {
@@ -40,15 +40,21 @@ public class Layout {
 		int[][] grid = new int[rows][cols];
 		for (Location l : locations) {
 			if (l.x() > cols || l.y() > rows) { continue; }
-			grid[l.y() - 1][l.x() - 1] = 1;
-		}
-		for (int[] r : grid) {
-			for (int c : r) {
-				System.out.print(c);
-			}
-			System.out.println();
+			grid[l.y()][l.x()] = 1;
 		}
 		return grid;
+	}
+
+	@Override
+	public String toString() {
+		String str = "Name: " + this.name + ", Locations: \n";
+		if (locations.isEmpty()) {
+			return str + "Locations is empty";
+		}
+		for (Location l : locations) {
+			str += l.toString() + "\n";
+		}
+		return str;
 	}
 
 }

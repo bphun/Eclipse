@@ -16,7 +16,7 @@ public class LifeAsWeKnowIt {
 	private int displayType = 3;
 	private int rows = 40;
 	private int cols = 63;
-	
+	private int currentGridVersion = -1;
 	// Contains layout of the grid (selected/unselected squares)
 	private int[][] grid;
 
@@ -55,15 +55,9 @@ public class LifeAsWeKnowIt {
 		neighbors = new int[rows][cols];
 		history = new HashMap<>();
 		grid = new int[rows][cols];
+		history.put(new Integer(history.size()), new TwoDimensionArray(grid));
 
 		show();
-		playTimer = new Timer(500, new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				play();
-			}
-		});
-		playTimer.start();
 	}
 
 	private int promptDisplay() {
@@ -77,7 +71,10 @@ public class LifeAsWeKnowIt {
 				neighbors[r][c] = getNumNeighbors(r,c);
 			}
 		}
-		
+
+		history.put(new Integer(history.size()), new TwoDimensionArray(grid));
+
+		System.out.println(history.size());
 		for (int r = 0; r < grid.length - 1; r++) {
 			for (int c = 0; c < grid[r].length - 1; c++) {
 				switch(grid[r][c]) {
@@ -97,7 +94,6 @@ public class LifeAsWeKnowIt {
 
 			}
 		}
-		history.put(new Integer(history.size()), new TwoDimensionArray(grid));
 	}
 
 	private int getNumNeighbors(int row, int col) {
@@ -127,6 +123,14 @@ public class LifeAsWeKnowIt {
 			if(grid[row+1][col-1] == 1) {
 				neighbors++;
 			}
+			// for (int r = row - 1; r <= row + 1; r++) {
+			// 	for (int c = row - 1; r <= col + 1; c++) {
+			// 		if (r == row && c == col) { continue; }
+			// 		if (grid[r][c] == 1) {
+			// 			neighbors++;
+			// 		}
+			// 	}
+			// }
 		}
 		return neighbors;
 	}
@@ -160,45 +164,75 @@ public class LifeAsWeKnowIt {
 			frame.pack();
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.setVisible(true);
+			startPlayTimer();
 			startTimer();
 		}
+	}
+
+	private void startPlayTimer() {
+		playTimer = new Timer(500, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				play();
+			}
+		});
+		playTimer.start();
 	}
 
 	private void refresh() {
 		panel.refresh();
 	}
 
-	private int currentGridVersion = -1;
-	public void rewind() {	
+	// public void rewind() {	 
+	// 	if (currentGridVersion == -1) { 
+	// 		currentGridVersion = history.size() - 1;
+	// 	}
+	// 	int[][] temp = history.get(new Integer(currentGridVersion)).array();
+	// 	for (int[] r : temp) {
+	// 		for (int c : r) {
+	// 			System.out.print(c);
+	// 		}
+	// 		System.out.println();
+	// 	}
+	// 	for (int r = 0; r < grid.length; r++) {
+	// 		for (int c = 0; c < grid[r].length; c++) {
+	// 			grid[r][c] = temp[r][c];
+	// 		}
+	// 	}
+	// 	panel.setGrid(grid);
+	// 	currentGridVersion--;	
+	// }
+
+	public void rewind() {
 		if (currentGridVersion == -1) {
-			currentGridVersion = history.size() - 1; 
-		} 
-		System.out.println(currentGridVersion);
+			currentGridVersion = history.size() - 1;
+		}
+
 		if (currentGridVersion >= 0) {
-			System.out.println(currentGridVersion);
-			int[][] temp = history.get(new Integer(currentGridVersion)).array();
+			int[][] newGrid = history.get(new Integer(currentGridVersion)).array();
 			for (int r = 0; r < grid.length; r++) {
-				for (int c = 0; c < grid[r].length; c++) {
-					grid[r][c] = temp[r][c];
-					System.out.print(grid[r][c] + ", ");
-				}
-				System.out.println();
+				System.arraycopy(newGrid[r], 0, grid[r], 0, grid.length);
 			}
-			panel.setGrid(grid);
-			currentGridVersion--;
-		}	
+			currentGridVersion -= 2;
+		}
 	}
 
 	public void setGrid(int[][] grid) {
 		this.grid = grid;
 	}
 
+	public void updatePlaySpeed(int newInterval) {
+		// playTimer.stop();
+		playTimer.setDelay(newInterval);
+		// playTimer.start();
+	}
+
 	private void startTimer() {
 		timer = new Timer(1, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				refresh()
-;			}
+				refresh();
+			}
 		});
 		timer.start();
 	}
@@ -216,18 +250,18 @@ public class LifeAsWeKnowIt {
 			this.savedLayouts = new HashMap<>();
 			List<Layout> savedLayouts = new ArrayList<>();
 			Layout layout = new Layout();
-
 			try {
 				BufferedReader reader = new BufferedReader(new FileReader(new File(SAVE_FILE_DIRECTORY)));	
 				for (String x = reader.readLine(); x != null; x = reader.readLine()) {
 					if (x.contains("name: ")) {
 						layout.setName(x.substring(6, x.length()));
+						continue;
+					} else if (x.contains("|")) {
 						savedLayouts.add(layout);
 						layout = new Layout();
 						continue;
 					}
-					String[] coords = x.split("  ");
-					System.out.println("X: " + coords[0] + " Y: " + coords[1]);
+					String[] coords = x.split(" ");
 					layout.addLocation(new Location(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]))); 				
 				}
 				reader.close();
@@ -252,37 +286,10 @@ public class LifeAsWeKnowIt {
 	
 	public void loadGrid(String key) {
 		int[][] newGrid = savedLayouts.get(key).grid(grid.length, grid[0].length);
-		// for (int[] r : newGrid) {
-		// 	for (int c : r) {
-		// 		System.out.print(c);
-		// 	}
-		// 	System.out.println();
-		// }
-		System.out.println(this.grid == newGrid);
 		for (int r = 0; r < grid.length; r++) {
-			// for (int c = 0; c < grid[0].length; c++) {
-			// 	this.grid[r][c] = newGrid[r][c];
-			// }
 			System.arraycopy(newGrid[r], 0, grid[r], 0, grid.length);
 		}
-		System.out.println(this.grid == newGrid);
 		panel.setGrid(this.grid);
-	}
-
-	private void loadLife() {
-		File f = getFile();
-		Scanner scan = null;
-		try {
-			scan = new Scanner(f);
-		} catch(Exception e) {
-			System.out.println("Ouch!  Problem with file!! "+e);
-		}
-		if(scan == null)
-			loadLife();
-	}
-
-	private File getFile() {
-		return new File("life100.txt");
 	}
 
 }

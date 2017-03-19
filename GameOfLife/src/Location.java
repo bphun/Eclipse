@@ -1,7 +1,4 @@
 
-import java.awt.Point;
-import java.awt.Rectangle;
-
 public class Location {
 	
 	public int x,y;
@@ -22,5 +19,10 @@ public class Location {
 	
 	public int y() {
 		return y;
+	}
+
+	@Override
+	public String toString() {
+		return "X: " + x() + " Y: " + y();
 	}
 }

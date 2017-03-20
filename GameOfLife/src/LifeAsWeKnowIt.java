@@ -13,10 +13,13 @@ import java.util.HashMap;
 
 public class LifeAsWeKnowIt {
 
+	private static final int ROWS = 40;
+	private static final int COLS = 63;
+	private static final String SAVE_FILE_DIRECTORY = "../SaveFile.txt";
+
 	private int displayType = 3;
-	private int rows = 40;
-	private int cols = 63;
-	private int currentGridVersion = -1;
+	private int numRewinds = 2;
+
 	// Contains layout of the grid (selected/unselected squares)
 	private int[][] grid;
 
@@ -41,8 +44,6 @@ public class LifeAsWeKnowIt {
 	//	Tells the game if it should play
 	private boolean shouldPlay;
 
-	private String SAVE_FILE_DIRECTORY = "../SaveFile.txt";
-	
 	public static void main(String[] args) {
 		System.setProperty("sun.java2d.opengl", "true");
 		new LifeAsWeKnowIt().start();
@@ -51,10 +52,10 @@ public class LifeAsWeKnowIt {
 	private void start() {
 		//		displayType = promptDisplay();
 
-		//		world = new LifeWorld(rows, cols);
-		neighbors = new int[rows][cols];
+		//		world = new LifeWorld(rows, COLS);
+		neighbors = new int[ROWS][COLS];
 		history = new HashMap<>();
-		grid = new int[rows][cols];
+		grid = new int[ROWS][COLS];
 		history.put(new Integer(history.size()), new TwoDimensionArray(grid));
 
 		show();
@@ -74,9 +75,8 @@ public class LifeAsWeKnowIt {
 
 		history.put(new Integer(history.size()), new TwoDimensionArray(grid));
 
-		System.out.println(history.size());
-		for (int r = 0; r < grid.length - 1; r++) {
-			for (int c = 0; c < grid[r].length - 1; c++) {
+		for (int r = 0; r < ROWS; r++) {
+			for (int c = 0; c < COLS; c++) {
 				switch(grid[r][c]) {
 					case 1:
 						if (neighbors[r][c] == 1 || neighbors[r][c] == 0) {
@@ -91,46 +91,45 @@ public class LifeAsWeKnowIt {
 						}
 						break;
 				}
-
 			}
 		}
 	}
 
 	private int getNumNeighbors(int row, int col) {
 		int neighbors = 0;    
-		if(row != 0 && row != rows - 1 && col != 0 && col != cols - 1) {
-			if(grid[row+1][col] == 1) {
-				neighbors++;
-			}
-			if(grid[row-1][col] == 1) {
-				neighbors++;
-			}
-			if(grid[row][col + 1] == 1) {
-				neighbors++;
-			}
-			if(grid[row][col-1] == 1) {
-				neighbors++;
-			}
-			if(grid[row+1][col+1] == 1) {
-				neighbors++;
-			}
-			if(grid[row-1][col-1] == 1) {
-				neighbors++;
-			}
-			if(grid[row-1][col+1] == 1) {
-				neighbors++;
-			}
-			if(grid[row+1][col-1] == 1) {
-				neighbors++;
-			}
-			// for (int r = row - 1; r <= row + 1; r++) {
-			// 	for (int c = row - 1; r <= col + 1; c++) {
-			// 		if (r == row && c == col) { continue; }
-			// 		if (grid[r][c] == 1) {
-			// 			neighbors++;
-			// 		}
-			// 	}
+		if(row != 0 && row != ROWS - 1 && col != 0 && col != COLS - 1) {
+			// if(grid[row+1][col] == 1) {
+			// 	neighbors++;
 			// }
+			// if(grid[row-1][col] == 1) {
+			// 	neighbors++;
+			// }
+			// if(grid[row][col + 1] == 1) {
+			// 	neighbors++;
+			// }
+			// if(grid[row][col-1] == 1) {
+			// 	neighbors++;
+			// }
+			// if(grid[row+1][col+1] == 1) {
+			// 	neighbors++;
+			// }
+			// if(grid[row-1][col-1] == 1) {
+			// 	neighbors++;
+			// }
+			// if(grid[row-1][col+1] == 1) {
+			// 	neighbors++;
+			// }
+			// if(grid[row+1][col-1] == 1) {
+			// 	neighbors++;
+			// }
+			for (int r = row - 1; r <= row + 1; r++) {
+				for (int c = row - 1; r <= col + 1; c++) {
+					if (r >= ROWS || c >= COLS) { continue; }
+					if (grid[r][c] == 1) {
+						neighbors++;
+					}
+				}
+			}
 		}
 		return neighbors;
 	}
@@ -183,38 +182,15 @@ public class LifeAsWeKnowIt {
 		panel.refresh();
 	}
 
-	// public void rewind() {	 
-	// 	if (currentGridVersion == -1) { 
-	// 		currentGridVersion = history.size() - 1;
-	// 	}
-	// 	int[][] temp = history.get(new Integer(currentGridVersion)).array();
-	// 	for (int[] r : temp) {
-	// 		for (int c : r) {
-	// 			System.out.print(c);
-	// 		}
-	// 		System.out.println();
-	// 	}
-	// 	for (int r = 0; r < grid.length; r++) {
-	// 		for (int c = 0; c < grid[r].length; c++) {
-	// 			grid[r][c] = temp[r][c];
-	// 		}
-	// 	}
-	// 	panel.setGrid(grid);
-	// 	currentGridVersion--;	
-	// }
-
 	public void rewind() {
-		if (currentGridVersion == -1) {
-			currentGridVersion = history.size() - 1;
-		}
+		if (history.size() - numRewinds < 0) { return; }
+		int[][] newGrid = history.get(new Integer(history.size() - numRewinds)).array();
+		System.out.println(history.size() - numRewinds);
 
-		if (currentGridVersion >= 0) {
-			int[][] newGrid = history.get(new Integer(currentGridVersion)).array();
-			for (int r = 0; r < grid.length; r++) {
-				System.arraycopy(newGrid[r], 0, grid[r], 0, grid.length);
-			}
-			currentGridVersion -= 2;
+		for (int r = 0; r < ROWS; r++) {
+			System.arraycopy(newGrid[r], 0, grid[r], 0, ROWS);
 		}
+		numRewinds++;
 	}
 
 	public void setGrid(int[][] grid) {
@@ -285,9 +261,9 @@ public class LifeAsWeKnowIt {
 	}
 	
 	public void loadGrid(String key) {
-		int[][] newGrid = savedLayouts.get(key).grid(grid.length, grid[0].length);
-		for (int r = 0; r < grid.length; r++) {
-			System.arraycopy(newGrid[r], 0, grid[r], 0, grid.length);
+		int[][] newGrid = savedLayouts.get(key).grid(ROWS, COLS);
+		for (int r = 0; r < ROWS; r++) {
+			System.arraycopy(newGrid[r], 0, grid[r], 0, ROWS);
 		}
 		panel.setGrid(this.grid);
 	}

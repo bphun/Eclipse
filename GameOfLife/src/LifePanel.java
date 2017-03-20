@@ -23,12 +23,21 @@ public class LifePanel extends JPanel {
 	// Contains layout of the grid (selected/unselected squares)
 	private int[][] grid;
 
-	final static int SQUARE_WIDTH = 12;
+	//	Width and height of each square drawn in the panel
+	final static int SQUARE_SIZE = 12;
+
+	// Thickness of each stroke drawn to create the grid
 	final static int LINE_THICKNESS = 1;
-	final static Dimension DIMENSIONS = new Dimension(750, 500);
+
+	final static Dimension PANEL_DIMENSIONS = new Dimension(750, 500);
+
+	// Minimum speed at which the simulation will play
 	final static int MIN_SPEED = 1200;
+
+	//	Maximum speed at which te simulation plays
 	final static int MAX_SPEED = 300;
 
+	//	The UI at the bottom of the panel, used to interface with the simulation
 	private JButton nextButton;
 	private JButton startButton;
 	private JButton clearButton;
@@ -36,13 +45,14 @@ public class LifePanel extends JPanel {
 	private JSlider playSpeed;
 	private JComboBox<String> savedLayouts;
 	
+	// Contains the simulation logic
 	private LifeAsWeKnowIt life;
 	
 	public LifePanel(int[][] grid, LifeAsWeKnowIt life) {
 		this.grid = grid;
 				// setBackground(new Color(84,110,122));
 		setBackground(new Color(69,90,100));
-		setPreferredSize(DIMENSIONS);
+		setPreferredSize(PANEL_DIMENSIONS);
 
 		this.life = life;
 		setUpClickListener();
@@ -50,11 +60,17 @@ public class LifePanel extends JPanel {
 		setVisible(true);
 	}
 
+	//	Used in LifeAsWeKnow it to redraw the panel
 	public void refresh() {
 		repaint();
 	}
+	
+	public void setGrid(int[][] grid) {
+		this.grid = grid;
+		repaint();
+	}
 
-	private void setUpClickListener() {
+		private void setUpClickListener() {
 		this.requestFocusInWindow();
 		this.addMouseListener(new MouseListener() {
 
@@ -86,9 +102,9 @@ public class LifePanel extends JPanel {
 	}
 
 	private void clicked(MouseEvent e) {
-		int row = e.getY() / SQUARE_WIDTH;
-		int col = e.getX() / SQUARE_WIDTH;
-		if (grid  == null) { return; }
+		int row = e.getY() / SQUARE_SIZE;
+		int col = e.getX() / SQUARE_SIZE;
+		if (grid == null) { return; }
 		if (grid[row][col] == 1) {
 			grid[row][col] = 0;
 		} else {
@@ -103,10 +119,12 @@ public class LifePanel extends JPanel {
 		clearButton = new JButton("Clear");
 		rewindButton = new JButton("Rewind");
 		savedLayouts = new JComboBox<String>(life.getSavedLayoutTitles());
-		playSpeed = new JSlider(JSlider.VERTICAL, MIN_SPEED, MAX_SPEED);
+		playSpeed = new JSlider(JSlider.HORIZONTAL, MIN_SPEED, MAX_SPEED);
 		
+		// Make the slider start at the min speed to max speed instead of max speed to min speed
 		playSpeed.setInverted(true);
 
+		// Create the table that contains the labels for Min and Max sides of the slider
 		Hashtable<Integer, JLabel> labelTable = new Hashtable<Integer, JLabel>();
 		labelTable.put(new Integer(MAX_SPEED), new JLabel("Fast"));
 		labelTable.put(new Integer(MIN_SPEED), new JLabel("Slow"));
@@ -152,6 +170,7 @@ public class LifePanel extends JPanel {
 			}
 		});
 
+		//	Create another panel sothat contains UI so that we can move it to the bottom of the panel
 		this.setLayout(new BorderLayout());
 		JPanel UIPanel = new JPanel();
 		UIPanel.setBackground(new Color(69,90,100));
@@ -164,12 +183,7 @@ public class LifePanel extends JPanel {
 		UIPanel.add(savedLayouts);
 		this.add(UIPanel, BorderLayout.SOUTH);
 	}
-	
-	public void setGrid(int[][] grid) {
-		this.grid = grid;
-		repaint();
-	}
-	
+
 	private void playSpeedChange() {
 		life.updatePlaySpeed(playSpeed.getValue());
 	}
@@ -217,7 +231,7 @@ public class LifePanel extends JPanel {
 			for (int c = 0; c < grid[0].length; c++) {
 				if (grid[r][c] == 1) {
 					g.setColor(new Color(67, 160, 71));
-					g2.fillRect(c * SQUARE_WIDTH + LINE_THICKNESS, r * SQUARE_WIDTH + LINE_THICKNESS, SQUARE_WIDTH - LINE_THICKNESS, SQUARE_WIDTH - LINE_THICKNESS);		
+					g2.fillRect(c * SQUARE_SIZE + LINE_THICKNESS, r * SQUARE_SIZE + LINE_THICKNESS, SQUARE_SIZE - LINE_THICKNESS, SQUARE_SIZE - LINE_THICKNESS);		
 					g.setColor(Color.BLACK);
 				}
 			}
@@ -228,10 +242,10 @@ public class LifePanel extends JPanel {
 		for (int r = 0; r < grid.length; r++) {
 			for (int c = 0; c < grid[0].length; c++) {
 				//	Draws the vertical line
-				g2.drawLine(SQUARE_WIDTH * c, 0, SQUARE_WIDTH * c, (DIMENSIONS.height) - 45);
+				g2.drawLine(SQUARE_SIZE * c, 0, SQUARE_SIZE * c, (PANEL_DIMENSIONS.height) - 45);
 			}
 			//	Draws the horizontal line
-			g2.drawLine(0, (SQUARE_WIDTH * r), DIMENSIONS.width, (SQUARE_WIDTH * r)); 
+			g2.drawLine(0, (SQUARE_SIZE * r), PANEL_DIMENSIONS.width, (SQUARE_SIZE * r)); 
 		}
 	}
 

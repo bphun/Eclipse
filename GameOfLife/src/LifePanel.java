@@ -157,6 +157,7 @@ public class LifePanel extends JPanel {
 			}	
 		});
 
+		savedLayouts.setSelectedIndex(3);
 		savedLayouts.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

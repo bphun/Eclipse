@@ -16,6 +16,11 @@ public class Layout {
 		locations = new ArrayList<>();
 	}
 
+	public Layout(String name) {
+		this.name = name;
+		this.locations = new ArrayList<>();
+	}
+
 	public void setName(String name) {
 		this.name = name;
 	}

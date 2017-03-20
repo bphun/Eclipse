@@ -17,24 +17,24 @@ public class LifeAsWeKnowIt {
 	private static final int COLS = 63;
 	private static final String SAVE_FILE_DIRECTORY = "../SaveFile.txt";
 
-	private int displayType = 3;
+	private int displayType = 1;
 	private int numRewinds = 2;
 
 	// Contains layout of the grid (selected/unselected squares)
-	private int[][] grid;
+	protected int[][] grid;
 
 	//	Contains the number of neighbors each cell has
-	private int[][] neighbors;
+	protected int[][] neighbors;
 	
 	//	The past grids that have been created, used to rewind to past generations
-	private HashMap<Integer, TwoDimensionArray> history;
+	protected HashMap<Integer, TwoDimensionArray> history;
 	
 	private HashMap<String, Layout> savedLayouts;
 
 	private JFrame frame;
 	private LifePanel panel;
 
-	// private LifeWorld world;
+	private LifeConsole console;
 
 	//	The timer that is used for the game loop which redraws the panel every 1ms
 	private Timer timer;
@@ -52,12 +52,10 @@ public class LifeAsWeKnowIt {
 	private void start() {
 		//		displayType = promptDisplay();
 
-		//		world = new LifeWorld(rows, COLS);
 		neighbors = new int[ROWS][COLS];
 		history = new HashMap<>();
 		grid = new int[ROWS][COLS];
 		history.put(new Integer(history.size()), new TwoDimensionArray(grid));
-
 		show();
 	}
 
@@ -95,41 +93,41 @@ public class LifeAsWeKnowIt {
 		}
 	}
 
-	private int getNumNeighbors(int row, int col) {
+	protected int getNumNeighbors(int row, int col) {
 		int neighbors = 0;    
 		if(row != 0 && row != ROWS - 1 && col != 0 && col != COLS - 1) {
-			// if(grid[row+1][col] == 1) {
-			// 	neighbors++;
-			// }
-			// if(grid[row-1][col] == 1) {
-			// 	neighbors++;
-			// }
-			// if(grid[row][col + 1] == 1) {
-			// 	neighbors++;
-			// }
-			// if(grid[row][col-1] == 1) {
-			// 	neighbors++;
-			// }
-			// if(grid[row+1][col+1] == 1) {
-			// 	neighbors++;
-			// }
-			// if(grid[row-1][col-1] == 1) {
-			// 	neighbors++;
-			// }
-			// if(grid[row-1][col+1] == 1) {
-			// 	neighbors++;
-			// }
-			// if(grid[row+1][col-1] == 1) {
-			// 	neighbors++;
-			// }
-			for (int r = row - 1; r <= row + 1; r++) {
-				for (int c = row - 1; r <= col + 1; c++) {
-					if (r >= ROWS || c >= COLS) { continue; }
-					if (grid[r][c] == 1) {
-						neighbors++;
-					}
-				}
+			if(grid[row+1][col] == 1) {
+				neighbors++;
 			}
+			if(grid[row-1][col] == 1) {
+				neighbors++;
+			}
+			if(grid[row][col + 1] == 1) {
+				neighbors++;
+			}
+			if(grid[row][col-1] == 1) {
+				neighbors++;
+			}
+			if(grid[row+1][col+1] == 1) {
+				neighbors++;
+			}
+			if(grid[row-1][col-1] == 1) {
+				neighbors++;
+			}
+			if(grid[row-1][col+1] == 1) {
+				neighbors++;
+			}
+			if(grid[row+1][col-1] == 1) {
+				neighbors++;
+			}
+			// for (int r = row - 1; r <= row + 1; r++) {
+			// 	for (int c = row - 1; r <= col + 1; c++) {
+			// 		if (r >= ROWS || c >= COLS) { continue; }
+			// 		if (grid[r][c] == 1) {
+			// 			neighbors++;
+			// 		}
+			// 	}
+			// }
 		}
 		return neighbors;
 	}
@@ -147,11 +145,14 @@ public class LifeAsWeKnowIt {
 	private void show() {
 		switch (displayType) {
 			case 1:
-			dispConsole();
+				dispConsole();
+				break;
 			case 2:
-			displayGridWorld();
+				displayGridWorld();
+				break;
 			case 3:
-			displayCool();
+				displayCool();
+				break;
 		}
 	}
 
@@ -214,11 +215,13 @@ public class LifeAsWeKnowIt {
 	}
 
 	private void displayGridWorld() {
-//		world.display(grid);
+		
 	}
 
 	private void dispConsole() {
-//		world.print(grid);
+		if (console == null) {
+			console = new LifeConsole(ROWS, COLS, this);
+		}
 	}
 
 	public String[] getSavedLayoutTitles() {
@@ -249,6 +252,8 @@ public class LifeAsWeKnowIt {
 			for (Layout l : savedLayouts) {
 				this.savedLayouts.put(l.name(), l);
 			}
+			this.savedLayouts.put(new String("Empty"), new Layout("Empty"));
+
 		}
 
 		String[] fileNames = new String[savedLayouts.size()];

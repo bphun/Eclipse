@@ -15,9 +15,9 @@ public class LifeAsWeKnowIt {
 
 	private static final int ROWS = 40;
 	private static final int COLS = 63;
-	private static final String SAVE_FILE_DIRECTORY = "../SaveFile.txt";
+	private static final String SAVE_FILE_DIRECTORY = "SaveFile.txt";
 
-	private int displayType = 1;
+	private int displayType = 3;
 	private int numRewinds = 2;
 
 	// Contains layout of the grid (selected/unselected squares)
@@ -27,7 +27,7 @@ public class LifeAsWeKnowIt {
 	protected int[][] neighbors;
 	
 	//	The past grids that have been created, used to rewind to past generations
-	protected HashMap<Integer, TwoDimensionArray> history;
+	// protected HashMap<Integer, TwoDimensionArray> history;
 	
 	private HashMap<String, Layout> savedLayouts;
 
@@ -44,6 +44,8 @@ public class LifeAsWeKnowIt {
 	//	Tells the game if it should play
 	private boolean shouldPlay;
 
+	private int numSteps;
+
 	public static void main(String[] args) {
 		System.setProperty("sun.java2d.opengl", "true");
 		new LifeAsWeKnowIt().start();
@@ -52,10 +54,12 @@ public class LifeAsWeKnowIt {
 	private void start() {
 		//		displayType = promptDisplay();
 
+		this.numSteps = 0;
+
 		neighbors = new int[ROWS][COLS];
-		history = new HashMap<>();
+		// history = new HashMap<>();
 		grid = new int[ROWS][COLS];
-		history.put(new Integer(history.size()), new TwoDimensionArray(grid));
+		// history.put(new Integer(history.size()), new TwoDimensionArray(grid));
 		show();
 	}
 
@@ -64,14 +68,8 @@ public class LifeAsWeKnowIt {
 		return 1;
 	}
 
-	public void step() {
-		for (int r = 0; r < neighbors.length - 1; r++) {
-			for (int c = 0; c < neighbors[r].length - 1; c++) {
-				neighbors[r][c] = getNumNeighbors(r,c);
-			}
-		}
-
-		history.put(new Integer(history.size()), new TwoDimensionArray(grid));
+	public void step() {	
+		getNeighbors();
 
 		for (int r = 0; r < ROWS; r++) {
 			for (int c = 0; c < COLS; c++) {
@@ -91,6 +89,12 @@ public class LifeAsWeKnowIt {
 				}
 			}
 		}
+		printGrid();
+		numSteps++;
+		if (panel != null) {
+			panel.setSteps(this.numSteps);
+		}
+
 	}
 
 	protected int getNumNeighbors(int row, int col) {
@@ -184,14 +188,34 @@ public class LifeAsWeKnowIt {
 	}
 
 	public void rewind() {
-		if (history.size() - numRewinds < 0) { return; }
-		int[][] newGrid = history.get(new Integer(history.size() - numRewinds)).array();
-		System.out.println(history.size() - numRewinds);
+		// if (history.size() - numRewinds < 0) { return; }
+		// int[][] newGrid = history.get(new Integer(history.size() - numRewinds)).array();
+		// System.out.println(history.size() - numRewinds);
+
+		// for (int r = 0; r < ROWS; r++) {
+		// 	System.arraycopy(newGrid[r], 0, grid[r], 0, ROWS);
+		// }
+		// numRewinds++;
+		getNeighbors();
 
 		for (int r = 0; r < ROWS; r++) {
-			System.arraycopy(newGrid[r], 0, grid[r], 0, ROWS);
+			for (int c = 0; c < COLS; c++) {
+				switch(grid[r][c]) {
+					case 1:
+						if (neighbors[r][c] == 1 || neighbors[r][c] == 0) {
+							grid[r][c] = 1;
+						} else if (neighbors[r][c] >= 4) {
+							grid[r][c] = 1;
+						}
+						break;
+					default:
+						if (neighbors[r][c] == 3) {
+							grid[r][c] = 0;
+						}
+						break;
+				}
+			}
 		}
-		numRewinds++;
 	}
 
 	public void setGrid(int[][] grid) {
@@ -221,6 +245,33 @@ public class LifeAsWeKnowIt {
 	private void dispConsole() {
 		if (console == null) {
 			console = new LifeConsole(ROWS, COLS, this);
+		}
+	}
+
+	private void getNeighbors() {
+		for (int r = 0; r < neighbors.length - 1; r++) {
+			for (int c = 0; c < neighbors[r].length - 1; c++) {
+				neighbors[r][c] = getNumNeighbors(r,c);
+			}
+		}
+	}
+
+	private void printGrid() {
+		if (grid == null) { return; }
+		System.out.println("Grid: ");
+		for (int[] r : grid) {
+			for (int c : r) {
+				switch (c) {
+					case 0:
+						System.out.print(".");
+						break;
+					case 1:
+						System.out.print("*");
+						break;
+
+				}
+			}
+			System.out.println();
 		}
 	}
 

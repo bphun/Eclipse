@@ -11,18 +11,17 @@ public class LifeConsole extends LifeAsWeKnowIt {
 	}
 
 	private void start() {
-		Scanner scanner = new Scanner(System.in);
 		printGrid();
-		while (!scanner.next().equalsIgnoreCase("quit")) {
-			String input = scanner.next();
+		// while (!scanner.next().equalsIgnoreCase("quit")) {
+		// 	String input = scanner.next();
 
-			if (input.equalsIgnoreCase("next")) {
-				step();
-			} else if (input.equalsIgnoreCase("start")) {
-				shouldPlay();
-				play();
-			}
-		}
+		// 	if (input.equalsIgnoreCase("next")) {
+		// 		step();
+		// 	} else if (input.equalsIgnoreCase("start")) {
+		// 		shouldPlay();
+		// 		play();
+		// 	}
+		// }
 	}
 	
 

@@ -44,15 +44,19 @@ public class LifePanel extends JPanel {
 	private JButton rewindButton;
 	private JSlider playSpeed;
 	private JComboBox<String> savedLayouts;
-	
+
 	// Contains the simulation logic
 	private LifeAsWeKnowIt life;
+
+	private int numSteps;
 	
 	public LifePanel(int[][] grid, LifeAsWeKnowIt life) {
 		this.grid = grid;
 				// setBackground(new Color(84,110,122));
 		setBackground(new Color(69,90,100));
 		setPreferredSize(PANEL_DIMENSIONS);
+
+		this.numSteps = 0;
 
 		this.life = life;
 		setUpClickListener();
@@ -200,6 +204,7 @@ public class LifePanel extends JPanel {
 	private void clearButtonAction() {
 		this.grid = new int[grid.length][grid[0].length];
 		life.setGrid(this.grid);
+		savedLayouts.setSelectedIndex(3);
 	}
 
 	private void nextButtonAction() {
@@ -219,6 +224,10 @@ public class LifePanel extends JPanel {
 		life.play();
 	}
 	
+	public void setSteps(int steps) {
+		this.numSteps = steps;
+	}
+
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -228,10 +237,35 @@ public class LifePanel extends JPanel {
 
 		drawGrid(g2);
 		
+		// g2.drawString()
+
 		for (int r = 0; r < grid.length; r++) {
 			for (int c = 0; c < grid[0].length; c++) {
 				if (grid[r][c] == 1) {
 					g.setColor(new Color(67, 160, 71));
+					// switch ((int)(Math.random() * 7)) {
+					// 	case 0:
+					// 		g2.setColor(Color.RED);
+					// 		break;
+					// 	case 1:
+					// 		g2.setColor(Color.ORANGE);
+					// 		break;
+					// 	case 2:
+					// 		g2.setColor(Color.YELLOW);
+					// 		break;
+					// 	case 3:
+					// 		g2.setColor(Color.GREEN);
+					// 		break;
+					// 	case 4:
+					// 		g2.setColor(Color.BLUE);
+					// 		break;
+					// 	case 5:
+					// 		g2.setColor(Color.MAGENTA);
+					// 		break;
+					// 	case 6:
+					// 		g2.setColor(new Color(216, 191, 216));
+					// 		break;
+					// }
 					g2.fillRect(c * SQUARE_SIZE + LINE_THICKNESS, r * SQUARE_SIZE + LINE_THICKNESS, SQUARE_SIZE - LINE_THICKNESS, SQUARE_SIZE - LINE_THICKNESS);		
 					g.setColor(Color.BLACK);
 				}

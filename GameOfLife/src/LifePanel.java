@@ -37,6 +37,8 @@ public class LifePanel extends JPanel {
 	//	Maximum speed at which te simulation plays
 	final static int MAX_SPEED = 300;
 
+	final static int EMPTY_GRID_INDEX = 3;
+
 	//	The UI at the bottom of the panel, used to interface with the simulation
 	private JButton nextButton;
 	private JButton startButton;
@@ -161,7 +163,7 @@ public class LifePanel extends JPanel {
 			}	
 		});
 
-		savedLayouts.setSelectedIndex(3);
+		savedLayouts.setSelectedIndex(EMPTY_GRID_INDEX);
 		savedLayouts.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -204,7 +206,7 @@ public class LifePanel extends JPanel {
 	private void clearButtonAction() {
 		this.grid = new int[grid.length][grid[0].length];
 		life.setGrid(this.grid);
-		savedLayouts.setSelectedIndex(3);
+		savedLayouts.setSelectedIndex(EMPTY_GRID_INDEX);
 	}
 
 	private void nextButtonAction() {

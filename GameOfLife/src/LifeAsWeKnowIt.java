@@ -304,7 +304,6 @@ public class LifeAsWeKnowIt {
 				this.savedLayouts.put(l.name(), l);
 			}
 			this.savedLayouts.put(new String("Empty"), new Layout("Empty"));
-
 		}
 
 		String[] fileNames = new String[savedLayouts.size()];

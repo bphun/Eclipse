@@ -20,15 +20,15 @@ public class PictureTester
 		 * You will write the methods that do the following
 		 * 
 		 */
-//		testZeroBlue();
+		testZeroBlue();
 //		testKeepOnlyBlue();
 //	    testKeepOnlyRed();
 //      testKeepOnlyGreen();
 //		testNegate();
 //		testGrayscale();
 //		testEdgeDetection();
-//		testFixUnderwater();
-		testMirrorVertical();
+		testFixUnderwater();
+//		testMirrorVertical();
         //	  testMirrorTemple();
 		//    testMirrorArms();
 		//    testMirrorGull();

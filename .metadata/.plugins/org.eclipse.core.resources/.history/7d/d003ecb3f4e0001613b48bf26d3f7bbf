@@ -1,0 +1,91 @@
+package Klondike;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.Timer;
+import javax.swing.border.TitledBorder;
+import javax.swing.JPanel;
+
+public class KlondikePanel extends JPanel {
+
+	private static final Dimension PREFERRED_DIM = new Dimension(1000,500);
+
+	private static int click_X = 0;
+	private static int click_Y = 0;
+	
+	private static KlondikeBoard klondikeBoard;
+	
+	public KlondikePanel() {
+		
+		klondikeBoard = new KlondikeBoard();
+		
+		setBackground(new Color(46,125,50));
+		this.setPreferredSize(PREFERRED_DIM);
+		setVisible(true);
+	}
+	
+	private void setUpClickListener() {
+		// Whoever has focus is who can interact with mouse and keyboard, etc
+		this.requestFocusInWindow();
+
+		// similar to having an entity ready to interact with the Mouse
+		this.addMouseListener(new MouseListener() {
+			/*
+			 * If you want to detect mouse dragging, then use a mouseMotionListener
+			 */
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+
+			}
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+
+			}
+
+			@Override
+			public void mousePressed(MouseEvent click) {
+				clickedAt(click);
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+			}
+
+		});
+
+	}
+	
+	protected void clickedAt(MouseEvent click) {
+		click_X = click.getX();
+		click_Y = click.getY();		
+		klondikeBoard.clickedAt(click_X, click_Y);
+	}
+
+	@Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+	}
+
+}

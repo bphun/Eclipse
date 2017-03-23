@@ -76,7 +76,7 @@ public class LifePanel extends JPanel {
 		repaint();
 	}
 
-		private void setUpClickListener() {
+	private void setUpClickListener() {
 		this.requestFocusInWindow();
 		this.addMouseListener(new MouseListener() {
 
@@ -234,10 +234,7 @@ public class LifePanel extends JPanel {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
-		Graphics2D g2 = (Graphics2D)g;
-		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-		drawGrid(g2);
+g
 		
 		// g2.drawString()
 
@@ -245,6 +242,7 @@ public class LifePanel extends JPanel {
 			for (int c = 0; c < grid[0].length; c++) {
 				if (grid[r][c] == 1) {
 					g.setColor(new Color(67, 160, 71));
+					//	This draws the squares in rainbow colors
 					// switch ((int)(Math.random() * 7)) {
 					// 	case 0:
 					// 		g2.setColor(Color.RED);

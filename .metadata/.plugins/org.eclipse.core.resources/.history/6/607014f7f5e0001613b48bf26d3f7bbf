@@ -1,0 +1,38 @@
+package Klondike;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.RenderingHints.Key;
+import java.util.ArrayList;
+import java.util.List;
+
+public class KlondikeBoard {
+
+	private static List<Pile> piles;
+
+	public KlondikeBoard() {
+		piles = new ArrayList<>();
+		for (int i = 1; i < 8; i++) {
+			piles.add(new Pile(i));
+		}
+
+	}
+
+	public void clickedAt(int x, int y) {
+
+	}
+
+	public void drawBoardGUI(Graphics g) {
+		Graphics2D graphics2d = (Graphics2D) g;
+		
+		RenderingHints rh = new RenderingHints(
+	             (Key) RenderingHints.VALUE_ANTIALIAS_ON);
+		
+		g.setColor(Color.WHITE);
+		graphics2d.setStroke(new BasicStroke(2));
+		g.drawRoundRect(500, 30, 100, 200, 25, 50);
+	}
+
+}

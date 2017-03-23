@@ -416,7 +416,6 @@ public class DonJeweledPanel extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		drawBackground(g);
 				
 //		if (!gameOver) {
 //			g.drawString("Remaining: " + timeRemaining, 200, 20);
@@ -435,21 +434,7 @@ public class DonJeweledPanel extends JPanel {
 				}
 			}
 		}
-
-		drawExtraStuff(g);
 	}
-
-	private void drawExtraStuff(Graphics g) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	private void drawBackground(Graphics g) {
-		// TODO Auto-generated method stub
-		
-	}
-
 
 	private void openImages() {
 		/*

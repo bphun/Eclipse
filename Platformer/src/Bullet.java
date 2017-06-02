@@ -15,7 +15,6 @@ public class Bullet extends GameObject {
 	}
 
 	public boolean isOwner(Player player) {
-		// return this.owner.equals(player);
 		return owner.equals(player);
 	}
 

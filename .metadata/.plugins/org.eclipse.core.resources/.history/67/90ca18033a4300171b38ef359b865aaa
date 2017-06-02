@@ -1,0 +1,11 @@
+import java.awt.Dimension;
+
+public class Asteroid {
+
+	private Dimension dimension;
+
+	public static void main(String[] args) {
+
+	}
+
+}

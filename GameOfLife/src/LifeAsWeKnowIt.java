@@ -100,38 +100,30 @@ public class LifeAsWeKnowIt {
 	protected int getNumNeighbors(int row, int col) {
 		int neighbors = 0;    
 		if(row != 0 && row != ROWS - 1 && col != 0 && col != COLS - 1) {
-			if(grid[row+1][col] == 1) {
+			if(grid[row + 1][col] == 1) {
 				neighbors++;
-			}
-			if(grid[row-1][col] == 1) {
+			} 
+			if(grid[row - 1][col] == 1) {
 				neighbors++;
 			}
 			if(grid[row][col + 1] == 1) {
 				neighbors++;
 			}
-			if(grid[row][col-1] == 1) {
+			if(grid[row][col - 1] == 1) {
 				neighbors++;
 			}
-			if(grid[row+1][col+1] == 1) {
+			if(grid[row + 1][col + 1] == 1) {
 				neighbors++;
 			}
-			if(grid[row-1][col-1] == 1) {
+			if(grid[row - 1][col - 1] == 1) {
 				neighbors++;
 			}
-			if(grid[row-1][col+1] == 1) {
+			if(grid[row - 1][col + 1] == 1) {
 				neighbors++;
 			}
-			if(grid[row+1][col-1] == 1) {
+			if(grid[row + 1][col - 1] == 1) {
 				neighbors++;
 			}
-			// for (int r = row - 1; r <= row + 1; r++) {
-			// 	for (int c = row - 1; r <= col + 1; c++) {
-			// 		if (r >= ROWS || c >= COLS) { continue; }
-			// 		if (grid[r][c] == 1) {
-			// 			neighbors++;
-			// 		}
-			// 	}
-			// }
 		}
 		return neighbors;
 	}
@@ -188,14 +180,6 @@ public class LifeAsWeKnowIt {
 	}
 
 	public void rewind() {
-		// if (history.size() - numRewinds < 0) { return; }
-		// int[][] newGrid = history.get(new Integer(history.size() - numRewinds)).array();
-		// System.out.println(history.size() - numRewinds);
-
-		// for (int r = 0; r < ROWS; r++) {
-		// 	System.arraycopy(newGrid[r], 0, grid[r], 0, ROWS);
-		// }
-		// numRewinds++;
 		getNeighbors();
 
 		for (int r = 0; r < ROWS; r++) {
@@ -223,9 +207,7 @@ public class LifeAsWeKnowIt {
 	}
 
 	public void updatePlaySpeed(int newInterval) {
-		// playTimer.stop();
 		playTimer.setDelay(newInterval);
-		// playTimer.start();
 	}
 
 	private void startTimer() {
@@ -322,5 +304,4 @@ public class LifeAsWeKnowIt {
 		}
 		panel.setGrid(this.grid);
 	}
-
 }

@@ -45,7 +45,26 @@ public class OpponentLogic {
 			opponentPlayer.move();
 		}
 	}
-
+    
+    public void circleMove() {
+        GameObject closestObject = map.objects().get(0);
+        double closestDistance = opponentPlayer.location.distanceTo(closestObject.location);
+        
+        for (int i = 0; i < map.objects().size(); i++) {
+            GameObject go = map.objects().get(i);
+            
+            if ((go.equals(opponentPlayer)) || (go instanceof Bullet)) { continue; }
+            
+            double distance = opponentPlayer.location.distanceTo(go.location);
+            if (distance < closestDistance) {
+                closestDistance = distance;
+                closestObject = go;
+            }
+        }
+        
+        
+    }
+ 
 	private boolean shouldShoot() {
 		if (numShots == (int)(Math.random() * 20)) {
 			numShots = 0;

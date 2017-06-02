@@ -1,0 +1,429 @@
+import java.net.URL;
+import java.awt.Image;
+import javax.swing.Timer;
+import javax.swing.JFrame;
+import java.awt.Dimension;
+import java.util.ArrayList;
+import java.io.IOException;
+import java.io.Serializable;
+import javax.imageio.ImageIO;
+import java.net.DatagramPacket;
+import java.awt.event.MouseEvent;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.awt.event.ActionEvent;
+import java.io.ByteArrayInputStream;
+import java.awt.event.ActionListener;
+import java.io.ByteArrayOutputStream;
+
+public class DoodleJump implements Serializable {
+
+
+	private Timer t;
+	private int winner;
+	private int winTime;
+	private JFrame frame;
+	private Client client;
+	private Server server;
+	private int timeElapsed;
+	private boolean isServer;
+	private DoodleJumpPanel panel;
+	private ArrayList<Image> assets;
+	private Location opponentLocation;
+	private boolean multiplayerMode = false;
+	private ArrayList<GameObject> gameObjects;
+
+	private static final int BALL_DIAMETER = 15;
+	private static final int NUM_PLATFORMS = 15;
+	private static final int PLATFORM_WIDTH = 100;
+	private static final int PLATFORM_HEIGHT = 15;
+	private static final int REFRESH_INTERVAL = 11;
+	private static final int FINISH_CIRCLE_DIAMETER = 20;
+	private static final Dimension SCREEN_DIM = new Dimension(600, 800);
+	private static final String[] ASSET_URLS = {"/Game_Background.png"};
+
+	public static void main(String[] args) {
+		new DoodleJump().start();
+	}
+
+	private void start() {
+		frame = new JFrame("Doodle Jump");
+
+		panel = new DoodleJumpPanel(this, SCREEN_DIM);
+		
+		assets = new ArrayList<>();
+		gameObjects = new ArrayList<>();
+
+		frame.add(panel);
+		frame.pack();
+		frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		 openAssetImages();
+
+		winner = -1;
+
+		// if (multiplayerMode) {
+		// 	server = new Server();
+		// 	if (!server.startSuccessfully()) {
+		// 		server = null;
+		// 		client = new Client();
+		// 		isServer = false;
+		// 		frame.setTitle("Doodle Jump (Client)");
+
+		// 		try {
+		// 			Thread.sleep(20);
+		// 		} catch (Exception e) {}
+
+		// 		DatagramPacket packet = getReceivedPacket();
+		// 		byteArrayToGameObjects(packet.getData());
+
+		// 	} else {
+		// 		isServer = true;
+		// 		frame.setTitle("Doodle Jump (Server)");
+
+		// 		initPlatforms();
+		// 		initPlayers();
+		// 		initFinishCircle();
+		// 		startTimer();
+
+		// 		byte[] serializedGameObjects = gameObjectsToByteArray();
+		// 		if (serializedGameObjects == null) { return; }
+		// 		sendData(serializedGameObjects);
+		// 	}
+		// 	return;
+		// }
+
+		initPlatforms();
+		initPlayers();
+		initFinishCircle();
+
+		startTimer();
+	}
+
+	private void startTimer() {
+		t = new Timer(1, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (timeElapsed % 11 == 0) {
+					refresh();
+				}
+				panel.updateTimeElapsed((++timeElapsed) / 1000);
+			}
+		});
+		t.start();
+	}
+
+	private void initPlatforms() {
+		// for (int i = 0; i < NUM_PLATFORMS; i++) {
+		// 	gameObjects.add(0, new Platform(new Location( Math.random() * SCREEN_DIM.width - PLATFORM_WIDTH, Math.random() * SCREEN_DIM.height ), PLATFORM_WIDTH, 15, this));	
+		// }
+
+		int x = 0;
+		int y = 25;
+		for (int i = 0; i < NUM_PLATFORMS; i++) {
+			if (x > width()) {
+				x -= width();
+			}
+			if (y > height()) {
+				y -= height();
+			}
+			if (x > 2 * width()) {
+				x -= 2 * width();
+			}
+			if (y > 2 * height()) {
+				y -= 2 * height();
+			}
+
+			// if (assets.size() >= 2) {
+				// gameObjects.add(0, new Platform(new Location(x, y), assets.get(1), this));
+			// } else {
+				gameObjects.add(0, new Platform(new Location(x, y), PLATFORM_WIDTH, PLATFORM_HEIGHT, this));
+			// }
+
+			switch ((int) (Math.random() * 4)) {
+		 		case 0:
+		 			if (x < width() - 200) {
+		 				x += 125;
+		 			}
+		 			if (x < (width() / 2)) {
+		 				x += 300;
+		 			} else if(x > (width()/2)) {
+		 				 x -= 325;
+		 			}
+		 			break;
+		 		case 1:
+		 			if (x > 100) {
+		 				x -= 100;
+		 			}
+		 			if (x < (width()/2)) {
+		 				x += 300;
+		 			} else if (x > (width()/2)) {
+		 				x -= 325;
+		 			}
+		 			break;
+		 		case 2:
+		 			if (x > width() - PLATFORM_WIDTH) {
+		 				x = width() - PLATFORM_WIDTH;
+		 			}
+		 			if (x < (width()/2)) {
+		 				x += 300;
+		 			} else if (x > (width()/2)) {
+		 				x -= 325;
+		 			}
+		 			break;
+		 		case 3:
+		 			if (x < (width()/2)){
+		 				x += 300;
+		 			} else if (x > (width()/2)) {
+		 				x -= 325;
+		 			}
+		 			break;
+
+		 	}
+
+		 	switch ((int) (Math.random() * 2)) {
+		 		case 0:
+		 			y += 60;
+		 			break;
+		 		case 1:
+		 			y += 64;
+		 			break;
+		 	}
+
+		 }
+	
+	}
+
+	// Precondition: Platforms Must be intialized and added to gameObjects
+	private void initPlayers() {
+		Location location = null;
+
+		double min = height();
+		for (GameObject go : gameObjects) {
+			if (go instanceof Platform) {
+				if (height() - go.location.y() < min) {
+					min = height() - go.location.y();
+					location = go.location;
+				}
+			}
+		}
+
+		if (assets.size() >= 1) {
+			gameObjects.add(new Player(new Location(location), assets.get(0), this));
+		} else {
+			gameObjects.add(new Player(new Location(location), BALL_DIAMETER, this));
+		}
+		gameObjects.add(gameObjects.size() - 1, new Player(new Location(location), BALL_DIAMETER, true, this));
+	}
+
+	// Precondition: Platforms must be intialized and added to gameObjects and player must be added to gameObjects
+	private void initFinishCircle() {
+		Platform platform = null;
+		Player player = player();
+		double distance = 0;
+
+		for (int i = 0; i < gameObjects.size() - 1; i++) {
+			Location loc = gameObjects.get(i).location;
+			if (player.location.distanceTo(loc.x(), loc.y()) > distance) {
+				platform = (Platform)gameObjects.get(i);
+			}
+		}
+
+
+		gameObjects.add(0, new FinishCircle(new Location( (platform.location.x() + (PLATFORM_WIDTH / 2)) - (FINISH_CIRCLE_DIAMETER / 2), (platform.location.y() - FINISH_CIRCLE_DIAMETER) - 5), this));
+	}
+
+	private void openAssetImages() {
+		for (String s : ASSET_URLS) {
+			URL imgURL = null;
+			try {	
+				imgURL = getClass().getResource(s);
+				if (imgURL != null) {
+					assets.add(ImageIO.read(imgURL));
+				}
+			} catch (IOException e) {
+				System.err.println("Could not open image ( " + imgURL + " )");
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void refresh() {
+		checkCollision();
+		fall();
+		move();	
+		player().shoot();
+		removeGameObjects();
+		draw();
+	}
+
+	private void updateOpponentLocation() {
+
+	}
+
+	private void checkCollision() {
+		for (int i = 0; i < gameObjects.size(); i++) {
+			gameObjects.get(i).checkCollision();
+		}
+	}
+
+	private void move() {
+		for (int i = 0; i < gameObjects.size(); i++) {
+			GameObject go = gameObjects.get(i);
+			go.move();
+		}
+	}
+
+	private void fall() {
+		Player p = player();
+		// if (p.hitPlatform || p.willMoveOffscreen()) { return; }
+		p.vY -= 0.98;
+		// if (p.vY < -15) {
+		// 	p.vY = -15;
+		// }
+
+		p = opponent();
+		// if (p.hitPlatform || p.willMoveOffscreen()) { return; }
+		p.vY -= 0.98;
+		// if (p.vY < -15) {
+		// 	p.vY = -15;
+		// }
+	}
+
+	private void removeGameObjects() {
+		for (int i = gameObjects.size() - 1; i >= 0; i--) {
+			GameObject go = gameObjects.get(i);
+			if (go.shouldRemove()) {
+				gameObjects.remove(i);
+			}
+		}
+	}
+
+//	private byte[] gameObjectsToByteArray() {
+//		try {
+//			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//			ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+//			for (GameObject go : gameObjects) {
+//				objectOutputStream.writeObject(go.serialize());
+//			}
+//			return byteArrayOutputStream.toByteArray();
+//		}  catch (IOException e) {
+//			System.err.println("Could not serialize gameObjects");
+//			e.printStackTrace();
+//		}
+//		return null;
+//	}
+//
+//	private void byteArrayToGameObjects(byte[] bytes) {
+//		gameObjects.clear();
+//		try {
+//			ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+//			ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+//			while (objectInputStream.available() > 0) {
+//				gameObjects.add((GameObject)objectInputStream.readObject());
+//			}
+//		} catch (IOException e) {
+//			System.err.println("Could not deserialize byte array to gameObjects");
+//			e.printStackTrace();
+//		} catch (ClassNotFoundException cfe) {}
+//	}
+
+	private void draw() {
+		panel.repaint();
+	}
+
+	public void restart() {
+		t.stop();
+		gameObjects.clear();
+		initPlatforms();
+		initPlayers();
+		initFinishCircle();
+		panel.setWinTime(-1);
+		timeElapsed = 0;
+		t.start();
+	}
+
+	public void opponentWin() {
+		winner = 1;
+		panel.setWinner(1);
+		restart();
+	}
+
+	public void playerWin() {
+		winner = 0;
+		panel.setWinner(0);
+		restart();
+	}
+
+
+	public void mouseMoved(int mouseX, int mouseY) {
+		Player p = player();
+		int xStart = (int)(p.location.x());
+		int yStart = (int)(p.location.y());
+		p.aimWeapon(Math.atan2(mouseY - yStart, mouseX - xStart));
+	}
+
+	// public void sendData(byte[] data) {
+	// 	if (!multiplayerMode) { return; }
+	// 	if (isServer) {
+	// 		server.sendData(data);
+	// 	} else {
+	// 		client.sendData(data);
+	// 	}
+	// }
+
+	// public DatagramPacket getReceivedPacket() {
+	// 	if (!multiplayerMode) { return null; }
+	// 	if (isServer) {
+	// 		return server.receivePacket();
+	// 	} else {
+	// 		return client.receivePacket();
+	// 	}
+	// }
+
+	public void clickToRestart() {
+		panel.clickToRestart();
+	}
+
+	public void win() {
+		winTime = timeElapsed / 1000;
+		panel.setWinTime(winTime);
+	}
+
+	public Image backgroundImage() {
+		return assets.get(1);
+	}
+
+	public boolean backgroundImageAvailable() {
+		return assets.size() >= 2 && assets.get(1) != null;
+	}
+
+	public FinishCircle finishCircle() {
+		return (FinishCircle)gameObjects.get(0);
+	}
+
+	public Player player() {
+		return (Player)gameObjects.get(gameObjects.size() - 1);
+	}
+
+	public Player opponent() {
+		return (Player)gameObjects.get(gameObjects.size() - 2);
+	}
+
+	public ArrayList<GameObject> gameObjects() {
+		return this.gameObjects;
+	}
+
+	public Dimension dimensions() {
+		return this.SCREEN_DIM;
+	}
+
+	public int width() {
+		 return this.SCREEN_DIM.width;
+	}
+
+	public int height() {
+		return this.SCREEN_DIM.height;
+	}
+}

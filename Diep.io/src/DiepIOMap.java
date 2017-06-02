@@ -117,7 +117,6 @@ public class DiepIOMap {
 	}
 	
 	public void playerShoot(boolean shouldShoot) {
-		// addGameObject(playerTank.shoot());
 		playerTank.updateShooting(shouldShoot);
 	}
 

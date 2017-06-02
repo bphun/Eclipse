@@ -1,0 +1,10 @@
+import javax.swing.JPanel;
+import java.awt.Dimension;
+
+public class AsteroidPanel extends JPanel {
+
+	public AsteroidPanel(Dimension dimensions, Asteroid asteroid) {
+
+	}
+
+}

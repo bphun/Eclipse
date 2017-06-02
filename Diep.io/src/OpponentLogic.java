@@ -45,7 +45,7 @@ public class OpponentLogic {
 			opponentTank.move();
 		}
 	}
-
+    
 	private boolean shouldShoot() {
 		if (numShots == (int)(Math.random() * 20)) {
 			numShots = 0;

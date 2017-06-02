@@ -233,16 +233,14 @@ public class LifePanel extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-
-g
 		
 		// g2.drawString()
+		Graphics2D g2 = (Graphics2D)g;
 
 		for (int r = 0; r < grid.length; r++) {
 			for (int c = 0; c < grid[0].length; c++) {
 				if (grid[r][c] == 1) {
 					g.setColor(new Color(67, 160, 71));
-					//	This draws the squares in rainbow colors
 					// switch ((int)(Math.random() * 7)) {
 					// 	case 0:
 					// 		g2.setColor(Color.RED);
@@ -267,10 +265,12 @@ g
 					// 		break;
 					// }
 					g2.fillRect(c * SQUARE_SIZE + LINE_THICKNESS, r * SQUARE_SIZE + LINE_THICKNESS, SQUARE_SIZE - LINE_THICKNESS, SQUARE_SIZE - LINE_THICKNESS);		
-					g.setColor(Color.BLACK);
+					g2.setColor(Color.BLACK);
 				}
 			}
 		}
+		drawGrid(g2);
+
 	}
 
 	private void drawGrid(Graphics2D g2) {

@@ -1,161 +1,52 @@
-import java.awt.*;
-import java.awt.geom.AffineTransform;
+import java.awt.Color;
+import java.awt.Rectangle;
+import java.awt.Graphics2D;
 
-public class Ball implements Comparable<Ball>{
+public class Ball {
 
-	public Vector2d velocity;
-	public Vector2d position;
-	private float mass;
-	private float radius;
-	private float angularVel;
-	private float orientation = 45f;
+	private Color color;
+	private BallBounce ballBounce;
+	protected Location location;
+	protected float vX, vY;
 
-	public Ball(float x, float y, float radius)
-	{
-		this(x, y, radius, 1);
+	private static final int BALL_DIAMETER = 30;
 
+	public Ball(Location location, BallBounce ballBounce) {
+		this.location = location;
+		this.ballBounce = ballBounce;
+		this.color = Color.RED;
 	}
 
-	public Ball(float x, float y, float radius, float mass)
-	{
-		this.velocity = new Vector2d(0, 0);
-		this.position = new Vector2d(x, y);
-		this.setMass(mass);
-		this.setRadius(radius);
+	public void draw(Graphics2D g) {
+		g.setColor(color);
+		g.fillOval((int)location.x(), (int)location.y(), BALL_DIAMETER, BALL_DIAMETER);
+		g.setColor(Color.BLACK);
 	}
 
-	public Color getBallColor(float magnitude)
-	{
-		float maxMagnitude = 1000; // tweak this to get the right color range
-
-		magnitude = magnitude < maxMagnitude ? magnitude : maxMagnitude;
-
-		float H = (magnitude/maxMagnitude) * 0.38f;  // 0.4f = green
-		float S = 0.98f;
-		float B = 0.95f;
-
-		return Color.getHSBColor(H, S, B);
+	public void updateColor(double speed) {
+		this.color = color;
 	}
 
-
-	public void draw(Graphics2D g2)
-	{
-
-
-
-		//g2.setColor(getBallColor(velocity.getLength()));
-		//g2.drawOval((int) (position.getX() - getRadius()), (int) (position.getY() - getRadius()), (int) (2 * getRadius()) , (int) (2 * getRadius()) );
-		g2.setColor(getBallColor(velocity.getLength()));
-		g2.fillOval( (int) (position.getX() - getRadius()), (int) (position.getY() - getRadius()), (int) (2 * getRadius()) , (int) (2 * getRadius()) );
-
+	public boolean containsPoint(int x, int y) {
+		return Math.sqrt(Math.pow(x - location.x(), 2) + Math.pow(y - location.y(), 2)) <= BALL_DIAMETER;
 	}
 
-	public void setRadius(float radius) {
-		this.radius = radius;
-	}
+	public boolean willMoveOffScreen() {
+		Location newLoc = new Location(location.x() + (BALL_DIAMETER / 2), location.y() + (BALL_DIAMETER / 2));
+		newLoc.addX(vX);
+		newLoc.addY(vY);
 
-	public float getRadius() {
-		return radius;
-	}
+		Rectangle screenRect = new Rectangle(ballBounce.width(), ballBounce.height());
 
-
-	// Deprecated, rolled this into checkCollision for effeciency.
-	public boolean colliding(Ball ball)
-	{
-		float xd = position.getX() - ball.position.getX();
-		float yd = position.getY() - ball.position.getY();
-
-		float sumRadius = getRadius() + ball.getRadius();
-		float sqrRadius = sumRadius * sumRadius;
-
-		float distSqr = (xd * xd) + (yd * yd);
-
-		if (distSqr <= sqrRadius)
-		{
-			return true;
+		for (int x = (int)location.x(); x < (int)location.x() + BALL_DIAMETER; x++) {
+			for (int y = (int)location.y(); y < (int)location.y() + BALL_DIAMETER; y++) {
+				if (this.containsPoint(x, y) && !screenRect.contains(x, y)) {
+					return true;
+				}
+			}
 		}
-
 		return false;
-
 	}
 
-	public void resolveCollision(Ball ball)
-	{
-
-		// get the mtd
-		Vector2d delta = (position.subtract(ball.position));
-		float r = getRadius() + ball.getRadius();
-		float dist2 = delta.dot(delta);
-
-		if (dist2 > r*r) return; // they aren't colliding
-
-
-		float d = delta.getLength();
-
-		Vector2d mtd;
-		if (d != 0.0f)
-		{
-			mtd = delta.multiply(((getRadius() + ball.getRadius())-d)/d); // minimum translation distance to push balls apart after intersecting
-
-		}
-		else // Special case. Balls are exactly on top of eachother.  Don't want to divide by zero.
-		{
-			d = ball.getRadius() + getRadius() - 1.0f;
-			delta = new Vector2d(ball.getRadius() + getRadius(), 0.0f);
-
-			mtd = delta.multiply(((getRadius() + ball.getRadius())-d)/d);
-		}
-
-		// resolve intersection
-		float im1 = 1 / getMass(); // inverse mass quantities
-		float im2 = 1 / ball.getMass();
-
-		// push-pull them apart
-		position = position.add(mtd.multiply(im1 / (im1 + im2)));
-		ball.position = ball.position.subtract(mtd.multiply(im2 / (im1 + im2)));
-
-		// impact speed
-		Vector2d v = (this.velocity.subtract(ball.velocity));
-		float vn = v.dot(mtd.normalize());
-
-		// sphere intersecting but moving away from each other already
-		if (vn > 0.0f) return;
-
-		// collision impulse
-		float i = (-(1.0f + Constants.restitution) * vn) / (im1 + im2);
-		Vector2d impulse = mtd.multiply(i);
-
-		// change in momentum
-		this.velocity = this.velocity.add(impulse.multiply(im1));
-		ball.velocity = ball.velocity.subtract(impulse.multiply(im2));
-
-	}
-
-	private void setMass(float mass) {
-		this.mass = mass;
-	}
-
-	private float getMass() {
-		return mass;
-	}
-
-	public int compareTo(Ball ball) {
-		if (this.position.getX() - this.getRadius() > ball.position.getX() - ball.getRadius())
-		{
-			return 1;
-		}
-		else if (this.position.getX() - this.getRadius() < ball.position.getX() - ball.getRadius())
-		{
-			return -1;
-		}
-		else
-		{
-			return 0;
-		}
-	}
 
 }
-
-
-
-

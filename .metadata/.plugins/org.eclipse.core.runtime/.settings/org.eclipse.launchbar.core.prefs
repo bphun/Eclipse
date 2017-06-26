@@ -1,0 +1,6 @@
+LaunchTargetManager/org.eclipse.launchbar.core.launchTargetType.local,Local/arch=x86_64
+LaunchTargetManager/org.eclipse.launchbar.core.launchTargetType.local,Local/os=macosx
+configDescList=org.eclipse.launchbar.core.descriptorType.default\:DoodleJump,org.eclipse.launchbar.core.descriptorType.default\:GameLauncher,org.eclipse.launchbar.core.descriptorType.default\:JumbleSolver,org.eclipse.launchbar.core.descriptorType.default\:launchConfiguration (1),org.eclipse.launchbar.core.descriptorType.default\:ScrambleWords,org.eclipse.launchbar.core.descriptorType.default\:SpriteReaderUI
+eclipse.preferences.version=1
+org.eclipse.launchbar.core.descriptorType.default\:DoodleJump/activeLaunchMode=run
+org.eclipse.launchbar.core.descriptorType.default\:DoodleJump/activeLaunchTarget=org.eclipse.launchbar.core.launchTargetType.local\:Local

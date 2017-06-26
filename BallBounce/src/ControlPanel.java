@@ -23,7 +23,6 @@ public class ControlPanel extends JPanel {
 	public ControlPanel(int width, int height, BallBounce ballBounce) {
 		this.ballBounce = ballBounce;
 		this.setPreferredSize(new Dimension(width, height));
-		this.setMaximumSize(new Dimension(5000, height));
 
 		this.setupButtons();
 	}

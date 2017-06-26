@@ -23,6 +23,7 @@ public class BallBounce {
 	private static double gravity;
 
 	private static final int REFRESH_INTERVAL = 5;
+	private static final double RESTITUTION = 0.7;
 	private static final int CONTROL_PANEL_HEIGHT = 65;
 	private static final Dimension DIMENSION = new Dimension(900, 600);
 
@@ -83,20 +84,58 @@ public class BallBounce {
 
 			b.location.addX(b.vX);
 			b.location.addY(b.vY);
-
-			checkCollision(b);
 		}
+		checkCollision();
 	}
 
-	private void checkCollision(Ball b) {
-		for (Ball ball : balls) {
-			if (b.equals(ball)) { continue; }
+	private void checkCollision() {
+		for (int i = 0; i < balls.size(); i++) {
+			Ball ball = balls.get(i);
 
-			if (b.containsPoint((int)ball.location.x(), (int)ball.location.y())) {
-				System.out.println("Ball intersect");
-			} else if (b.willMoveOffScreen()) {
-				System.out.println("willMoveOffScreen");
+			if (ball.location.y() <= 0) { // top
+
+				ball.location.setY(0);
+
+				ball.vX *= RESTITUTION;
+				ball.vY = -ball.vY * RESTITUTION;
+
+			} else if (ball.location.y() + (ball.radius() * 2) >= height()) { // bottom
+
+				ball.location.setY(height() - (ball.radius() * 2));
+
+				ball.vX *= RESTITUTION;
+				ball.vY = -ball.vY * RESTITUTION;
+
+			} else if (ball.location.x() <= 0) { // left
+
+				ball.location.setX(0);
+
+				ball.vX = -ball.vY * RESTITUTION;
+				ball.vY *= RESTITUTION;
+
+			} else if (ball.location.x() + (ball.radius() * 2) >= width()) { // right
+
+				ball.location.setX(width() - (ball.radius() * 2));
+
+				ball.vX = -ball.vX * RESTITUTION;
+				ball.vY *= RESTITUTION;
+
 			}
+
+			for (int n = i + 1; n < balls.size(); n++) {
+				Ball otherBall = balls.get(n);
+
+				if (ball.location.x() + ball.diameter() < otherBall.location.x() - otherBall.diameter()) {
+					break;
+				}
+
+				if (ball.location.y() + ball.diameter() < otherBall.location.y() - otherBall.diameter() || otherBall.location.y() + otherBall.diameter() < ball.location.y() - ball.diameter()) {
+					continue;
+				}
+				ball.didCollide(otherBall);
+
+			}
+
 
 		}
 	}

@@ -7,7 +7,7 @@ public class Ball {
 	private Color color;
 	private BallBounce ballBounce;
 	protected Location location;
-	protected float vX, vY;
+	protected double vX, vY;
 
 	private static final int BALL_DIAMETER = 30;
 
@@ -21,10 +21,22 @@ public class Ball {
 		g.setColor(color);
 		g.fillOval((int)location.x(), (int)location.y(), BALL_DIAMETER, BALL_DIAMETER);
 		g.setColor(Color.BLACK);
+
+		// color = updateColor(Math.atan2(vY, vX));
 	}
 
-	public void updateColor(double speed) {
-		this.color = color;
+	public Color updateColor(double speed) {
+		double maxMagnitude = 0.5; // tweak this to get the right color range
+
+		speed /= 4;
+
+		speed = speed < maxMagnitude ? speed : maxMagnitude;
+
+		double H = (speed / maxMagnitude) * 0.38f;  // 0.4f = green
+		double S = 0.98f;
+		double B = 0.95f;
+
+		return Color.getHSBColor((float)H, (float)S, (float)B);
 	}
 
 	public boolean containsPoint(int x, int y) {
@@ -48,5 +60,16 @@ public class Ball {
 		return false;
 	}
 
+	public double radius() {
+		return BALL_DIAMETER / 2;
+	}
+
+	public int diameter() {
+		return BALL_DIAMETER;
+	}
+
+	public void didCollide(Ball otherBall) {
+
+	}
 
 }

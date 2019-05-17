@@ -3,31 +3,31 @@ import kareltherobot.*;
 
 public class MakeACircle implements Directions {
 		
-	static int circleDiameter;
-	int slideCount;
+	private static int diameter;
 	
-	public static void main(String[] args) {
-		MakeACircle circle = new MakeACircle();
-		
+	public static void main(String[] args) {		
 		//	Prompt the user for their desired circle diameter then convert that value from a 'String' to an 'int'
-		String circleDiameterStr = JOptionPane.showInputDialog(null, "What diameter circle would you like");
-		circleDiameter = Integer.parseInt(circleDiameterStr);
+		String diameterStr = JOptionPane.showInputDialog(null, "What diameter circle would you like");
+		diameter = Integer.parseInt(diameterStr);
 		
 		//	Make the world visible, and set the delay to '0' so that Karel draws the circle quickly
 		World.setVisible(true);
 		World.setDelay(0);
 		
 		//	Draw the circle
-		circle.drawCircle(circleDiameter);	
+		new MakeACircle(diameter);
+	}
+	
+	public MakeACircle(int diameter) {
+		//	Set the worlds size to 'diameters + 1' so that we can fit the circle into the world
+		World.setSize(diameter + 1, diameter + 1);
+		drawCircle(diameter);
 	}
 	
 	private void drawCircle(int diameter) {
 		Robot robot;
 		
 		int circleRadius = diameter / 2;
-		
-		//	Set the worlds size to 'diameters + 1' so that we can fit the circle into the world
-		World.setSize(diameter + 1, diameter + 1);
 		
 		//	Add Karel to the center of the view, facing North, and turn off the beeper limit
 		robot = new Robot(circleRadius + 1,circleRadius + 1, North, infinity);
@@ -44,11 +44,9 @@ public class MakeACircle implements Directions {
 			robot.move();
 		}
 		turnAround(robot);
-		
-		//	MARK:	Begin drawing the circle
-		
+				
 		//	Create a loop that iterates through all of the x values on the coordinate plane
-		for (int loopTimes = circleDiameter; loopTimes > 0; loopTimes--) {
+		for (int loopTimes = diameter; loopTimes > 0; loopTimes--) {
 			
 			//	Move Karel to the top of the world, checking our distance from the circle's center point every move
 			for(int stepsUp = 0; stepsUp < circleRadius * 2; stepsUp++) {
@@ -101,32 +99,29 @@ public class MakeACircle implements Directions {
 			robot.putBeeper();
 		}
 	}
-	
-	//	MARK:	Karel movement helper methods
-	
+		
 	private void turnRight(Robot robot) {
-		robot.turnLeft();
-		robot.turnLeft();
-		robot.turnLeft();
+		for (int i = 0; i < 3; i++) {
+			robot.turnLeft();
+		}
 	}
 	
 	private void turnAround(Robot robot) {
-		robot.turnLeft();
-		robot.turnLeft();
+		for (int i = 0; i < 2; i++) {
+			robot.turnLeft();
+		}		
 	}
 	
 	private void slideLeft(Robot robot) {
 		robot.turnLeft();
 		robot.move();
 		turnRight(robot);
-		slideCount++;
 	}
 	
 	private void slideRight(Robot robot) {
 		turnRight(robot);
 		robot.move();
 		robot.turnLeft();
-		slideCount++;
 	}
 }
 

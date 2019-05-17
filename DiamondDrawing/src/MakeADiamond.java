@@ -64,8 +64,8 @@ public class MakeADiamond  implements Directions {
     //	MARK: Karel helper methods
     
     void turnRight(Robot robot) {
-        robot.turnLeft();
-        robot.turnLeft();
-        robot.turnLeft();
+        for (int i = 0; i < 3; i++) {
+            robot.turnLeft();
+        }
     }
 }

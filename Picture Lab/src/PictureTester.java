@@ -21,25 +21,25 @@ public class PictureTester
 		 * 
 		 */
 		testZeroBlue();
-//		testKeepOnlyBlue();
-//	    testKeepOnlyRed();
-//      testKeepOnlyGreen();
-//		testNegate();
-//		testGrayscale();
-//		testEdgeDetection();
+		testKeepOnlyBlue();
+	    testKeepOnlyRed();
+     testKeepOnlyGreen();
+		testNegate();
+		testGrayscale();
+		testEdgeDetection();
 		testFixUnderwater();
-//		testMirrorVertical();
+		testMirrorVertical();
         //	  testMirrorTemple();
 		//    testMirrorArms();
 		//    testMirrorGull();
 		//    testMirrorDiagonal();
 		//	  testCollage();
-//	    testCopy();
-//		testChromakey();
-//		testEncodeAndDecode();  // use PNG, GIF or BMP because of compression
-//		testGetCountRedOverValue(250);
-//		testSetRedToHalfValueInTopHalf();
-//		testClearBlueOverValue(180);
+	    testCopy();
+		testChromakey();
+		testEncodeAndDecode();  // use PNG, GIF or BMP because of compression
+		testGetCountRedOverValue(250);
+		testSetRedToHalfValueInTopHalf();
+		testClearBlueOverValue(180);
 //		Color avgColor = testGetAverageForColumn(90);// specified column 
 //		System.out.println("Average color: " + avgColor);
 	}

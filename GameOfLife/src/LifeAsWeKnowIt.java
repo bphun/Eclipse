@@ -41,6 +41,7 @@ public class LifeAsWeKnowIt {
 	
 	//	The timer that is used to step the game every 500ms when the start button is pressed
 	private Timer playTimer;
+	
 	//	Tells the game if it should play
 	private boolean shouldPlay;
 

@@ -1,4 +1,3 @@
-
 import javax.swing.JOptionPane;
 
 import kareltherobot.*;
@@ -12,39 +11,36 @@ public class MakeVShape implements Directions {
 
 		World.setDelay(0);
 		
-		String V_heightStr = JOptionPane.showInputDialog("What height do you want?");
- 
-		int V_height = Integer.parseInt(V_heightStr);
+		String v_heightStr = JOptionPane.showInputDialog("What height do you want?");
 
-		World.setSize(V_height, V_height * 2);
+		int v_height = Integer.parseInt(v_heightStr);
+
+		World.setSize(v_height, v_height * 2);
 		World.setVisible(true);
 
-		robot = new Robot(V_height, 1,South,infinity);
+		robot = new Robot(v_height, 1,South,infinity);
 		
-		v.makeVShape(V_height);
+		v.makeVShape(v_height);
 
 	}
 
-	private void makeVShape(int V_height) {
+	private void makeVShape(int v_height) {
 		int currentBeeper = 0;	
 		
-			while (currentBeeper < V_height - 1) {
-				robot.putBeeper();
-				robot.move();
-				slideLeft();
-				currentBeeper++;
-			}
-			currentBeeper = 0;
-			faceNorth();
-			while (currentBeeper < V_height - 1) {
-				robot.putBeeper();
-				robot.move();
-				slideRight();
-				currentBeeper++;
-			}
-			currentBeeper = 0;
-
-
+		while (currentBeeper < v_height - 1) {
+			robot.putBeeper();
+			robot.move();
+			slideLeft();
+			currentBeeper++;
+		}
+		currentBeeper = 0;
+		faceNorth();
+		while (currentBeeper < v_height - 1) {
+			robot.putBeeper();
+			robot.move();
+			slideRight();
+			currentBeeper++;
+		}
 	}
 	
 	private void slideLeft() {
@@ -80,14 +76,15 @@ public class MakeVShape implements Directions {
 	}
 	
 	private void turnAround() {
-		robot.turnLeft();
-		robot.turnLeft();	
+		for (int i = 0; i < 2; i++) {
+			robot.turnLeft();
+		}	
 	}
 
 	private void turnRight() {
-		robot.turnLeft();
-		robot.turnLeft();
-		robot.turnLeft();
+		for (int i = 0; i < 3; i++) {
+			robot.turnLeft();
+		}
 	}
 
 

@@ -5,6 +5,11 @@
 		<item value="false" key="WizardProjectsImportPage.STORE_COPY_PROJECT_ID"/>
 		<item value="false" key="WizardProjectsImportPage.STORE_ARCHIVE_SELECTED"/>
 		<list key="WizardProjectsImportPage.STORE_DIRECTORIES">
+			<item value="/Users/BrandonPhan/Desktop/Paint"/>
+			<item value="/Users/BrandonPhan/Desktop/SortRobots"/>
+			<item value="/Users/BrandonPhan/Desktop/Developer/Java/DiamondDrawing"/>
+			<item value="/Users/BrandonPhan/Desktop/Developer/Java/MessagingApplication"/>
+			<item value="/Users/BrandonPhan/Desktop/Developer/Java/HelpGuppy/HW_Assignment1"/>
 			<item value="/Users/BrandonPhan/Desktop/Developer/Java/Asteroid"/>
 		</list>
 		<list key="WizardProjectsImportPage.STORE_ARCHIVES">

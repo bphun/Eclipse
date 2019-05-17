@@ -19,9 +19,9 @@ public class DiepIOMap {
 	private Tank playerTank;
 	private boolean lostGame;
 
-	private static final int NUM_SHAPES = 70;
+	private static final int NUM_SHAPES = 40;
 	private static final String BACKGROUND_IMAGE_FILE_NAME = "";
-	private static final int NUM_OPPONENTS = 15;
+	private static final int NUM_OPPONENTS = 30;
 
 	private Dimension panelDimension;
 	private static Image backgroundImage;

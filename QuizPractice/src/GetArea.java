@@ -23,8 +23,6 @@ public class GetArea implements Directions {
 		int height = 0;
 		int width = 0;
 
-		int area = 0;
-
 		int initialXCoord = robot.avenue();
 		int initialYCoord = robot.street();
 
@@ -55,16 +53,14 @@ public class GetArea implements Directions {
 			}
 		} 
 
-		area = height * width;
-
-		return (area);
+		return height * width;
 	}
 
 
 	private void turnRight() {
-		robot.turnLeft();
-		robot.turnLeft();
-		robot.turnLeft();
+		for (int i = 0; i < 3; i++) {
+			robot.turnLeft();
+		}
 	}
 
 	private void faceEast() {
@@ -73,8 +69,9 @@ public class GetArea implements Directions {
 		} else if (robot.facingSouth()) {
 			turnRight();
 		} else if (robot.facingWest()) {
-			robot.turnLeft();
-			robot.turnLeft();
+			for (int i = 0; i < 2; i++) {
+				robot.turnLeft();
+			}			
 		}
 	}
 }
